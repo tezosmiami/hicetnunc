@@ -13,7 +13,8 @@
   z-index: 1000;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  border-bottom: 1px solid black;
 
   .content {
     width: 100%;
@@ -22,7 +23,7 @@
     justify-content: space-between;
 
     @include respond-to('desktop') {
-      width: 50%;
+      width: 80%;
       margin: 0 auto;
     }
 
@@ -33,7 +34,7 @@
       height: 22.5px;
 
       svg {
-        height: 22.5px;
+        height: 33px;
         // fill: var(--text-color);
         transition: fill #{$theme-duration} ease-out;
       }
