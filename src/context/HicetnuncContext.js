@@ -72,7 +72,7 @@ const wallet = new PatchedBeaconWallet({
 }) */
 
 const wallet = new BeaconWallet({
-  name: 'hicetnunc.xyz',
+  name: 'hicetnunc.miami',
   preferredNetwork: 'mainnet',
 })
 
