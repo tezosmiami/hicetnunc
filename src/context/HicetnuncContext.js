@@ -222,7 +222,7 @@ class HicetnuncContextProviderClass extends Component {
 
         root.style.setProperty(
           '--background-color',
-          blue ? '#bae9ff' : green ? '#72e072' : orange ? '#ffa42f' : pink ? '#ffccff' : '#bae9ff'
+          blue ? '#bae9ff' : green ? '#72e072' : orange ? '#fe8f00' : pink ? '#ffccff' : '#bae9ff'
         )
         root.style.setProperty('--text-color', '#000000' )
         root.style.setProperty(
