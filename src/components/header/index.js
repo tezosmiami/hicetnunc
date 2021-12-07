@@ -120,11 +120,7 @@ export const Header = () => {
                         <Primary>home</Primary>
                       </Button>
                     </li>
-                    <li>
-                      <Button onClick={() => handleRoute('/galleries')}>
-                        <Primary>galleries</Primary>
-                      </Button>
-                    </li>
+                    
                     <li>
                       <Button onClick={() => handleRoute('/mint')}>
                         <Primary>
@@ -151,6 +147,17 @@ export const Header = () => {
                       :
                       null
                     }
+                   
+                    <li>
+                      <Button onClick={() => handleRoute('/galleries')}>
+                        <Primary>galleries</Primary>
+                      </Button>
+                    </li>
+                    <li href="hen.radio">
+                      <Button onClick={() => window.open('https://hen.radio', '_blank', 'noopener,noreferrer')}>
+                        <Primary>radio</Primary>
+                      </Button>
+                    </li>
                     <li>
                       <Button onClick={() => handleRoute('/about')}>
                         <Primary>about</Primary>
