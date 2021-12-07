@@ -209,27 +209,28 @@ class HicetnuncContextProviderClass extends Component {
       setFullscreen: (fullscreen) => this.setState({ fullscreen }),
 
       // theme, DO NO CHANGE!
-      theme: 'light',
+      theme: 'blue',
       setTheme: (theme) => {
         let root = document.documentElement
 
-        const light = theme === 'light'
-
-        setItem('theme', light ? 'light' : 'dark')
+        const blue= theme === 'blue'
+        const  green = theme === 'green'
+        const pink = theme === 'pink'
+        setItem('theme', blue ? 'blue' : green ? 'green' : pink ? 'pink' : 'pink')
 
         root.style.setProperty(
           '--background-color',
-          light ? '#bae9ff' : '#ffccff'
+          blue ? '#bae9ff' : green ? '#72e072' : pink ? '#ffccff' : '#bae9ff'
         )
         root.style.setProperty('--text-color', '#000000' )
         root.style.setProperty(
           '--border-color',
-          light ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.3)'
+          'rgba(0,0,0,0.1)'
         )
         root.style.setProperty(
           '--shadow-color',
-          light ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.3)'
-        )
+          'rgba(0,0,0,0.2)'
+           )
 
         this.setState({ theme })
       },
