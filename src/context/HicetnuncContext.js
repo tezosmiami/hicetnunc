@@ -214,13 +214,15 @@ class HicetnuncContextProviderClass extends Component {
         let root = document.documentElement
 
         const blue= theme === 'blue'
-        const  green = theme === 'green'
+        const green = theme === 'green'
+        const orange = theme === 'orange'
         const pink = theme === 'pink'
-        setItem('theme', blue ? 'blue' : green ? 'green' : pink ? 'pink' : 'pink')
+    
+        setItem('theme', blue ? 'blue' : green ? 'green' : orange ? 'orange' :  pink ? 'pink' : 'blue')
 
         root.style.setProperty(
           '--background-color',
-          blue ? '#bae9ff' : green ? '#72e072' : pink ? '#ffccff' : '#bae9ff'
+          blue ? '#bae9ff' : green ? '#72e072' : orange ? '#ffad42' : pink ? '#ffccff' : '#bae9ff'
         )
         root.style.setProperty('--text-color', '#000000' )
         root.style.setProperty(

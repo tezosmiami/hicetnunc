@@ -8,7 +8,10 @@ export const ButtonTheme = () => {
     <div
       className={styles.container}
       onClick={() =>
-        context.setTheme(context.theme === 'blue' ? 'green' : context.theme === 'green' ? 'pink' : context.theme === 'pink' ? 'blue' : 'blue')
+        context.setTheme(context.theme === 'blue' ? 'green' : 
+                         context.theme === 'green' ? 'orange' : 
+                         context.theme === 'orange' ? 'pink' :
+                         'blue')
       }
     />
   )
