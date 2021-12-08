@@ -18,6 +18,14 @@ export const ossProjects = [
     address: 'KT1BBYzfuYjgRdeHJ79vG3fZd8cHW9ueCEcN',
   },
   {
+    name: 'Tezos Miami',
+    address: 'tz2WNxPcE7JZhAFfqGEHkMtd2gcHaeiJKMWE',
+  },
+  {
+    name: 'Esquina de Abuela',
+    address: 'tz1PBM5SNXtr1HX5XSEt1aQGmP5CeHeW6FEJ',
+  },
+  {
     name: 'Processing',
     address: 'tz1aPHze1U5BEEKrGYt3dvY6aAQEeiWm8jjK',
   },
