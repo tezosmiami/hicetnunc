@@ -2,13 +2,13 @@
 @import '../../../styles/layout.scss';
 
 .container {
-  width: 100%;
+  width: 99%;
   margin: 0 auto;
   margin-bottom: 20px;
   word-break: break-word;
 
   @include respond-to('desktop') {
-    width: 90%;
+    width: 88%;
   }
 
   &.large {
@@ -19,7 +19,7 @@
 
   &.xlarge {
     @include respond-to('desktop') {
-      width: 80%;
+      width: 88%;
     }
   }
 }
