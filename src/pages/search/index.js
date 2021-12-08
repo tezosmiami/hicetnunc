@@ -541,7 +541,9 @@ export class Search extends Component {
       { id: 8, value: '1D' },
       { id: 9, value: '1W' },
       { id: 10, value: '1M' },
-      { id: 11, value: 'ATH' }
+      { id: 11, value: 'ATH' },
+      { id: 12, value: 'Miami' }
+      
     ],
     select: [],
     mouse: false,
