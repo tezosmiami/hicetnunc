@@ -20,9 +20,9 @@ export const CollabIssuerInfo = ({ creator }) => {
             </a>
 
             {showCollabSummary && (
-                <div className={styles.collabInfo}>
-                    <ParticipantList title={false} participants={coreParticipants} />
-                </div>
+                <a className={styles.collabInfo}>[
+                    <ParticipantList title={false} participants={coreParticipants} />]
+                </a>
             )}
         </div>
     )

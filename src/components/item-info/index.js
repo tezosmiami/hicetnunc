@@ -107,7 +107,8 @@ export const ItemInfo = ({
 
     const signStatusStyles = classNames(
       collabStyles.flexBetween,
-      collabStyles.alignStart
+      collabStyles.alignStart,
+      collabStyles.border
     )
 
     return (
