@@ -124,7 +124,7 @@ export const Header = () => {
                     <li>
                       <Button onClick={() => handleRoute('/mint')}>
                         <Primary>
-                          OBJKT<span style={{ fontSize: '16px' }}> (mint)</span>
+                          OBJKT<span style={{ fontSize: '18px' }}> (mint)</span>
                         </Primary>
                       </Button>
                     </li>
