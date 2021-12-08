@@ -240,7 +240,7 @@ async function fetchTz(addr) {
   if (errors) {
     console.error(errors)
   }
-  const result = data.hic_et_nunc_holder
+  const result = data?.hic_et_nunc_holder
   // console.log({ result })
   return result
 }
