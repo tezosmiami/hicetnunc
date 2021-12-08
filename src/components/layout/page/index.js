@@ -13,7 +13,7 @@ export const Page = ({ title = 'hic et nunc', children = null, large }) => {
     <main className={classes}>
       <Helmet>
         {title !== '' ? (
-          <title>{title} - hic et nunc</title>
+          <title>{title} - hic et nunc - magic city </title>
         ) : (
           <title>hic et nunc</title>
         )}
