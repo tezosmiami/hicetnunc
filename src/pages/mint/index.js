@@ -72,6 +72,9 @@ export const Mint = () => {
         const managedCollabs = data.hic_et_nunc_splitcontract
         setCollabs(managedCollabs || [])
       }
+      if (errors) {
+        console.error(errors)
+    }
     })
 
     updateName()
@@ -89,9 +92,13 @@ export const Mint = () => {
       address: currentAddress,
     }).then(({ data, errors }) => {
       if (data) {
+        console.log(data)
         const holder = data.hic_et_nunc_holder[0]
-        setMintName(holder.name || currentAddress)
+        setMintName(holder?.name || currentAddress)
       }
+      if (errors) {
+        console.error(errors)
+    }
     })
   }
 
