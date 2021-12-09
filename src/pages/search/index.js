@@ -442,7 +442,7 @@ async function fetchSubjkts(subjkt) {
 async function fetchTag(tag, offset) {
   const { errors, data } = await fetchGraphQL(
     `query ObjktsByTag {
-  hic_et_nunc_token(where: {supply : { _neq : 0 }, token_tags: {tag: {tag: {_eq: ${tag}}}}, id: {_lt: ${offset}}}, limit : 15, order_by: {id: desc}) {
+  hic_et_nunc_token(where: {supply : { _neq : 0 }, token_tags: {tag: {tag: {_eq: ${tag}}}}, id: {_lt: ${offset}}}, limit : 188, order_by: {id: desc}) {
     id
     artifact_uri
     display_uri
@@ -463,7 +463,7 @@ async function fetchTag(tag, offset) {
   if (errors) {
     console.error(errors);
   }
-  const result = data.hic_et_nunc_token
+  const result = data?.hic_et_nunc_token
   return result
 }
 
@@ -532,17 +532,22 @@ export class Search extends Component {
     tags: [
       { id: 0, value: '○ hDAO' },
       { id: 1, value: 'random' },
-      { id: 2, value: 'glb' },
-      { id: 3, value: 'music' },
-      { id: 4, value: 'html/svg' }, // algorithimc?
-      { id: 5, value: 'gif' },
-      { id: 6, value: 'new OBJKTs' },
-      { id: 7, value: 'recent sales' },
-      { id: 8, value: '1D' },
-      { id: 9, value: '1W' },
-      { id: 10, value: '1M' },
-      { id: 11, value: 'ATH' },
-      { id: 12, value: 'Miami' }
+      { id: 2, value: 'new OBJKTs' },
+    
+      { id: 3, value: 'recent sales' },
+      
+      { id: 4, value: 'music' },
+      // { id: 7, value: 'gif' },
+      // { id: 6, value: 'html/svg' }, // algorithimc?
+      // { id: 4, value: 'glb' },
+      { id: 5, value: '1D' },
+      { id: 6, value: '1W' },
+      { id: 7, value: '1M' },
+      { id: 8, value: 'ATH' },
+      { id: 9, value: 'Miami' },
+      
+   
+      
       
     ],
     select: [],
@@ -553,6 +558,10 @@ export class Search extends Component {
 
   componentWillMount = async () => {
     let arr = await getRestrictedAddresses()
+    // this.setState({ select: 'miami' })
+    // let res = await fetchTag('miami', 9999999)
+    // res = res.filter(e => !arr.includes(e.creator_id))
+    // this.setState({ feed: _.uniqBy([...this.state.feed, ...(res)], 'creator_id') }) 
     this.setState({ select: 'recent sales' })
     let tokens = await fetchSales(this.state.offset)
     tokens = tokens.map(e => e.token)
@@ -677,7 +686,13 @@ export class Search extends Component {
     if (e == 'illustration') {
       console.log(await fetchTag('illustration'))
     }
+    if (e == 'Miami') {
+      let res = await fetchTag('miami', 999999)
+      res = res.filter(e => !arr.includes(e.creator_id))
+      this.setState({ feed: _.uniqBy([...this.state.feed, ...(res)], 'creator_id') })
+    }
 
+  
     if (e == 'tag') {
       let res = await fetchTag(this.state.search, this.state.feed[this.state.feed.length - 1].id)
       res = res.filter(e => !arr.includes(e.creator_id))
@@ -765,7 +780,7 @@ export class Search extends Component {
               <div style={{ marginTop: '15px' }}>
                 {this.state.tags.map(e => <a className='tag' href='#' onClick={() => {
                   this.update(e.value, true)
-                }}>{e.value} </a>)}
+                }}>{e.value}</a>)}
               </div>
             }
             {
