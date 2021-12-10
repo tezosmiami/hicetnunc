@@ -57,7 +57,7 @@
   padding: 2px 6px;
   width: 100%;
   color: black; // this colour doesnt change
-  background-color: rgb(239, 239, 239);
+  background-color: var(--border-color);
   border-right: 2px solid var(--text-color);
   border-bottom: 2px solid var(--text-color);
   transition: border-color #{$theme-duration} ease-out,

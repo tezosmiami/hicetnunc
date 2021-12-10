@@ -78,6 +78,16 @@ const wallet = new BeaconWallet({
 
 Tezos.setWalletProvider(wallet)
 
+const colors = { 
+  'blue' : '#69cdff',
+  'green' : '#72e072',
+  'orange' : '#fe8f00', 
+  'pink' : '#ff55e5' 
+      }     
+
+const keys = Object.keys(colors)
+const color = keys[Math.floor(Math.random() * keys.length)]
+
 class HicetnuncContextProviderClass extends Component {
 
   constructor(props) {
@@ -209,7 +219,7 @@ class HicetnuncContextProviderClass extends Component {
       setFullscreen: (fullscreen) => this.setState({ fullscreen }),
 
       // theme, DO NO CHANGE!
-      theme: 'blue',
+      theme: color,
       setTheme: (theme) => {
         let root = document.documentElement
 
@@ -218,11 +228,11 @@ class HicetnuncContextProviderClass extends Component {
         const orange = theme === 'orange'
         const pink = theme === 'pink'
     
-        setItem('theme', blue ? 'blue' : green ? 'green' : orange ? 'orange' :  pink ? 'pink' : 'blue')
+        setItem('theme', blue ? 'blue' : green ? 'green' : orange ? 'orange' :  pink ? 'pink' : color)
 
         root.style.setProperty(
           '--background-color',
-          blue ? '#69cdff' : green ? '#72e072' : orange ? '#fe8f00' : pink ? '#ff55e5' : '#ff55e5'
+          blue ? '#69cdff' : green ? '#72e072' : orange ? '#fe8f00' : pink ? '#ff55e5' : color
         )
         root.style.setProperty('--text-color', '#000000' )
         root.style.setProperty(
