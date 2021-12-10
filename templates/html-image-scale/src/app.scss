@@ -8,7 +8,7 @@ body {
 
 body {
   overflow: hidden;
-  background-color: black;
+  background-color: var(--background-color);
 }
 
 * {
