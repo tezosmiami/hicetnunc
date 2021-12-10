@@ -631,6 +631,7 @@ class HicetnuncContextProviderClass extends Component {
           Tezos: Tezos,
           address: await wallet.getPKH(),
           acc: await wallet.client.getActiveAccount(),
+          collapsed: true,
           wallet,
         })
         this.state.setAuth(await wallet.getPKH())
@@ -644,6 +645,7 @@ class HicetnuncContextProviderClass extends Component {
         this.setState({
           address: undefined,
           acc: undefined,
+          collapsed: true
         })
       },
 
