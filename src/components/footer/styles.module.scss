@@ -6,8 +6,8 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  background-color: var(--text-color);
-  color: var(--background-color);
+  background-color: var(--background-color);
+  color: var(--text-color); 
   transition: background-color #{$theme-duration} ease-out,
     color #{$theme-duration} ease-out;
   padding: $mobile-padding;
