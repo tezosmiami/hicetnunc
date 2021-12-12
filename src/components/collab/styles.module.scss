@@ -1,9 +1,6 @@
 @import '../../styles/layout.scss';
 @import '../../styles/variables.scss';
 
-div{
-  background-color:var(--background-color)
-}
 .input {
   background: none;
   letter-spacing: 0.015em;
@@ -160,6 +157,7 @@ div{
 .flexBetween {
   display: flex;
   justify-content: space-between;
+  background-color: var(--background-color);
 }
 
 .alignStart {
