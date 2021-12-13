@@ -275,11 +275,10 @@
 }
 
 .collabInfo {
-  position: absolute;
+  position: relative;
   display: flex;
   color: var(--text-color);
   z-index: 100;
-  top:20px;
   min-width: 380px;
   flex-direction: row;
 }
