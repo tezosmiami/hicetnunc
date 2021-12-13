@@ -5,7 +5,7 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background-color: var(--background-color);
+  background-color: var(--next-color);
   transition: background-color #{$theme-duration} ease-out,
     color #{$theme-duration} ease-out;
   z-index: 1000;
