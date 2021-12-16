@@ -29,7 +29,6 @@ export const Header = () => {
   useEffect(() => {
     context.setAccount()
     context.setTheme(getItem('theme') || context.theme)
-    console.log(context.theme)
   }, [])
 
   // we assume user isn't connected
@@ -157,7 +156,7 @@ export const Header = () => {
                       </Button>
                     </li>
                     <li href="hen.radio">
-                      <Button onClick={() => window.open('https://hen.radio', '_blank', 'noopener,noreferrer')}>
+                      <Button onClick={() => window.open('https://hen.radio', '_self', 'noopener,noreferrer')}>
                         <Primary>radio</Primary>
                       </Button>
                     </li>

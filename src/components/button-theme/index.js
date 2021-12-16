@@ -4,7 +4,7 @@ import styles from './styles.module.scss'
 
 export const ButtonTheme = () => {
   const context = useContext(HicetnuncContext)
-  console.log(context.theme)
+
   return (
     <div
       className={styles.container}

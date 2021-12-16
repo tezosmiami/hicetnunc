@@ -351,10 +351,10 @@ export default class Display extends Component {
     } else {
       let res = await fetchSubjkts(decodeURI(window.location.pathname.split('/')[1]))
       // console.log(decodeURI(window.location.pathname.split('/')[1]))
-      console.log(res)
+      //console.log(res)
       if (res[0].metadata_file) {
         let meta = await axios.get('https://cloudflare-ipfs.com/ipfs/' + res[0].metadata_file.split('//')[1]).then(res => res.data)
-        console.log(meta)
+        //console.log(meta)
         if (meta.description) this.setState({ description: meta.description })
         if (meta.identicon) this.setState({ identicon: meta.identicon })
       }
@@ -365,7 +365,7 @@ export default class Display extends Component {
           subjkt: window.location.pathname.split('/')[1]
         })
         let resTz = await fetchTz(this.state.wallet)
-        console.log(resTz)
+        //console.log(resTz)
         this.setState({ hdao: Math.floor(resTz[0].hdao_balance / 1000000) })
       } else {
         this.props.history.push('/')
@@ -387,7 +387,7 @@ export default class Display extends Component {
       })
       this.onReady()
     }
-    console.log(await fetchBalance(this.state.wallet))
+    //console.log(await fetchBalance(this.state.wallet))
     this.setState({ claim: await fetchBalance(this.state.wallet) })
     //.reduce((a, b) => a + b, 0)
   }
@@ -870,7 +870,7 @@ export default class Display extends Component {
                   filter: !this.state.filter
                 })}>
                   <Primary>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-filter">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="feather feather-filter">
                       <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
                     </svg>
                   </Primary>

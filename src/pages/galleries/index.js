@@ -53,7 +53,7 @@ export const Galleries = () => {
     fetch('/galleries/galleries.json')
       .then((e) => e.json())
       .then(async (galleries) => {
-        console.log(galleries)
+        //console.log(galleries)
          let res = await fetchObjkts(galleries.map(e => e.id))
 
          let merged = _.merge(_.keyBy(galleries, 'id'), _.merge(_.keyBy(res, 'id')))
@@ -76,7 +76,7 @@ export const Galleries = () => {
           <ResponsiveMasonry>
             {data.map((e) => {
               const { token_info } = e
-              console.log(e)
+              //console.log(e)
               return (
                 <Button key={e.uid} to={`${PATH.GALLERY}/${e.uid}`}>
                   <div className={styles.item}>
