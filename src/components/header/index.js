@@ -23,10 +23,13 @@ const wallet = new BeaconWallet({
 export const Header = () => {
   const history = useHistory()
   const context = useContext(HicetnuncContext)
-
+  // let root = document.documentElement
+  // const color = root.style.getPropertyValue('--background-color')
+  // console.log(color)
   useEffect(() => {
     context.setAccount()
-    context.setTheme(getItem('theme') || setItem('theme', 'dark'))
+    context.setTheme(getItem('theme') || context.theme)
+    console.log(context.theme)
   }, [])
 
   // we assume user isn't connected
