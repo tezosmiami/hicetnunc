@@ -90,7 +90,6 @@ const colors = {
 
 const keys = Object.keys(colors)
 const color = keys[Math.floor(Math.random() * keys.length)]
-console.log(color)
 
 class HicetnuncContextProviderClass extends Component {
 

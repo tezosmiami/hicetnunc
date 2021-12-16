@@ -4,7 +4,7 @@ import { Button } from '../button'
 import styles from './styles.module.scss'
 
 export const Tags = ({ token_tags, preview }) => {
-  console.log(token_tags)
+  //console.log(token_tags)
   if (preview) {
     return (
       <div className={styles.container}>

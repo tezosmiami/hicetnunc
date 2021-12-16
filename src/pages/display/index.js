@@ -341,10 +341,10 @@ export default class Display extends Component {
     } else {
       let res = await fetchSubjkts(decodeURI(window.location.pathname.split('/')[1]))
       // console.log(decodeURI(window.location.pathname.split('/')[1]))
-      console.log(res)
+      //console.log(res)
       if (res[0]?.metadata_file) {
         let meta = await axios.get('https://cloudflare-ipfs.com/ipfs/' + res[0].metadata_file.split('//')[1]).then(res => res.data)
-        console.log(meta)
+        //console.log(meta)
         if (meta.description) this.setState({ description: meta.description })
         if (meta.identicon) this.setState({ identicon: meta.identicon })
       }
@@ -355,7 +355,7 @@ export default class Display extends Component {
           subjkt: window.location.pathname.split('/')[1]
         })
         let resTz = await fetchTz(this.state.wallet)
-        console.log(resTz)
+        //console.log(resTz)
         this.setState({ hdao: Math.floor(resTz[0].hdao_balance / 1000000) })
       } else {
         this.props.history.push('/')
@@ -377,7 +377,7 @@ export default class Display extends Component {
       })
       this.onReady()
     }
-    console.log(await fetchBalance(this.state.wallet))
+    //console.log(await fetchBalance(this.state.wallet))
     this.setState({ claim: await fetchBalance(this.state.wallet) })
     //.reduce((a, b) => a + b, 0)
   }

@@ -684,7 +684,7 @@ export class Search extends Component {
     }
 
     if (e == 'illustration') {
-      console.log(await fetchTag('illustration'))
+      //console.log(await fetchTag('illustration'))
     }
     if (e == 'Miami') {
       let res = await fetchTag('miami', 999999)
@@ -723,7 +723,7 @@ export class Search extends Component {
     } else {
       result = await fetchFeed(999999)
     }
-    console.log(result)
+    //console.log(result)
     let restricted = await getRestrictedAddresses()
     result = _.uniqBy([...this.state.feed, ...result], 'creator_id')
     result = result.filter(e => !restricted.includes(e.creator_id))
@@ -733,7 +733,7 @@ export class Search extends Component {
 
   search = async (e) => {
 
-    console.log(e)
+    //console.log(e)
 
     this.setState({ items: [], feed: [], search: e })
     this.setState({ subjkt: await fetchSubjkts(this.state.search) })
@@ -745,7 +745,7 @@ export class Search extends Component {
     }
 
 
-    console.log(this.state.feed)
+    //console.log(this.state.feed)
   }
 
   hoverState = (bool) => this.setState({ mouse: bool })
@@ -758,7 +758,7 @@ export class Search extends Component {
   }
 
   handleKey = (e) => {
-    console.log(this.state.search)
+    //console.log(this.state.search)
     if (e.key == 'Enter') this.search(this.state.search)
   }
 

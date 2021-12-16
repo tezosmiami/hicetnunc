@@ -83,7 +83,7 @@ export class Config extends Component {
     let res = await fetchTz(address)
 
     this.context.subjktInfo = res[0]
-    console.log(this.context.subjktInfo)
+    //console.log(this.context.subjktInfo)
 
     if (this.context.subjktInfo) {
       let cid = await axios.get('https://ipfs.io/ipfs/' + (this.context.subjktInfo.metadata_file).split('//')[1]).then(res => res.data)
@@ -120,7 +120,7 @@ export class Config extends Component {
       this.setState({ identicon: 'ipfs://' + (await ipfs.add(buffer)).path })
     }
 
-    console.log(this.state)
+    //console.log(this.state)
     this.context.registry(
       this.state.subjkt,
       await ipfs.add(
@@ -180,7 +180,7 @@ export class Config extends Component {
   */
 
   sign = () => {
-    console.log(this.context.addr)
+    //console.log(this.context.addr)
     this.context.signStr({
       /*       payload : "05" + char2Bytes(this.state.str) */
       payload: this.state.str
@@ -232,9 +232,9 @@ export class Config extends Component {
               <span>
                 link your Twitter, Discord, GitHub, and website with </span>
               <span>
-                <a href="https://tzprofiles.com">
+                <a href="https://tzprofiles.com" target="_blank" rel="noopener noreferrer">
                   <Button>
-                    <a href='#' style={{ fontWeight: 'bold' }}>Tezos Profiles</a>
+                  <span style={{ fontWeight: 'bold' }}> Tezos Profiles</span>
                   </Button>
                 </a>
               </span>

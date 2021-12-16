@@ -47,7 +47,7 @@ export const ItemInfo = ({
         )[0].quantity
         : 'X'
     swaps = swaps.filter(e => parseInt(e.contract_version) === 2 && parseInt(e.status) === 0 && e.is_valid)
-    console.log(swaps)
+    //console.log(swaps)
     let s = _.minBy(swaps, (o) => Number(o.price))
     let maxPrice = _.maxBy(swaps, (o) => Number(o.price))
 
