@@ -83,12 +83,14 @@ Tezos.setWalletProvider(wallet)
 const colors = { 
   'blue' : '#69cdff',
   'green' : '#72e072',
-  'orange' : '#fe8f00', 
-  'pink' : '#ff55e5' 
+  'orange' : '#ffad33',
+  'charcol' : '#888888', 
+  'pink' : '#ffbeff'
       }     
 
 const keys = Object.keys(colors)
 const color = keys[Math.floor(Math.random() * keys.length)]
+console.log(color)
 
 class HicetnuncContextProviderClass extends Component {
 
@@ -226,24 +228,27 @@ class HicetnuncContextProviderClass extends Component {
 
       // theme, DO NO CHANGE!
       theme: color,
-      setTheme: (theme) => {
+
+      setTheme: (theme, save) => {
         let root = document.documentElement
 
-        const blue= theme === 'blue'
-        const green = theme === 'green'
-        const orange = theme === 'orange'
-        const pink = theme === 'pink'
-    
-        setItem('theme', blue ? 'blue' : green ? 'green' : orange ? 'orange' :  pink ? 'pink' : color)
+        save && setItem('theme', theme)
 
         root.style.setProperty(
           '--background-color',
-          blue ? '#69cdff' : green ? '#72e072' : orange ? '#fe8f00' : pink ? '#ff55e5' : color
+         colors[theme] || colors[color]
         )
+
         root.style.setProperty(
           '--next-color',
-          blue ? '#72e072' : green ? '#fe8f00' : orange ? '#ff55e5' : pink ? '#69cdff' : color
+          theme === 'blue' ? colors.green :
+          theme === 'green' ? colors.orange :
+          theme === 'orange' ? colors. charcol :
+          theme === 'charcol' ? colors.pink :
+          theme === 'pink' ? colors.blue :
+          'white'
         )
+  
         root.style.setProperty('--text-color', '#000000' )
         root.style.setProperty(
           '--border-color',

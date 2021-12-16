@@ -4,15 +4,19 @@ import styles from './styles.module.scss'
 
 export const ButtonTheme = () => {
   const context = useContext(HicetnuncContext)
+  console.log(context.theme)
   return (
     <div
       className={styles.container}
-      onClick={() =>
+      onClick={() =>{
+        
         context.setTheme(context.theme === 'blue' ? 'green' : 
                          context.theme === 'green' ? 'orange' : 
-                         context.theme === 'orange' ? 'pink' :
-                         'blue')
-      }
+                         context.theme === 'orange' ? 'charcol' :
+                         context.theme === 'charcol' ? 'pink' :
+                         context.theme === 'pink' ? 'blue' : 
+                         context.theme, true )
+      }}
     />
   )
 }
