@@ -74,7 +74,7 @@ export const Tags = () => {
   const loadMore = async () => {
     setOffset(offset + 35)
     let arr = await fetchTag(id, offset + 35)
-    setFeed(_.uniqBy([...feed, ...arr].filter(e => !restricted.includes(e.creator_id)), 'creator_id'))
+    setFeed([...feed, ...arr].filter(e => !restricted.includes(e.creator_id)), 'creator_id')
     setCount(count + 15)
   }
 
@@ -83,9 +83,9 @@ export const Tags = () => {
     let res = await getRestrictedAddresses()
     setRestricted(res)
     console.log(arr)
-    setFeed(_.uniqBy(arr.filter(e => !res.includes(e.creator_id)), 'creator_id'))
+    setFeed(arr.filter(e => !res.includes(e.creator_id)), 'creator_id')
   }, [])
-
+console.log(feed)
   return (
     <Page title={`Tag ${id}`}>
       <div className="tag-view">
