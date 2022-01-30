@@ -965,7 +965,7 @@ export default class Display extends Component {
                   {this.state.items.map((nft) => {
                     // console.log('swaps ' + JSON.stringify(nft))
                     return (
-                      <div className={styles.cardContainer}>
+                      <div className={styles.cardContainer} key={nft.token}>
                         <Button
                           style={{ positon: 'relative' }}
                           key={nft.id}
