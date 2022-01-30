@@ -688,8 +688,8 @@ export class Search extends Component {
     }
     if (e == 'Miami') {
       let res = await fetchTag('miami', 999999)
-      res = res.filter(e => !arr.includes(e.creator_id))
-      this.setState({ feed: _.uniqBy([...this.state.feed, ...(res)], 'creator_id') })
+      // res = res.filter(e => !arr.includes(e.creator_id))
+      this.setState({ feed: ([...this.state.feed, ...(res)]) })
     }
 
   
@@ -741,7 +741,7 @@ export class Search extends Component {
     if (!isNaN(this.state.search)) {
       this.setState({ feed: await fetchFeed(Number(this.state.search) + 1), select: 'num' })
     } else {
-      this.setState({ feed: _.uniqBy(await fetchTag(this.state.search.toLowerCase(), 9999999), 'creator_id'), select: 'tag' })
+      this.setState({ feed: (await fetchTag(this.state.search.toLowerCase(), 9999999)), select: 'tag' })
     }
 
 
