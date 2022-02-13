@@ -1027,7 +1027,7 @@ export default class Display extends Component {
                             })}
                           </div>
                         </Button>
-                        {/* <div className={styles.cardContainer}>
+                        <div className={styles.cardContainer}>
                         <div className={styles.card}>
                           <div className={styles.cardText}>
                             <div>OBJKT#{nft.id}</div>
@@ -1043,7 +1043,7 @@ export default class Display extends Component {
                             </Button>
                           </div>
                         </div>
-                      </div> */}
+                      </div>
                       </div>
                     )
                   })}
