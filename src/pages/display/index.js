@@ -11,6 +11,7 @@ import { PATH } from '../../constants'
 import { VisuallyHidden } from '../../components/visually-hidden'
 import { GetUserMetadata } from '../../data/api'
 import { ResponsiveMasonry } from '../../components/responsive-masonry'
+import { Link } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { CollabsTab } from '../../components/collab/show/CollabsTab'
 import styles from './styles.module.scss'
@@ -1175,6 +1176,28 @@ export default class Display extends Component {
                             })}
                           </div>
                         </Button>
+                      <div className={`${styles.collection} ${styles.card}`}>
+                        {console.log(nft)}
+                        <div className={styles.cardText}>
+                          <div>OBJKT#{nft.token.id}</div>
+                          <div>{nft.token.title}</div>
+                    
+                          <Link className={styles.text} to={`${PATH.ISSUER}/${nft.token.creator.address}`}>
+                          {nft.token.creator.name || walletPreview(nft.token.creator.address)}
+                          </Link>
+                  
+                         
+                        </div>
+                        {/* <div className={styles.cardCollect}>
+                          <Button onClick={() => this.context.collect(nft.token.id, nft.token.price)}>
+                            <Purchase>
+                              <div className={styles.cardCollectPrice}>
+                                {nft.price ? 'collect for ' + nft.price / 1000000 : 'not for sale'}
+                              </div>
+                            </Purchase>
+                          </Button>
+                        </div> */}
+                      </div>
                       </div>
                     )
                   })}
