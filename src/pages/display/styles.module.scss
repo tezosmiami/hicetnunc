@@ -60,7 +60,7 @@
   bottom: 0;
   width: 100%;
   
-  min-height: 120px;
+  min-height: 132px;
   
   background-color: var(--text-color);
   transition: background-color #{$theme-duration} ease-out,
@@ -70,7 +70,7 @@
 }
 
 .cardContainer:hover .card {
-  opacity: 0.88;
+  opacity: 0.80;
 
 }
 
