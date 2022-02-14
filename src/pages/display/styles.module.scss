@@ -40,9 +40,8 @@
 }
 
 .filter {
-  display: inline;
+  display: flex;
   float: right;
-
   svg {
     position: relative;
     top: 2px;
