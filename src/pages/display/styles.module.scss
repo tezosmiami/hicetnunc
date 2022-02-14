@@ -67,8 +67,12 @@
   color #{$theme-duration} ease-out, opacity ease-out #{$theme-duration};
   z-index: 100;
   opacity: 0;
+  
 }
 
+.collection {
+  min-height: 0px;
+}
 .cardContainer:hover .card {
   opacity: 0.80;
 
@@ -101,6 +105,10 @@
   .cardCollectPrice {
     color: var(--background-color);
   }
+}
+
+.text{
+  color: var(--background-color);
 }
 
 .tag {
