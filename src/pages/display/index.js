@@ -285,6 +285,8 @@ export default class Display extends Component {
     notForSale: [],
     marketV1: [],
     items: [],
+    sortPrice: '',
+    sortId: 'desc',
     creationsState: true,
     collectionState: false,
     collabsState: false,
@@ -397,6 +399,8 @@ export default class Display extends Component {
       creationsState: true,
       collectionState: false,
       collabsState: false,
+      sortId:'desc',
+      sortPrice:'',
       collectionType: 'notForSale'
     })
 
@@ -520,6 +524,8 @@ export default class Display extends Component {
       creationsState: false,
       collectionState: true,
       collabsState: false,
+      sortId:'desc',
+      sortPrice:''
     })
 
     this.setState({ collectionType: 'notForSale' })
@@ -573,6 +579,32 @@ export default class Display extends Component {
     const { subjkt, wallet } = this.state
     this.props.history.push(`/${subjkt === '' ? wallet : subjkt}/${slug}`)
   }
+  sortByPrice = () =>{ 
+    if (this.state.sortPrice =='desc' || null) {
+      this.setState({ objkts: (this.state.objkts.sort((a, b) => parseFloat(a.swaps[0]?.price || 0) - parseFloat(b.swaps[0]?.price))
+        .filter(objkts => {return objkts.swaps[0] != null})) }) 
+      this.setState({items: this.state.objkts.slice(0, 15), offset: 15 })
+      this.setState({ sortPrice: 'asc' })}
+
+    else {
+      this.setState({ objkts: (this.state.objkts.sort((a, b) => parseFloat(b.swaps[0]?.price || 0) - parseFloat(a.swaps[0]?.price))
+        .filter(objkts => {return objkts.swaps[0] != null})) }) 
+      this.setState({ items: this.state.objkts.slice(0, 15), offset: 15 })
+      this.setState({ sortPrice: 'desc' });
+    }
+  }
+  sortById = () =>{ 
+    if (this.state.sortId =='desc') {
+      this.setState({ objkts: this.state.objkts.sort((a, b) => parseFloat(this.state.collectionState ? a.token.id : a.id) - parseFloat(this.state.collectionState ? b.token.id : b.id)) }) 
+      this.setState({ items: this.state.objkts.slice(0, 15), offset: 15 })
+      this.setState({ sortId: 'asc' })}
+    else {
+      this.setState({ objkts: this.state.objkts.sort((a, b) => parseFloat(this.state.collectionState ? b.token.id : b.id) - parseFloat(this.state.collectionState ? a.token.id : a.id)) })
+      this.setState({ items: this.state.objkts.slice(0, 15), offset: 15 })
+      this.setState({ sortId: 'desc' });
+    }
+  }
+  
 
   collectionForSale = async () => {
     this.setState({ collectionType: 'forSale' })
@@ -815,8 +847,26 @@ export default class Display extends Component {
                   <Primary selected={this.state.collabsState}>
                     collabs
                   </Primary>
-                </Button>
+                </Button>              
                 <div className={styles.filter}>
+                {this.state.creationsState && 
+                <Button
+                      onClick={() => {
+                        this.sortByPrice();
+                      }}>price
+                      <div className={styles.tag}>
+                      <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="22" height="22" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M8 16H4l6 6V2H8zm6-11v17h2V8h4l-6-6z" fill="currentColor"/></svg>
+                      </div>
+                    </Button>}
+                    <Button
+                      onClick={() => {
+                        this.sortById();
+                      }}>id
+                      <div className={styles.tag}>
+                      <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="22" height="22" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M8 16H4l6 6V2H8zm6-11v17h2V8h4l-6-6z" fill="currentColor"/></svg>
+                      </div>
+                    </Button>
+                    
                   <Button onClick={() => this.setState({
                     filter: !this.state.filter
                   })}>
@@ -1115,7 +1165,7 @@ export default class Display extends Component {
                   {this.state.items.map((nft) => {
                     //console.log('nft: ' + JSON.stringify(nft))
                     return (
-                      <div className={styles.cardContainer}>
+                      <div className={styles.cardContainer} key={nft.token.id}>
                         <Button
                           style={{ position: 'relative' }}
                           key={nft.token.id}
