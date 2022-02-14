@@ -545,7 +545,6 @@ export class Search extends Component {
       { id: 7, value: '1M' },
       { id: 8, value: 'ATH' },
       { id: 9, value: 'Miami' },
-      { id: 10, value: 'Orbs4brg'}
       
    
       
@@ -689,11 +688,6 @@ export class Search extends Component {
     }
     if (e == 'Miami') {
       let res = await fetchTag('miami', 999999)
-      // res = res.filter(e => !arr.includes(e.creator_id))
-      this.setState({ feed: ([...this.state.feed, ...(res)]) })
-    }
-    if (e == 'Orbs4brg') {
-      let res = await fetchTag('orbs4brg', 999999)
       // res = res.filter(e => !arr.includes(e.creator_id))
       this.setState({ feed: ([...this.state.feed, ...(res)]) })
     }
