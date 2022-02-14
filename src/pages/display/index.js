@@ -854,7 +854,7 @@ export default class Display extends Component {
                       onClick={() => {
                         this.sortByPrice();
                       }}>price
-                      <div className={styles.tag}>
+                      <div className={styles.sort}>
                       <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="22" height="22" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M8 16H4l6 6V2H8zm6-11v17h2V8h4l-6-6z" fill="currentColor"/></svg>
                       </div>
                     </Button>}
@@ -862,7 +862,7 @@ export default class Display extends Component {
                       onClick={() => {
                         this.sortById();
                       }}>id
-                      <div className={styles.tag}>
+                      <div className={styles.sort}>
                       <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="22" height="22" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M8 16H4l6 6V2H8zm6-11v17h2V8h4l-6-6z" fill="currentColor"/></svg>
                       </div>
                     </Button>
