@@ -1028,10 +1028,12 @@ export default class Display extends Component {
                         </Button>
                         <div className={styles.cardContainer}>
                         <div className={styles.card}>
+                        <Link to={`${PATH.OBJKT}/${nft.id}`}>
                           <div className={styles.cardText}>
                             <div>OBJKT#{nft.id}</div>
                             <div className={styles.cardTitle}>{nft.title}</div>
                           </div>
+                        </Link>
                           <div className={styles.cardCollect}>
                             <Button onClick={() => this.context.collect(nft.swaps[0].id, nft.swaps[0].price)}>
                               <Purchase>
@@ -1176,18 +1178,18 @@ export default class Display extends Component {
                             })}
                           </div>
                         </Button>
+                        
                       <div className={`${styles.collection} ${styles.card}`}>
-                        {console.log(nft)}
                         <div className={styles.cardText}>
-                          <div>OBJKT#{nft.token.id}</div>
-                          <div>{nft.token.title}</div>
-                    
-                          <Link className={styles.text} to={`${PATH.ISSUER}/${nft.token.creator.address}`}>
-                          {nft.token.creator.name || walletPreview(nft.token.creator.address)}
+                          <Link to={`${PATH.OBJKT}/${nft.token.id}`}>
+                            <div>OBJKT#{nft.token.id}</div>
+                            <div>{nft.token.title}</div>
                           </Link>
-                  
-                         
+                          <Link className={styles.text} to={`${PATH.ISSUER}/${nft.token.creator.address}`}>
+                            {nft.token.creator.name || walletPreview(nft.token.creator.address)}
+                          </Link>
                         </div>
+                     
                         {/* <div className={styles.cardCollect}>
                           <Button onClick={() => this.context.collect(nft.token.id, nft.token.price)}>
                             <Purchase>
