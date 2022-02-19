@@ -581,11 +581,12 @@ export default class Display extends Component {
     this.props.history.push(`/${subjkt === '' ? wallet : subjkt}/${slug}`)
   }
   sortByPrice = () =>{ 
-    if (this.state.sortPrice =='desc' || null) {
+    if (!this.state.sortPrice || this.state.sortPrice === 'desc') {
       this.setState({ objkts: (this.state.objkts.sort((a, b) => parseFloat(a.swaps[0]?.price || 0) - parseFloat(b.swaps[0]?.price))
         .filter(objkts => {return objkts.swaps[0] != null})) }) 
       this.setState({items: this.state.objkts.slice(0, 15), offset: 15 })
-      this.setState({ sortPrice: 'asc' })}
+      this.setState({ sortPrice: 'asc' })
+    }
 
     else {
       this.setState({ objkts: (this.state.objkts.sort((a, b) => parseFloat(b.swaps[0]?.price || 0) - parseFloat(a.swaps[0]?.price))
