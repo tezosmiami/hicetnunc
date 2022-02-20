@@ -1224,16 +1224,22 @@ export default class Display extends Component {
                           </div>
                         </Button>
                         
-                      <div className={`${styles.collection} ${styles.card}`}>
-                        <div className={styles.cardText}>
+                      <div className={styles.cardContainer}>
+                        <div className={`${styles.card} ${styles.collection}`}>
                           <Link to={`${PATH.OBJKT}/${nft.token.id}`}>
-                            <div>OBJKT#{nft.token.id}</div>
-                            <div>{nft.token.title}</div>
+                            <div className={styles.cardText}>   
+                              <div>OBJKT#{nft.token.id}</div>
+                              <div>{nft.token.title}</div>
+                            </div>
                           </Link>
+                        <div className={styles.cardText}>   
                           <Link className={styles.text} to={`${PATH.ISSUER}/${nft.token.creator.address}`}>
                             {nft.token.creator.name || walletPreview(nft.token.creator.address)}
                           </Link>
                         </div>
+                      </div>
+                        
+                       </div>
                      
                         {/* <div className={styles.cardCollect}>
                           <Button onClick={() => this.context.collect(nft.token.id, nft.token.price)}>
@@ -1244,7 +1250,6 @@ export default class Display extends Component {
                             </Purchase>
                           </Button>
                         </div> */}
-                      </div>
                       </div>
                     )
                   })}
