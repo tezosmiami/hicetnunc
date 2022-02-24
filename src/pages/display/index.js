@@ -569,25 +569,37 @@ export default class Display extends Component {
 
   sortByPrice = () =>{ 
     if (!this.state.sortPrice || this.state.sortPrice === 'desc') {
-      this.setState({ objkts: (this.state.objkts.sort((a, b) => parseFloat(a.swaps[0]?.price || 0) - parseFloat(b.swaps[0]?.price))) }) 
-      this.setState({items: this.state.objkts.slice(0, 15).filter(objkts => {return objkts.swaps[0] != null}), offset: 15 })
+      this.setState({ objkts: (this.state.objkts.sort((a, b) => 
+         parseFloat(a.swaps[0]?.price || 0) - parseFloat(b.swaps[0]?.price || 0))
+        .filter(objkts => {return objkts.swaps[0] != null})) }) 
+      this.setState({ items: this.state.objkts
+        .filter(objkts => {return objkts.swaps[0] != null})
+        .slice(0, 15), offset: 15 })
       this.setState({ sortPrice: 'asc' })
     }
 
     else {
-      this.setState({ objkts: (this.state.objkts.sort((a, b) => parseFloat(b.swaps[0]?.price || 0) - parseFloat(a.swaps[0]?.price))) }) 
-      this.setState({ items: this.state.objkts.slice(0, 15).filter(objkts => {return objkts.swaps[0] != null}), offset: 15 })
+      this.setState({ objkts: (this.state.objkts.sort((a, b) => 
+        parseFloat(b.swaps[0]?.price || 0) - parseFloat(a.swaps[0]?.price || 0))) }) 
+      this.setState({ items: this.state.objkts.slice(0, 15)
+        .filter(objkts => {return objkts.swaps[0] != null}), offset: 15 })
       this.setState({ sortPrice: 'desc' });
     }
   }
   sortById = () =>{ 
     if (this.state.sortId =='desc') {
-      this.setState({ objkts: this.state.objkts.sort((a, b) => parseFloat(this.state.collectionState ? a.token.id : a.id) - parseFloat(this.state.collectionState ? b.token.id : b.id)) }) 
-      this.setState({ items: this.state.objkts.slice(0, 15), offset: 15 })
+      this.setState({ objkts: this.state.objkts
+        .sort((a, b) => parseFloat(this.state.collectionState ? a.token.id : a.id)
+        - parseFloat(this.state.collectionState ? b.token.id : b.id)) }) 
+      this.setState({ items: this.state.objkts
+        .slice(0, 15), offset: 15 })
       this.setState({ sortId: 'asc' })}
     else {
-      this.setState({ objkts: this.state.objkts.sort((a, b) => parseFloat(this.state.collectionState ? b.token.id : b.id) - parseFloat(this.state.collectionState ? a.token.id : a.id)) })
-      this.setState({ items: this.state.objkts.slice(0, 15), offset: 15 })
+      this.setState({ objkts: this.state.objkts
+        .sort((a, b) => parseFloat(this.state.collectionState ? b.token.id : b.id)
+        - parseFloat(this.state.collectionState ? a.token.id : a.id)) })
+      this.setState({ items: this.state.objkts
+        .slice(0, 15), offset: 15 })
       this.setState({ sortId: 'desc' });
     }
   }
