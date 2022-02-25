@@ -193,3 +193,11 @@ span[data-tooltip][data-position='top']:after {
   bottom: 101%;
   margin-bottom: 4px;
 }
+
+@media (max-width: 348px) {
+  .filter {
+    svg {
+   top:8px;
+    }
+  }
+}
