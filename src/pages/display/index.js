@@ -886,10 +886,10 @@ export default class Display extends Component {
                   </Button>
                 </div>
               </div>
+              &nbsp;
             </Padding>
           </Container>
         )}
-
         {this.state.loading && (
           <Container>
             <Padding>
@@ -1025,7 +1025,7 @@ export default class Display extends Component {
                     return (
                       <div className={styles.cardContainer} key={nft.token}>
                         <Button
-                          style={{ positon: 'relative' }}
+                          style={{ position: 'relative' }}
                           key={nft.id}
                           to={`${PATH.OBJKT}/${nft.id}`}>
                           <div className={styles.container}>
