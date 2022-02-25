@@ -193,19 +193,6 @@ span[data-tooltip][data-position='top']:after {
   margin-bottom: 4px;
 }
 
-.sort {
-  display: inline-flex;
-  color: var(--text-color);
-  border-radius: 4px;
-  padding: 4px 0px;
-  margin-right: 6px;
-  margin-bottom: 6px;
-  text-transform: lowercase;
-  font-size: 12px;
-  transition: background-color #{$theme-duration} ease-out,
-    color #{$theme-duration} ease-out;
-}
-
 @media (max-width: 433px) {
   .filter {
     svg {
