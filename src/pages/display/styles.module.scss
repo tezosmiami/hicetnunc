@@ -193,11 +193,16 @@ span[data-tooltip][data-position='top']:after {
   margin-bottom: 4px;
 }
 
-@media (max-width: 438px) {
+@media (max-width: 800px) {
   .filter {
+    margin:0;
+    margin-top:6px;
+    // padding-bottom:6px;
+    border-top: 1px solid var(--border-color);
+    justify-content: space-around;
     float:none;
     svg {
-   top:8px;
+     top:5px;
     }
   }
 }

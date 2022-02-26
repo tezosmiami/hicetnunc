@@ -886,7 +886,6 @@ export default class Display extends Component {
                   </Button>
                 </div>
               </div>
-              &nbsp;
             </Padding>
           </Container>
         )}
