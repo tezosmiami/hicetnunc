@@ -17,7 +17,7 @@
 }
 
 .menu {
-  padding: 6px 0 6px 6px;
+  padding: 6px 0 6px 3px;
   border-bottom: 1px solid var(--border-color);
   transition: border-color #{$theme-duration} ease-out;
   
@@ -193,7 +193,7 @@ span[data-tooltip][data-position='top']:after {
   margin-bottom: 4px;
 }
 
-@media (max-width: 444px) {
+@media (max-width: 438px) {
   .filter {
     float:none;
     svg {
