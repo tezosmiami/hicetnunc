@@ -533,18 +533,17 @@ export class Search extends Component {
       { id: 0, value: '○ hDAO' },
       { id: 1, value: 'random' },
       { id: 2, value: 'new OBJKTs' },
-    
       { id: 3, value: 'recent sales' },
-      
       { id: 4, value: 'music' },
+      { id: 5, value: 'photography' }, 
       // { id: 7, value: 'gif' },
       // { id: 6, value: 'html/svg' }, // algorithimc?
       // { id: 4, value: 'glb' },
-      { id: 5, value: '1D' },
-      { id: 6, value: '1W' },
-      { id: 7, value: '1M' },
-      { id: 8, value: 'ATH' },
-      { id: 9, value: 'Miami' },
+      { id: 6, value: '1D' },
+      { id: 7, value: '1W' },
+      { id: 8, value: '1M' },
+      { id: 9, value: 'ATH' },
+      { id: 10, value: 'Miami' },
       
    
       
@@ -688,6 +687,11 @@ export class Search extends Component {
     }
     if (e == 'Miami') {
       let res = await fetchTag('miami', 999999)
+      // res = res.filter(e => !arr.includes(e.creator_id))
+      this.setState({ feed: ([...this.state.feed, ...(res)]) })
+    }
+    if (e == 'photography') {
+      let res = await fetchTag('photography', 999999)
       // res = res.filter(e => !arr.includes(e.creator_id))
       this.setState({ feed: ([...this.state.feed, ...(res)]) })
     }
