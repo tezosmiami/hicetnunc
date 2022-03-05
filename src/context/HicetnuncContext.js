@@ -8,6 +8,13 @@ import {
 import { TezosToolkit, OpKind, MichelCodecPacker } from '@taquito/taquito'
 import { packParticipantMap } from '../components/collab/functions';
 import { setItem } from '../utils/storage'
+import { KeyStoreUtils } from 'conseiljs-softsigner'
+import { PermissionScope } from '@airgap/beacon-sdk'
+import { UnitValue } from '@taquito/michelson-encoder'
+import { contentType } from 'mime-types';
+import { BURN_ADDRESS } from '../constants'
+
+
 const { NetworkType } = require('@airgap/beacon-sdk')
 var ls = require('local-storage')
 const axios = require('axios')
@@ -60,7 +67,7 @@ const Packer = new MichelCodecPacker();
 
 function modifyFeeAndLimit(op) {
   const { fee, gas_limit, storage_limit, ...rest } = op;
-  
+
   if (op.parameters && (op.parameters.entrypoint === "swap") || (op.parameters.entrypoint === "mint_OBJKT") || (op.parameters.entrypoint === "collect")) {
     rest.storage_limit = 310
   }
@@ -557,7 +564,7 @@ class HicetnuncContextProviderClass extends Component {
                   from_: addressFrom,
                   txs: [
                     {
-                      to_: 'tz1burnburnburnburnburnburnburjAYjjX',
+                      to_: BURN_ADDRESS,
                       token_id: parseInt(objkt_id),
                       amount: parseInt(amount),
                     },
@@ -718,7 +725,7 @@ class HicetnuncContextProviderClass extends Component {
         })
       },
 
-      /* 
+      /*
             airgap/thanos interop methods
       */
       operationRequest: async (obj) => {
