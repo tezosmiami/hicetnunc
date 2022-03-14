@@ -1090,7 +1090,7 @@ export default class Display extends Component {
                           </div>
                         </Button>
                         <div className={styles.cardContainer}>
-                        <div className={styles.card}>
+                        <div className={`${styles.card} ${nft.mime=='audio/mpeg' && styles.audio}`}>
                         <Link to={`${PATH.OBJKT}/${nft.id}`}>
                           <div className={styles.cardText}>
                             <div>OBJKT#{nft.id}</div>
@@ -1238,7 +1238,7 @@ export default class Display extends Component {
                         </Button>
                         
                       <div className={styles.cardContainer}>
-                        <div className={`${styles.card} ${styles.collection}`}>
+                        <div className={`${styles.card} ${styles.collection} ${nft.token.mime=='audio/mpeg' && styles.audio}`}>
                           <Link to={`${PATH.OBJKT}/${nft.token.id}`}>
                             <div className={styles.cardText}>   
                               <div>OBJKT#{nft.token.id}</div>
