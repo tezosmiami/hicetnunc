@@ -66,8 +66,12 @@
   color #{$theme-duration} ease-out, opacity ease-out #{$theme-duration};
   z-index: 100;
   opacity: 0;
-  
 }
+
+.audio{
+   top: 0;
+   max-height:132px;
+};
 
 .collection {
   min-height: 0px;
