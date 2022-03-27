@@ -12,7 +12,7 @@ import { walletPreview } from '../../utils/string'
 import { VisuallyHidden } from '../visually-hidden'
 import styles from './styles.module.scss'
 import { getItem, setItem } from '../../utils/storage'
-
+import { Bidou } from '../bidou'
 /* import { BeaconWallet } from '@taquito/beacon-wallet'
 
 const wallet = new BeaconWallet({
@@ -185,9 +185,13 @@ export const Header = () => {
                       </Button>
                     </li>
                   </ul>
+               
                 </nav>
+                
               </Padding>
+              <Bidou></Bidou>
             </Container>
+           
             <Footer />
           </motion.div>
         )}

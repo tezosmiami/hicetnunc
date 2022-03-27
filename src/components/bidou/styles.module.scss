@@ -1,0 +1,15 @@
+.canvas {
+  display: flex; 
+  flex-direction: row;
+  flex-Wrap: wrap;
+  justify-content: flex-end;
+  
+}
+.row {
+  display: flex; 
+  flex-direction: row;
+  flex-Wrap: wrap;
+  max-width: 4em;
+  margin-top: 33px;
+
+}
