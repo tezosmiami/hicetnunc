@@ -29,7 +29,7 @@ const HashToURL = (hash, type) => {
     case 'PINATA':
       return hash.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')
     case 'IPFS':
-      return hash.replace('ipfs://', 'https://ipfs.io/ipfs/')
+      return hash.replace('ipfs://', 'https://gateway.ipfs.io/ipfs/')
     case 'INFURA':
       try {
       var cidv1 = new ipfsClient.CID(hash.replace('ipfs://', '')).toV1()
