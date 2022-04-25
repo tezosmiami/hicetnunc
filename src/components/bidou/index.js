@@ -85,8 +85,7 @@ setBidouRGB(sliceChunks(bidou.eightbid_rgb,6));
 
   return (
     <div className={styles.canvas}>
-       {/* <a href={`https://www.8bidou.com/listing/?id=${bidou?.token_id}`} target="blank"  rel="noopener noreferrer"> */}
-       <a href={`https://www.8bidou.com`} target="blank"  rel="noopener noreferrer">
+       <a href={`https://www.8bidou.com/listing/?id=${bidou?.token_id}`} target="blank"  rel="noopener noreferrer">
            <div className={styles.row}>
              {bidouRGB.map((c,i) => {
                return (
