@@ -557,15 +557,15 @@ export class Search extends Component {
 
   componentWillMount = async () => {
     let arr = await getRestrictedAddresses()
-    // this.setState({ select: 'miami' })
-    // let res = await fetchTag('miami', 9999999)
-    // res = res.filter(e => !arr.includes(e.creator_id))
-    // this.setState({ feed: _.uniqBy([...this.state.feed, ...(res)], 'creator_id') }) 
-    this.setState({ select: 'recent sales' })
-    let tokens = await fetchSales(this.state.offset)
-    tokens = tokens.map(e => e.token)
-    tokens = tokens.filter(e => !arr.includes(e.creator_id))
-    this.setState({ feed: _.uniqBy(_.uniqBy([...this.state.feed, ...tokens], 'id'), 'creator_id') })
+    this.setState({ select: 'miami' })
+    let res = await fetchTag('miami', 9999999)
+    res = res.filter(e => !arr.includes(e.creator_id))
+    this.setState({ feed: _.uniqBy([...this.state.feed, ...(res)], 'creator_id') }) 
+    // this.setState({ select: 'recent sales' })
+    // let tokens = await fetchSales(this.state.offset)
+    // tokens = tokens.map(e => e.token)
+    // tokens = tokens.filter(e => !arr.includes(e.creator_id))
+    // this.setState({ feed: _.uniqBy(_.uniqBy([...this.state.feed, ...tokens], 'id'), 'creator_id') })
     //this.latest(999999)
   }
 
@@ -687,12 +687,12 @@ export class Search extends Component {
     }
     if (e == 'Miami') {
       let res = await fetchTag('miami', 999999)
-      // res = res.filter(e => !arr.includes(e.creator_id))
+      res = res.filter(e => !arr.includes(e.creator_id))
       this.setState({ feed: ([...this.state.feed, ...(res)]) })
     }
     if (e == 'photography') {
       let res = await fetchTag('photography', 999999)
-      // res = res.filter(e => !arr.includes(e.creator_id))
+      res = res.filter(e => !arr.includes(e.creator_id))
       this.setState({ feed: ([...this.state.feed, ...(res)]) })
     }
 
