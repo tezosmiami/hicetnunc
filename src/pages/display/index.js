@@ -89,7 +89,7 @@ query creatorGallery($address: String!) {
     title
     description
     supply
-    swaps(order_by: {price: asc}, limit: 1, where: {amount_left: {_gte: "1"}, status: {_eq: "0"}}) {
+    swaps(order_by: {price: asc}, limit: 1, where: {amount_left: {_gte: "1"}, contract_version: {_eq: "2"}, status: {_eq: "0"}}) {
       id
       status
       amount_left

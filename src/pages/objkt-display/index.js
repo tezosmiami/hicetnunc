@@ -59,7 +59,7 @@ thumbnail_uri
 title
 supply
 royalties
-swaps {
+swaps(where: {contract_version: {_eq: "2"}})   {
   amount
   amount_left
   id
