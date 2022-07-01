@@ -26,7 +26,7 @@ const sortByTokenId = (a, b) => {
 const getRestrictedAddresses = async () =>
   await axios
     .get(
-      'https://raw.githubusercontent.com/hicetnunc2000/hicetnunc-reports/main/filters/w.json'
+      'https://raw.githubusercontent.com/teia-community/teia-report/main/restricted.json'
     )
     .then((res) => res.data)
 
