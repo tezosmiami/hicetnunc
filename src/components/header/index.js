@@ -169,8 +169,8 @@ export const Header = () => {
                         <Primary>friends</Primary>
                       </Button>
                     </li>
-                    <li href="hen.radio">
-                      <Button onClick={() => window.open('https://hen.radio', '_self', 'noopener,noreferrer')}>
+                    <li href="henradio.xyz">
+                      <Button onClick={() => window.open('https://henradio.xyz', '_self', 'noopener,noreferrer')}>
                         <Primary>radio</Primary>
                       </Button>
                     </li>
