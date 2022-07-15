@@ -40,7 +40,7 @@ export const Info = (token_info) => {
 
       <Container>
         <Padding>
-          <Tags token_tags={token_tags} />
+          <Tags token_tags={token_tags.reverse()} />
         </Padding>
       </Container>
 
