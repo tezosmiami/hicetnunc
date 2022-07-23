@@ -557,8 +557,8 @@ export class Search extends Component {
 
   componentWillMount = async () => {
     let arr = await getRestrictedAddresses()
-    this.setState({ select: 'miami' })
-    let res = await fetchTag('miami', 9999999)
+    this.setState({ select: 'Event' })
+    let res = await fetchTag('teztrash', 9999999)
     res = res.filter(e => !arr.includes(e.creator_id))
     this.setState({ feed: _.uniqBy([...this.state.feed, ...(res)], 'creator_id') }) 
     // this.setState({ select: 'recent sales' })
@@ -685,11 +685,19 @@ export class Search extends Component {
     if (e == 'illustration') {
       //console.log(await fetchTag('illustration'))
     }
-    if (e == 'Miami') {
-      let res = await fetchTag('miami', 999999)
+
+    if (e == 'Event') {
+      let res = await fetchTag('Event', 999999)
       res = res.filter(e => !arr.includes(e.creator_id))
       this.setState({ feed: ([...this.state.feed, ...(res)]) })
     }
+
+    if (e == 'teztrash') {
+      let res = await fetchTag('teztrash', 999999)
+      res = res.filter(e => !arr.includes(e.creator_id))
+      this.setState({ feed: ([...this.state.feed, ...(res)]) })
+    }
+    
     if (e == 'photography') {
       let res = await fetchTag('photography', 999999)
       res = res.filter(e => !arr.includes(e.creator_id))
