@@ -558,9 +558,11 @@ export class Search extends Component {
   componentWillMount = async () => {
     let arr = await getRestrictedAddresses()
     this.setState({ select: 'Event' })
-    let res = await fetchTag('teztrash', 9999999)
-    res = res.filter(e => !arr.includes(e.creator_id))
-    this.setState({ feed: _.uniqBy([...this.state.feed, ...(res)], 'creator_id') }) 
+    let res1 = await fetchTag(( 'teztrash'), 9999999)
+    let res2 = await fetchTag(( 'tezflowers'), 9999999)
+    let resTotal = res1.concat(res2).sort((a,b) => b.id - a.id)
+    resTotal = resTotal.filter(e => !arr.includes(e.creator_id))
+    this.setState({ feed: _.uniqBy([...this.state.feed, ...(resTotal)], 'creator_id') }) 
     // this.setState({ select: 'recent sales' })
     // let tokens = await fetchSales(this.state.offset)
     // tokens = tokens.map(e => e.token)
@@ -686,18 +688,12 @@ export class Search extends Component {
       //console.log(await fetchTag('illustration'))
     }
 
-    if (e == 'Event') {
-      let res = await fetchTag('Event', 999999)
-      res = res.filter(e => !arr.includes(e.creator_id))
-      this.setState({ feed: ([...this.state.feed, ...(res)]) })
-    }
+    // if (e == 'Event') {
+    //   let res = await fetchTag('teztrash', 999999)
+    //   res = res.filter(e => !arr.includes(e.creator_id))
+    //   this.setState({ feed: ([...this.state.feed, ...(res)]) })
+    // }
 
-    if (e == 'teztrash') {
-      let res = await fetchTag('teztrash', 999999)
-      res = res.filter(e => !arr.includes(e.creator_id))
-      this.setState({ feed: ([...this.state.feed, ...(res)]) })
-    }
-    
     if (e == 'photography') {
       let res = await fetchTag('photography', 999999)
       res = res.filter(e => !arr.includes(e.creator_id))
@@ -735,7 +731,6 @@ export class Search extends Component {
     } else {
       result = await fetchFeed(999999)
     }
-    //console.log(result)
     let restricted = await getRestrictedAddresses()
     result = _.uniqBy([...this.state.feed, ...result], 'creator_id')
     result = result.filter(e => !restricted.includes(e.creator_id))
