@@ -114,7 +114,7 @@ async function fetchObjkt(id) {
     console.error(errors)
   }
 
-  console.log(errors, data)
+
 
   const result = data.hic_et_nunc_token_by_pk
   //console.log(result)
