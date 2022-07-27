@@ -344,6 +344,32 @@ async function fetchRandomObjkts() {
   return objkts.hic_et_nunc_token
 }
 
+async function fetchSwaps(offset) {
+  const { errors, data } = await fetchGraphQL(`
+  query querySwaps {
+    hic_et_nunc_token(where: {swaps: {price: {_gt: "0"}, contract_version: {_eq: "2"}}, supply: {_gt: 0}}, order_by: {id: desc}, limit : 15, offset : ${offset} ) {
+      id
+      artifact_uri
+      display_uri
+      mime
+      swaps {
+        contract_version
+      }
+      creator {
+        address
+        name
+      }
+    }
+  }
+  `, 'querySwaps', {})
+
+  try {
+    return data.hic_et_nunc_token
+  } catch (e) {
+    return undefined
+  }
+}
+
 async function fetchDay(day, offset) {
   const { errors, data } = await fetchGraphQL(`query dayTrades {
     hic_et_nunc_trade(where: {timestamp: {_gte: "${day}"}}, order_by: {swap: {price: desc}}, limit : 15, offset : ${offset}) {
@@ -442,7 +468,7 @@ async function fetchSubjkts(subjkt) {
 async function fetchTag(tag, offset) {
   const { errors, data } = await fetchGraphQL(
     `query ObjktsByTag {
-  hic_et_nunc_token(where: {supply : { _neq : 0 }, token_tags: {tag: {tag: {_eq: ${tag}}}}, id: {_lt: ${offset}}}, limit : 188, order_by: {id: desc}) {
+  hic_et_nunc_token(where: {supply : { _neq : 0 }, token_tags: {tag: {tag: {_ilike: ${tag}}}}, id: {_lt: ${offset}}}, limit : 188, order_by: {id: desc}) {
     id
     artifact_uri
     display_uri
@@ -544,6 +570,7 @@ export class Search extends Component {
       { id: 8, value: '1M' },
       { id: 9, value: 'ATH' },
       { id: 10, value: 'Miami' },
+      { id: 11, value: '🗑️' },
       
    
       
@@ -557,12 +584,15 @@ export class Search extends Component {
 
   componentWillMount = async () => {
     let arr = await getRestrictedAddresses()
-    this.setState({ select: 'Event' })
-    let res1 = await fetchTag(( 'teztrash'), 9999999)
-    let res2 = await fetchTag(( 'tezflowers'), 9999999)
-    let resTotal = res1.concat(res2).sort((a,b) => b.id - a.id)
-    resTotal = resTotal.filter(e => !arr.includes(e.creator_id))
-    this.setState({ feed: _.uniqBy([...this.state.feed, ...(resTotal)], 'creator_id') }) 
+    this.setState({ select: 'recent swaps' })
+    // let res1 = await fetchTag(( 'teztrash'), 9999999)
+    // let res2 = await fetchTag(( 'tezflowers'), 9999999)
+    // let resTotal = res1.concat(res2).sort((a,b) => b.id - a.id)
+    // resTotal = resTotal.filter(e => !arr.includes(e.creator_id))
+    let swaps = await fetchSwaps((this.state.offset), 9999999)
+    console.log(swaps)
+    swaps = swaps.filter(e => !arr.includes(e.creator_id))
+    this.setState({ feed: [...this.state.feed, ...(swaps)] }) 
     // this.setState({ select: 'recent sales' })
     // let tokens = await fetchSales(this.state.offset)
     // tokens = tokens.map(e => e.token)
@@ -713,7 +743,27 @@ export class Search extends Component {
       tokens = tokens.filter(e => !arr.includes(e.creator_id))
       this.setState({ feed: _.uniqBy(_.uniqBy([...this.state.feed, ...tokens], 'id'), 'creator_id') })
     }
+    
+    if (e == 'recent swaps') {
+      let tokens = await fetchSwaps(this.state.offset)
+      tokens = tokens.filter(e => !arr.includes(e.creator.address))
+      this.setState({ feed: _.uniqBy([...this.state.feed, ...tokens], 'id')})
+    }
 
+    if (e == 'Miami') {
+      let res = await fetchTag('miami', 999999)
+      res = res.filter(e => !arr.includes(e.creator_id))
+      res = res.filter(e => !arr.includes(e.creator_id))
+      this.setState({ feed: ([...this.state.feed, ...(res)]) })
+    }
+
+
+    if (e == '🗑️') {
+      let res = await fetchTag(`trashart`, 999999)
+      res = res.filter(e => !arr.includes(e.creator_id))
+      this.setState({ feed: ([...this.state.feed, ...(res)]) })
+    }
+    
     if (this.state.select == 'new OBJKTs') {
       this.latest()
     }
@@ -768,7 +818,6 @@ export class Search extends Component {
     //console.log(this.state.search)
     if (e.key == 'Enter') this.search(this.state.search)
   }
-
   render() {
 
     return (
