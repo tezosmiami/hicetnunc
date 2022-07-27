@@ -45,6 +45,7 @@ async function fetchGraphQL(operationsDoc, operationName, variables) {
     );
     return await result.json()
     }
+
 async function fetchTransfers(id) {
         const { errors, data } = await fetchGraphQL(queryTransfers, 'transfers', { id: id })  
         if (errors) {
@@ -52,7 +53,8 @@ async function fetchTransfers(id) {
         }
         return data
 
-      }
+    }
+
 async function fetchSubjkt(from_address, to_address) {
     const { errors, data } = await fetchGraphQL(querySubjkt, 'subjkt', { from_address: from_address, to_address: to_address })    
         if (errors) {
@@ -60,11 +62,13 @@ async function fetchSubjkt(from_address, to_address) {
         }
         return data
 
-      }     
+    }     
 
 export const History = (token_info) => {
     const [history, setHistory] = useState([])
-
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    let timestamp = new Date(token_info.timestamp)
+    
     useEffect(() => {
         const getTransfers = async() => {
         let data = await fetchTransfers(`${token_info.id}`) 
@@ -97,44 +101,45 @@ export const History = (token_info) => {
         token_info && getTransfers()
         }, [])
 
-    
+
     return (
         <div>
             <Container>
                 <Padding>
                     {
                         history.map(e => {
+                            let timestamp = new Date(e.timestamp)
                             if (e.trade) {
                                 return (
                                     <div className={styles.history}>
-                                        trade {e.timestamp} { encodeURI(e.seller.name) ? <span><a href={`/tz/${encodeURI(e.seller.address)}`}> <Primary>&nbsp;{encodeURI(e.seller.name)}</Primary></a></span> : <span><a href={`/tz/${e.seller.address}`}><Primary>&nbsp;{walletPreview(e.seller.address)}</Primary></a></span>}&nbsp;{e.amount} ed. {parseFloat(e.swap.price / 1000000)} tez{e.buyer.name ? <span><a href={`/${encodeURI(e.buyer.name)}`}><Primary>&nbsp;{encodeURI(e.buyer.name)}</Primary></a></span> : <span><a href={`/tz/${e.buyer.address}`}><Primary>&nbsp;{walletPreview(e.buyer.address)}</Primary></a></span>}
+                                        trade {timestamp.toLocaleString(navigator.languages[0], {timeZone: timezone, hour12: false})} { encodeURI(e.seller.name) ? <span><a href={`/tz/${encodeURI(e.seller.address)}`}> <Primary>&nbsp;{encodeURI(e.seller.name)}</Primary></a></span> : <span><a href={`/tz/${e.seller.address}`}><Primary>&nbsp;{walletPreview(e.seller.address)}</Primary></a></span>}&nbsp;{e.amount} ed. {parseFloat(e.swap.price / 1000000)} tez{e.buyer.name ? <span><a href={`/${encodeURI(e.buyer.name)}`}><Primary>&nbsp;{encodeURI(e.buyer.name)}</Primary></a></span> : <span><a href={`/tz/${e.buyer.address}`}><Primary>&nbsp;{walletPreview(e.buyer.address)}</Primary></a></span>}
                                     </div>
                                 )
                             }
                             if (e.to_address == 'tz1burnburnburnburnburnburnburjAYjjX') {
                                 return(
                                     <div className={styles.history}>
-                                    burn {e.timestamp} { encodeURI(e.from_subjkt) ? <span><a href={`/tz/${encodeURI(e.from_address)}`}> <Primary>&nbsp;{encodeURI(e.from_subjkt)}</Primary></a></span> : <span><a href={`/tz/${e.from_address}`}><Primary>&nbsp;{walletPreview(e.from_address)}</Primary></a></span>}&nbsp;{e.amount} ed.
+                                    burn {timestamp.toLocaleString(navigator.languages[0], {timeZone: timezone, hour12: false})} { encodeURI(e.from_subjkt) ? <span><a href={`/tz/${encodeURI(e.from_address)}`}> <Primary>&nbsp;{encodeURI(e.from_subjkt)}</Primary></a></span> : <span><a href={`/tz/${e.from_address}`}><Primary>&nbsp;{walletPreview(e.from_address)}</Primary></a></span>}&nbsp;{e.amount} ed.
                                     </div>
                                 )
                             }
                             if (e.type) {
                                 return(
                                     <div className={styles.history}>
-                                    transfer {e.timestamp} { encodeURI(e.from_subjkt) ? <span><a href={`/tz/${encodeURI(e.from_address)}`}> <Primary>&nbsp;{encodeURI(e.from_subjkt)}</Primary></a></span> : <span><a href={`/tz/${e.from_address}`}><Primary>&nbsp;{walletPreview(e.from_address)}</Primary></a></span>}&nbsp;{e.amount} ed.{e.to_subjkt ? <span><a href={`/${encodeURI(e.to_subjkt)}`}><Primary>&nbsp;{encodeURI(e.to_subjkt)}</Primary></a></span> : <span><a href={`/tz/${e.to_address}`}><Primary>&nbsp;{walletPreview(e.to_address)}</Primary></a></span>}
+                                    transfer {timestamp.toLocaleString(navigator.languages[0], {timeZone: timezone, hour12: false})} { encodeURI(e.from_subjkt) ? <span><a href={`/tz/${encodeURI(e.from_address)}`}> <Primary>&nbsp;{encodeURI(e.from_subjkt)}</Primary></a></span> : <span><a href={`/tz/${e.from_address}`}><Primary>&nbsp;{walletPreview(e.from_address)}</Primary></a></span>}&nbsp;{e.amount} ed.{e.to_subjkt ? <span><a href={`/${encodeURI(e.to_subjkt)}`}><Primary>&nbsp;{encodeURI(e.to_subjkt)}</Primary></a></span> : <span><a href={`/tz/${e.to_address}`}><Primary>&nbsp;{walletPreview(e.to_address)}</Primary></a></span>}
                                     </div>
                                 )
                             }
                              else {
                                 return (
                                     <div className={styles.history}>
-                                        swap {e.timestamp} {e.creator.name ? <span><a href={`/tz/${e.creator.address}`}><Primary>&nbsp;{encodeURI(e.creator.name)}&nbsp;</Primary></a></span> : <span><a href={`/tz/${e.creator.address}`}><Primary>&nbsp;{walletPreview(e.creator.address)}</Primary></a></span>} {e.amount} ed. {parseFloat(e.price / 1000000)} tez
+                                        swap {timestamp.toLocaleString(navigator.languages[0], {timeZone: timezone, hour12: false})} {e.creator.name ? <span><a href={`/tz/${e.creator.address}`}><Primary>&nbsp;{encodeURI(e.creator.name)}&nbsp;</Primary></a></span> : <span><a href={`/tz/${e.creator.address}`}><Primary>&nbsp;{walletPreview(e.creator.address)}</Primary></a></span>} {e.amount} ed. {parseFloat(e.price / 1000000)} tez
                                     </div>
                                 )
                             }
                         })
                     }
-                    minted {token_info.timestamp} {token_info.supply} ed. {token_info.royalties / 10}% royalties
+                    minted {timestamp.toLocaleString(navigator.languages[0], {timeZone: timezone, hour12: false})} {token_info.supply} ed. {token_info.royalties / 10}% royalties
                 </Padding>
             </Container>
         </div>
