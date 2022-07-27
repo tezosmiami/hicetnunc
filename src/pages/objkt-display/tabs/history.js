@@ -17,13 +17,15 @@ const queryTransfers = `
 }
 `
 const querySubjkt = `
-query subjkt($from_address: String!, $to_address: String!) {
-  from: hic_et_nunc_holder(where: {address: {_eq: $from_address}}) {
+query subjkt($from_address: [String!], $to_address: [String!]) {
+  from: hic_et_nunc_holder(where: {address: {_in: $from_address}}) {
     name
+    address
   }
 
-  to: hic_et_nunc_holder(where: {address: {_eq: $to_address}}) {
+  to: hic_et_nunc_holder(where: {address: {_in: $to_address}}) {
     name
+    address
   }
 }
 `
@@ -65,17 +67,27 @@ export const History = (token_info) => {
 
     useEffect(() => {
         const getTransfers = async() => {
-        let data = await fetchTransfers(`${token_info.id}`)  
-        let transfers = await Promise.all(data.events.map(async e => {
-          let subjkt = await fetchSubjkt(e.from_address, e.to_address)
-          e.from_subjkt = subjkt.from[0]?.name
-          e.to_subjkt = subjkt.to[0]?.name
-          return e
-        }))
+        let data = await fetchTransfers(`${token_info.id}`) 
+        let from_address = data.events.map(e => { return e.from_address } )
+        let to_address = data.events.map(e => { return e.to_address } )
+        let subjkt = await fetchSubjkt(from_address, to_address)
+
+        data.events.forEach((e) => {
+            let matched_from = subjkt.from.find(
+              (f) => f.address == e.from_address)
+            e.from_subjkt = matched_from?.name
+            let matched_to = subjkt.to.find(
+              (g) => g.address == e.to_address)
+            e.to_subjkt = matched_to?.name
+          })
+
+        let transfers = data.events
+
         let trades = token_info.trades.map(e => {
             e.trade = true
             return e
         })
+
         let swaps = token_info.swaps.map(e => {
             e.trade = false
             return e
