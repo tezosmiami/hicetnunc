@@ -127,8 +127,7 @@ export const Swap = ({ total_amount, owners, creator, royalties, token_info, add
             <Container>
               <Padding>
                 <p>
-                  swaps which carry values are charged with a 2.5% fee for platform
-                  maintenance
+                  swaps which carry values are charged with a 1% fee - set and received by @crzypatchwork - creator of hicetnunc
                 </p>
               </Padding>
             </Container>
