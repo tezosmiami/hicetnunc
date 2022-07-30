@@ -232,7 +232,15 @@ export const Mint = () => {
       }
 
       console.log("Calling mint with", { minterAddress, amount, path: nftCid.path, royalties })
-      mint(minterAddress, amount, nftCid.path, royalties)
+      const result = await mint(minterAddress, amount, nftCid.path, royalties)
+      if (result) {
+        setTitle('')
+        setDescription('')
+        setTags('')
+        setAmount('')
+        setRoyalties('')        
+      }
+      setStep(0)
     }
   }
 
