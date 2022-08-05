@@ -59,7 +59,7 @@ export class About extends Component {
                 </Primary>
               </Button>
               <p>,</p>&nbsp;
-              <Button href="mailto:hicetnunc2000@protonmail.com">
+              <Button href="mailto:tezosmiami@gmail.com">
                 <Primary>
                   <strong>email</strong>
                 </Primary>
@@ -125,7 +125,7 @@ export class About extends Component {
           <Padding>
             <div className={styles.buttons}>
               <p>Report</p>&nbsp;
-              <Button href="https://github.com/hicetnunc2000/hicetnunc/issues">
+              <Button href="https://github.com/tezosmiami/hicetnunc/issues">
                 <Primary>
                   <strong>issues</strong>
                 </Primary>
