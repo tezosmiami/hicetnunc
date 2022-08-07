@@ -6,7 +6,8 @@ import {
   // BeaconWalletNotInitialized,
 } from '@taquito/beacon-wallet'
 import { TezosToolkit, OpKind, MichelCodecPacker } from '@taquito/taquito'
-import { packParticipantMap } from '../components/collab/functions';
+import { MichelsonMap } from '@taquito/taquito'
+import { packData } from '../components/collab/functions'
 import { setItem } from '../utils/storage'
 import { KeyStoreUtils } from 'conseiljs-softsigner'
 import { PermissionScope } from '@airgap/beacon-sdk'
@@ -86,6 +87,7 @@ const wallet = new BeaconWallet({
 })
 
 Tezos.setWalletProvider(wallet)
+
 
 const colors = { 
   'blue' : '#69cdff',
@@ -953,8 +955,8 @@ class HicetnuncContextProviderClass extends Component {
           confirm: false,
         })
 
-        const packDataParams = packParticipantMap(participantData);
-        console.log("packDataParams", packDataParams);
+        const participantMap = MichelsonMap.fromLiteral(participantData)
+        const packDataParams = packData(participantMap, createProxySchema)
 
         // Pack hex data for origination call
         const { packed } = await Packer.packData(packDataParams);

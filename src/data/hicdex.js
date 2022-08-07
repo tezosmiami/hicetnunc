@@ -195,11 +195,11 @@ export async function fetchGraphQL(operationsDoc, operationName, variables) {
     }
   );
 
-  console.log(JSON.stringify({
-    query: operationsDoc,
-    variables: variables,
-    operationName: operationName
-  }))
+  // console.log(JSON.stringify({
+  //   query: operationsDoc,
+  //   variables: variables,
+  //   operationName: operationName
+  // }))
 
   return await result.json()
 }

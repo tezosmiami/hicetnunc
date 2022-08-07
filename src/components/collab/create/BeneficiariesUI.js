@@ -20,6 +20,9 @@ export const BeneficiariesUI = ({
 
     // Add beneficiary - the name will be available if coming from the OSS project list
     const addBeneficiary = (address, name) => {
+        if (typeof address === 'object') {
+            address = ''
+          }
         const validBeneficiaries = beneficiaries.filter(b => b.address)
         const newBeneficiary = {
             ...collaboratorTemplate,
