@@ -133,7 +133,7 @@ export const History = (token_info) => {
                              else {
                                 return (
                                     <div className={styles.history}>
-                                        swap {timestamp.toLocaleString(navigator.languages[0], {timeZone: timezone, hour12: false})} {e.creator.name ? <span><a href={`/tz/${e.creator.address}`}><Primary>&nbsp;{encodeURI(e.creator.name)}&nbsp;</Primary></a></span> : <span><a href={`/tz/${e.creator.address}`}><Primary>&nbsp;{walletPreview(e.creator.address)}</Primary></a></span>} {e.amount} ed. {parseFloat(e.price / 1000000)} tez
+                                        swap {timestamp.toLocaleString(navigator.languages[0], {timeZone: timezone, hour12: false})} {e.creator.name ? <span><a href={`/tz/${e.creator.address}`}><Primary>&nbsp;{encodeURI(e.creator.name)}&nbsp;</Primary></a></span> : <span><a href={`/tz/${e.creator.address}`}><Primary>&nbsp;{walletPreview(e.creator.address)}</Primary></a></span>}&nbsp;{e.amount} ed. {parseFloat(e.price / 1000000)} tez
                                     </div>
                                 )
                             }
