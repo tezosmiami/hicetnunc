@@ -23,7 +23,7 @@ export const Transfer = ({ id, creator, token_holders }) => {
         e => (e.holder_id === proxyAddress && acc?.address === proxyAdminAddress)
     )
 
-    console.log(token_holders);
+    // console.log(token_holders);
 
     // The basic schema for a transaction
     const txSchema = {
@@ -96,12 +96,12 @@ export const Transfer = ({ id, creator, token_holders }) => {
         <Container>
             {tokenCount === 0 ? (
                 <Padding>
-                    <p>You do not have any editions available to transfer.</p>
+                    <p>only for OBJKTs created in collaboration. . .</p>
                 </Padding>
             ) : (
                 <Padding>
-                    <p>Add addresses below along with how many tokens you wish to send to each.</p>
-                    <p>You currently have {tokenCount} editions available.</p>
+                    <p>Add addresses below along with how many tokens you wish to send to each</p>
+                    <p>You currently have {tokenCount} editions available</p>
 
                     <table className={tableStyle}>
                         <thead>

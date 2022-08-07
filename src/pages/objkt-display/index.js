@@ -22,7 +22,7 @@ const TABS = [
   { title: 'history', component: History },
   { title: 'swap', component: Swap, private: true, restricted: true }, // private tab (users only see if they are the creators or own a copy)
   { title: 'burn', component: Burn, private: true }, // private tab (users only see if they are the creators or own a copy)
-  // { title: 'transfer', component: Transfer, private: true }, // private tab (users only see if they are the creators or own a copy)
+  { title: 'transfer', component: Transfer, private: true }, // private tab (users only see if they are the creators or own a copy)
 ]
 
 const query_objkt = `
