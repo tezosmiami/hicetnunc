@@ -5,6 +5,9 @@
 # IDEs
 .vscode
 
+# env
+.env
+
 # production
 /build
 /amplify
@@ -47,4 +50,3 @@ templates/html-image-scale/.parcel-cache
 # contributor specific (local) folders
 .next
 
-.env
