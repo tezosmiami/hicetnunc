@@ -4,15 +4,29 @@ import {
 } from '../constants'
 //import { NFTStorage, File } from 'nft.storage'
 
-const { create } = require('ipfs-http-client')
+const ipfsClient = require('ipfs-http-client');
 const Buffer = require('buffer').Buffer
 const axios = require('axios')
 const readJsonLines = require('read-json-lines-sync').default
 const { getCoverImagePathFromBuffer } = require('../utils/html')
 
-const infuraUrl = 'https://ipfs.infura.io:5001'
+const auth =
+    'Basic ' + Buffer.from(process.env.REACT_APP_INFURA_ID + ':' + process.env.REACT_APP_INFURA_KEY).toString('base64');
+
+
+const infuraUrl = 'ipfs.infura.io:5001'
 //const apiKey = process.env.REACT_APP_IPFS_KEY
 //const storage = new NFTStorage({ token: apiKey })
+
+const client = ipfsClient.create({
+  host: 'ipfs.infura.io',
+  port: 5001,
+  protocol: 'https',
+  headers: {
+      authorization: auth,
+  },
+});
+
 
 export const prepareFile100MB = async ({
   name,
@@ -27,7 +41,7 @@ export const prepareFile100MB = async ({
   file
 }) => {
 
-  const ipfs = create(infuraUrl)
+  // const ipfs = create(infuraUrl)
 
   let formData = new FormData()
   formData.append('file', file)
@@ -41,7 +55,7 @@ export const prepareFile100MB = async ({
   // upload cover image
   let displayUri = ''
   if (generateDisplayUri) {
-    const coverInfo = await ipfs.add(cover.buffer)
+    const coverInfo = await client.add(cover.buffer)
     const coverHash = coverInfo.path
     displayUri = `ipfs://${coverHash}`
   }
@@ -78,19 +92,19 @@ export const prepareFile = async ({
   thumbnail,
   generateDisplayUri,
 }) => {
-  const ipfs = create(infuraUrl)
+  // const ipfs = create(infuraUrl)
 
   // upload main file
  // const ipfs = create(infuraUrl)
 
-  const hash = await ipfs.add(new Blob([buffer]))
+  const hash = await client.add(new Blob([buffer]))
   console.log(hash)
   const cid = `ipfs://${hash.path}`
 
   // upload cover image
   let displayUri = ''
   if (generateDisplayUri) {
-    const coverHash = await ipfs.add(new Blob([cover.buffer]))
+    const coverHash = await client.add(new Blob([cover.buffer]))
     console.log(coverHash)
     displayUri = `ipfs://${coverHash.path}`
   }
@@ -131,11 +145,11 @@ export const prepareDirectory = async ({
   const cid = `ipfs://${hashes.directory}`
 
   // upload cover image
-  const ipfs = create(infuraUrl)
+  // const ipfs = create(infuraUrl)
 
   let displayUri = ''
   if (generateDisplayUri) {
-    const coverInfo = await ipfs.add(cover.buffer)
+    const coverInfo = await client.add(cover.buffer)
     const coverHash = coverInfo.path
     displayUri = `ipfs://${coverHash}`
   } else if (hashes.cover) {
@@ -210,9 +224,9 @@ async function uploadMetadataFile({
   displayUri = '',
   thumbnailUri = IPFS_DEFAULT_THUMBNAIL_URI,
 }) {
-  const ipfs = create(infuraUrl)
+  // const ipfs = create(infuraUrl)
 
-  return await ipfs.add(
+  return await client.add(
     Buffer.from(
       JSON.stringify({
         name,
