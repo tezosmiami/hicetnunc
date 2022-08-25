@@ -1,6 +1,7 @@
 // import { WalletPostMessageTransport } from '@airgap/beacon-sdk'
 import { SanitiseOBJKT } from '../utils/sanitise'
 import { getItem, setItem } from '../utils/storage'
+import { getWalletAllowList } from '../constants'
 import {
   setLanguage,
   setObjktBlockList,
@@ -26,7 +27,7 @@ export const getInitialData = () => {
   ]).then((results) => {
     setLanguage(results[0].data)
     setObjktBlockList(results[1].data)
-    setWalletBlockList(results[2].data)
+    setWalletBlockList(results[2].data.filter((a) => !getWalletAllowList().includes(a)))
     setBanBlockList(results[3].data)
 
     return true

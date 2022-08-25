@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { HicetnuncContext } from '../../context/HicetnuncContext'
-import { getWalletBlockList } from '../../constants'
+import { getWalletBlockList, getWalletAllowList } from '../../constants'
 import { Loading } from '../../components/loading'
 import { Button, Primary } from '../../components/button'
 import { Page, Container, Padding } from '../../components/layout'
@@ -152,7 +152,8 @@ export const ObjktDisplay = () => {
       .get(
         'https://raw.githubusercontent.com/teia-community/teia-report/main/restricted.json'
       )
-      .then((res) => res.data)
+      .then((res) => res.data.filter((a) => !getWalletAllowList().includes(a)))
+
   useEffect(async () => {
     let objkt = await fetchObjkt(id)
 

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Page, Container, Padding } from '../../components/layout'
 import { HicetnuncContext } from '../../context/HicetnuncContext'
 import { ResponsiveMasonry } from '../../components/responsive-masonry'
+import { getWalletBlockList, getWalletAllowList } from '../../constants'
 import { PATH } from '../../constants'
 import { Loading } from '../../components/loading'
 import { Button, Primary } from '../../components/button'
@@ -540,7 +541,7 @@ const getRestrictedAddresses = async () =>
     .get(
       'https://raw.githubusercontent.com/hicetnunc2000/hicetnunc-reports/main/filters/w.json'
     )
-    .then((res) => res.data)
+    .then((res) => res.data.filter( (a) => !getWalletAllowList().includes(a)))
 
 export class Search extends Component {
   static contextType = HicetnuncContext

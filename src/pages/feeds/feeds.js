@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { BottomBanner } from '../../components/bottom-banner'
+import { getWalletAllowList } from '../../constants'
 import {
   GetLatestFeed,
   // GethDAOFeed,
@@ -186,7 +187,7 @@ const getRestrictedAddresses = async () =>
     .get(
       'https://raw.githubusercontent.com/hicetnunc2000/hicetnunc-reports/main/filters/w.json'
     )
-    .then((res) => res.data)
+    .then((res) => res.data.filter((a) => !getWalletAllowList().includes(a)))
 
 const GetUserClaims = async (arr) => {
   return await axios.post('https://indexer.tzprofiles.com/v1/graphql', {

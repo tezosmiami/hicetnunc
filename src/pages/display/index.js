@@ -10,6 +10,7 @@ import { walletPreview } from '../../utils/string'
 import { PATH } from '../../constants'
 import { VisuallyHidden } from '../../components/visually-hidden'
 import { GetUserMetadata } from '../../data/api'
+import { getWalletAllowList } from '../../constants'
 import { ResponsiveMasonry } from '../../components/responsive-masonry'
 import { Link } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -28,7 +29,7 @@ const getRestrictedAddresses = async () =>
     .get(
       'https://raw.githubusercontent.com/teia-community/teia-report/main/restricted.json'
     )
-    .then((res) => res.data)
+    .then((res) => res.data.filter((a) => !getWalletAllowList().includes(a)))
 
 const query_collection = `
 query collectorGallery($address: String!) {

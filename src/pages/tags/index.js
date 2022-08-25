@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { BottomBanner } from '../../components/bottom-banner'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import { getWalletBlockList, getWalletAllowList } from '../../constants'
 import { useParams } from 'react-router'
 import { Button } from '../../components/button'
 import { ResponsiveMasonry } from '../../components/responsive-masonry'
@@ -59,7 +60,7 @@ const getRestrictedAddresses = async () =>
     .get(
       'https://raw.githubusercontent.com/hicetnunc2000/hicetnunc-reports/main/filters/w.json'
     )
-    .then((res) => res.data)
+    .then((res) => res.data.filter( (a) => !getWalletAllowList().includes(a)))
 
 export const Tags = () => {
   const { id } = useParams()

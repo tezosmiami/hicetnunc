@@ -14,6 +14,10 @@ let banBlockList = []
 export const setBanBlockList = (data) => (banBlockList = data)
 export const getBanBlockList = () => banBlockList
 
+let walletAllowList = ['tz1UviXymXrWz29QgEgfxiHJTkhq35eUKLn7']
+export const getWalletAllowList = () => walletAllowList
+export const setWalletAllowList = () => walletAllowList
+
 export const PATH = {
   FEED: '/',
   ISSUER: '/tz',
