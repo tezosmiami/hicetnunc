@@ -32,7 +32,7 @@ query profiles {
 
 const latest_feed = `
 query LatestFeed($lastId: bigint = 99999999) {
-  hic_et_nunc_token(order_by: {id: desc}, limit: 10, where: {id: {_lt: $lastId}, artifact_uri: {_neq: ""}}) {
+  token(order_by: {id: desc}, limit: 10, where: {id: {_lt: $lastId}, artifact_uri: {_neq: ""}}) {
     artifact_uri
     display_uri
     creator_id
@@ -49,7 +49,7 @@ query LatestFeed($lastId: bigint = 99999999) {
 }`
 
 const query_hdao = `query hDAOFeed($offset: Int = 0) {
-  hic_et_nunc_token(order_by: {hdao_balance: desc}, limit: 50, where: {hdao_balance: {_gt: 100}}, offset: $offset) {
+  token(order_by: {hdao_balance: desc}, limit: 50, where: {hdao_balance: {_gt: 100}}, offset: $offset) {
     artifact_uri
     display_uri
     creator_id
@@ -76,7 +76,7 @@ async function fetchHdao(offset) {
   if (errors) {
     console.error(errors);
   }
-  const result = data.hic_et_nunc_token
+  const result = data.token
   /* console.log({ result }) */
   return result
 }
@@ -86,7 +86,7 @@ async function fetchFeed(lastId) {
   if (errors) {
     console.error(errors);
   }
-  const result = data.hic_et_nunc_token
+  const result = data.token
   /* console.log({ result }) */
   return result
 }
@@ -118,7 +118,7 @@ async function fetchGraphQL(operationsDoc, operationName, variables) {
 async function fetchObjkts(ids) {
   const { errors, data } = await fetchGraphQL(`
     query Objkts($ids: [bigint!] = "") {
-      hic_et_nunc_token(where: {id: {_in: $ids}}) {
+      token(where: {id: {_in: $ids}}) {
         artifact_uri
         display_uri
         creator_id
@@ -142,11 +142,11 @@ async function fetchObjkts(ids) {
 async function getLastId() {
   const { errors, data } = await fetchGraphQL(`
     query LastId {
-      hic_et_nunc_token(limit: 1, order_by: {id: desc}) {
+      token(limit: 1, order_by: {id: desc}) {
         id
       }
     }`, "LastId");
-  return data.hic_et_nunc_token[0].id
+  return data.token[0].id
 }
 
 function rnd(min, max) {
@@ -179,7 +179,7 @@ async function fetchRandomObjkts() {
   }
 
   const result = data
-  return shuffle(objkts.hic_et_nunc_token)
+  return shuffle(objkts.token)
 }
 
 const getRestrictedAddresses = async () =>
@@ -227,7 +227,7 @@ export const Feeds = ({ type }) => {
             .then((result) => {
               const next = items.concat(result)
               setItems(next)
-    
+
               // if original returns less than 10, then there's no more data coming from API
               if (result.length < 10) {
                 setHasMore(false)

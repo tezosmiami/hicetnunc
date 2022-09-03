@@ -23,7 +23,7 @@ const isFloat = (n) => Number(n) === n && n % 1 !== 0
 async function fetchFeed(lastId) {
   const { errors, data } = await fetchGraphQL(`
 query LatestFeed {
-  hic_et_nunc_token(order_by: {id: desc}, limit: 15, where: {id: {_lt: ${lastId}}, artifact_uri: {_neq: ""}}) {
+  token(order_by: {id: desc}, limit: 15, where: {id: {_lt: ${lastId}}, artifact_uri: {_neq: ""}}) {
     artifact_uri
     display_uri
     creator_id
@@ -41,14 +41,14 @@ query LatestFeed {
   if (errors) {
     console.error(errors);
   }
-  const result = data.hic_et_nunc_token
+  const result = data.token
   /* console.log({ result }) */
   return result
 }
 
 const query_creations = `
 query creatorGallery($address: String!) {
-  hic_et_nunc_token(where: {creator: {address: {_eq: $address}}, supply: {_gt: 0}}, order_by: {id: desc}, limit : 15, offset : $offset ) {
+  token(where: {creator: {address: {_eq: $address}}, supply: {_gt: 0}}, order_by: {id: desc}, limit : 15, offset : $offset ) {
     id
     artifact_uri
     display_uri
@@ -69,7 +69,7 @@ query creatorGallery($address: String!) {
 
 const query_tag = `
 query ObjktsByTag {
-  hic_et_nunc_token(where: {supply : { _neq : 0 }, token_tags: {tag: {tag: {_eq: $tag}}}, id: {_lt: $lastId}}, limit : 15, order_by: {id: desc}) {
+  token(where: {supply : { _neq : 0 }, token_tags: {tag: {tag: {_eq: $tag}}}, id: {_lt: $lastId}}, limit : 15, order_by: {id: desc}) {
     id
     artifact_uri
     display_uri
@@ -89,7 +89,7 @@ query ObjktsByTag {
 async function fetchID(id) {
   const { errors, data } = await fetchGraphQL(`
   query objktId {
-    hic_et_nunc_token(where : { id : { _eq : $id }}) {
+    token(where : { id : { _eq : $id }}) {
       id
       artifact_uri
       display_uri
@@ -105,7 +105,7 @@ async function fetchID(id) {
   })
 
   try {
-    return data.hic_et_nunc_token
+    return data.token
   } catch (e) {
     return undefined
   }
@@ -114,7 +114,7 @@ async function fetchID(id) {
 async function fetchObjkts(ids) {
   const { errors, data } = await fetchGraphQL(`
     query Objkts($ids: [bigint!] = "") {
-      hic_et_nunc_token(where: {id: {_in: $ids}, supply : { _neq : 0 }}) {
+      token(where: {id: {_in: $ids}, supply : { _neq : 0 }}) {
         artifact_uri
         display_uri
         creator_id
@@ -138,11 +138,11 @@ async function fetchObjkts(ids) {
 async function getLastId() {
   const { errors, data } = await fetchGraphQL(`
     query LastId {
-      hic_et_nunc_token(limit: 1, order_by: {id: desc}) {
+      token(limit: 1, order_by: {id: desc}) {
         id
       }
     }`, "LastId");
-  return data.hic_et_nunc_token[0].id
+  return data.token[0].id
 }
 
 function rnd(min, max) {
@@ -152,7 +152,7 @@ function rnd(min, max) {
 async function fetchGLB(offset) {
   const { errors, data } = await fetchGraphQL(`
   query GLBObjkts {
-    hic_et_nunc_token(where : { mime : {_in : ["model/gltf-binary"] }, supply : { _neq : 0 }}, limit : 15, offset : ${offset}, order_by: {id: desc}) {
+    token(where : { mime : {_in : ["model/gltf-binary"] }, supply : { _neq : 0 }}, limit : 15, offset : ${offset}, order_by: {id: desc}) {
       id
       artifact_uri
       display_uri
@@ -167,7 +167,7 @@ async function fetchGLB(offset) {
   `, 'GLBObjkts', {}
   )
   try {
-    return data.hic_et_nunc_token
+    return data.token
   } catch (e) {
     return undefined
   }
@@ -176,7 +176,7 @@ async function fetchGLB(offset) {
 async function fetchInteractive(offset) {
   const { errors, data } = await fetchGraphQL(`
     query InteractiveObjkts {
-      hic_et_nunc_token(where: { mime: {_in : [ "application/x-directory", "image/svg+xml" ]}, supply : { _neq : 0 } }, limit : 30, offset : ${offset}, order_by: {id: desc}) {
+      token(where: { mime: {_in : [ "application/x-directory", "image/svg+xml" ]}, supply : { _neq : 0 } }, limit : 30, offset : ${offset}, order_by: {id: desc}) {
         id
         artifact_uri
         display_uri
@@ -191,7 +191,7 @@ async function fetchInteractive(offset) {
   `, 'InteractiveObjkts', {})
 
   try {
-    return data.hic_et_nunc_token
+    return data.token
   } catch (e) {
     return undefined
   }
@@ -200,7 +200,7 @@ async function fetchInteractive(offset) {
 async function fetchGifs(offset) {
   const { errors, data } = await fetchGraphQL(`
     query Gifs ($offset: Int = 0) {
-      hic_et_nunc_token(where: { mime: {_in : [ "image/gif" ]}, supply : { _neq : 0 }}, order_by: {id: desc}, limit: 15, offset: ${offset}) {
+      token(where: { mime: {_in : [ "image/gif" ]}, supply : { _neq : 0 }}, order_by: {id: desc}, limit: 15, offset: ${offset}) {
         id
         artifact_uri
         display_uri
@@ -215,7 +215,7 @@ async function fetchGifs(offset) {
   `, 'Gifs', {})
 
   try {
-    return data.hic_et_nunc_token
+    return data.token
   } catch (e) {
     return undefined
   }
@@ -224,7 +224,7 @@ async function fetchGifs(offset) {
 async function fetchMusic(offset) {
   const { errors, data } = await fetchGraphQL(`
   query AudioObjkts {
-    hic_et_nunc_token(where: {mime: {_in: ["audio/ogg", "audio/wav", "audio/mpeg"]}, supply : { _neq : 0 }}, limit : 15, offset : ${offset}, order_by: {id: desc}) {
+    token(where: {mime: {_in: ["audio/ogg", "audio/wav", "audio/mpeg"]}, supply : { _neq : 0 }}, limit : 15, offset : ${offset}, order_by: {id: desc}) {
       id
       artifact_uri
       display_uri
@@ -240,7 +240,7 @@ async function fetchMusic(offset) {
   )
 
   try {
-    return data.hic_et_nunc_token
+    return data.token
   } catch (e) {
     return undefined
   }
@@ -249,7 +249,7 @@ async function fetchMusic(offset) {
 async function fetchTitle(title, offset) {
   const { errors, data } = await fetchGraphQL(`
   query queryTitles {
-    hic_et_nunc_token(where: {title: {_like: "%${title}%"}}) {
+    token(where: {title: {_like: "%${title}%"}}) {
       id
       artifact_uri
       display_uri
@@ -263,7 +263,7 @@ async function fetchTitle(title, offset) {
   `, 'queryTitles', {})
 
   try {
-    return data.hic_et_nunc_token
+    return data.token
   } catch (e) {
     return undefined
   }
@@ -272,7 +272,7 @@ async function fetchTitle(title, offset) {
 async function fetchCreations(addr, offset) {
   const { errors, data } = await fetchGraphQL(`
 query creatorGallery {
-  hic_et_nunc_token(where: {creator: {address: {_eq: ${addr}}}, supply: {_gt: 0}}, order_by: {id: desc}, limit : 15, offset : ${offset} ) {
+  token(where: {creator: {address: {_eq: ${addr}}}, supply: {_gt: 0}}, order_by: {id: desc}, limit : 15, offset : ${offset} ) {
     id
     artifact_uri
     display_uri
@@ -296,7 +296,7 @@ query creatorGallery {
   if (errors) {
     console.error(errors)
   }
-  const result = data.hic_et_nunc_token
+  const result = data.token
   /* console.log({ result }) */
   return result
 }
@@ -304,7 +304,7 @@ query creatorGallery {
 async function fetchDescription(description, offset) {
   const { errors, data } = await fetchGraphQL(`
   query queryDescriptions {
-    hic_et_nunc_token(where: {description: {_like: "%${description}%"}}) {
+    token(where: {description: {_like: "%${description}%"}}) {
       id
       artifact_uri
       display_uri
@@ -318,7 +318,7 @@ async function fetchDescription(description, offset) {
   `, 'queryDescriptions', {})
 
   try {
-    return data.hic_et_nunc_token
+    return data.token
   } catch (e) {
     return undefined
   }
@@ -342,13 +342,13 @@ async function fetchRandomObjkts() {
   }
 
   const result = data
-  return objkts.hic_et_nunc_token
+  return objkts.token
 }
 
 async function fetchSwaps(offset) {
   const { errors, data } = await fetchGraphQL(`
   query querySwaps {
-    hic_et_nunc_token(where: {swaps: {price: {_gt: "0"}, contract_version: {_eq: "2"}}, supply: {_gt: 0}}, order_by: {id: desc}, limit : 15, offset : ${offset} ) {
+    token(where: {swaps: {price: {_gt: "0"}, contract_version: {_eq: "2"}}, supply: {_gt: 0}}, order_by: {id: desc}, limit : 15, offset : ${offset} ) {
       id
       artifact_uri
       display_uri
@@ -365,7 +365,7 @@ async function fetchSwaps(offset) {
   `, 'querySwaps', {})
 
   try {
-    return data.hic_et_nunc_token
+    return data.token
   } catch (e) {
     return undefined
   }
@@ -373,7 +373,7 @@ async function fetchSwaps(offset) {
 
 async function fetchDay(day, offset) {
   const { errors, data } = await fetchGraphQL(`query dayTrades {
-    hic_et_nunc_trade(where: {timestamp: {_gte: "${day}"}}, order_by: {swap: {price: desc}}, limit : 15, offset : ${offset}) {
+    trade(where: {timestamp: {_gte: "${day}"}}, order_by: {swap: {price: desc}}, limit : 15, offset : ${offset}) {
       timestamp
       swap {
         price
@@ -398,7 +398,7 @@ async function fetchDay(day, offset) {
   let result = []
 
   try {
-    result = data.hic_et_nunc_trade
+    result = data.trade
   } catch (e) { }
 
   return result
@@ -408,7 +408,7 @@ async function fetchDay(day, offset) {
 async function fetchSales(offset) {
   const { errors, data } = await fetchGraphQL(`
   query sales {
-    hic_et_nunc_trade(order_by: {timestamp: desc}, limit : 15, offset : ${offset}, where: {swap: {price: {_gte: "500000"}}}) {
+    trade(order_by: {timestamp: desc}, limit : 15, offset : ${offset}, where: {swap: {price: {_gte: "500000"}}}) {
       timestamp
       swap {
         price
@@ -434,7 +434,7 @@ async function fetchSales(offset) {
   let result = []
 
   try {
-    result = data.hic_et_nunc_trade
+    result = data.trade
   } catch (e) { }
 
   return result
@@ -445,7 +445,7 @@ async function fetchSubjkts(subjkt) {
   //console.log(subjkt)
   const { errors, data } = await fetchGraphQL(`
   query subjktsQuery {
-    hic_et_nunc_holder(where: { name: {_ilike: "%${subjkt}%"}}, order_by: {hdao_balance: desc}) {
+    holder(where: { name: {_ilike: "%${subjkt}%"}}, order_by: {hdao_balance: desc}) {
       address
       name
       hdao_balance
@@ -460,7 +460,7 @@ async function fetchSubjkts(subjkt) {
   let result = []
 
   try {
-    result = data.hic_et_nunc_holder
+    result = data.holder
   } catch (e) { }
 
   return result
@@ -469,7 +469,7 @@ async function fetchSubjkts(subjkt) {
 async function fetchTag(tag, offset) {
   const { errors, data } = await fetchGraphQL(
     `query ObjktsByTag {
-  hic_et_nunc_token(where: {supply : { _neq : 0 }, token_tags: {tag: {tag: {_ilike: ${tag}}}}, id: {_lt: ${offset}}}, limit : 188, order_by: {id: desc}) {
+  token(where: {supply : { _neq : 0 }, token_tags: {tag: {tag: {_ilike: ${tag}}}}, id: {_lt: ${offset}}}, limit : 188, order_by: {id: desc}) {
     id
     artifact_uri
     display_uri
@@ -490,7 +490,7 @@ async function fetchTag(tag, offset) {
   if (errors) {
     console.error(errors);
   }
-  const result = data?.hic_et_nunc_token
+  const result = data?.token
   return result
 }
 
@@ -510,7 +510,7 @@ async function fetchGraphQL(operationsDoc, operationName, variables) {
 }
 
 const query_hdao = `query hDAOFeed($offset: Int = 0) {
-  hic_et_nunc_token(order_by: {hdao_balance: desc}, limit: 15, where: {hdao_balance: {_gt: 100}}, offset: $offset) {
+  token(order_by: {hdao_balance: desc}, limit: 15, where: {hdao_balance: {_gt: 100}}, offset: $offset) {
     artifact_uri
     display_uri
     creator_id
@@ -532,7 +532,7 @@ async function fetchHdao(offset) {
   if (errors) {
     console.error(errors);
   }
-  const result = data.hic_et_nunc_token
+  const result = data.token
   return result
 }
 
@@ -562,7 +562,7 @@ export class Search extends Component {
       { id: 2, value: 'new OBJKTs' },
       { id: 3, value: 'recent sales' },
       { id: 4, value: 'music' },
-      { id: 5, value: 'photography' }, 
+      { id: 5, value: 'photography' },
       // { id: 7, value: 'gif' },
       // { id: 6, value: 'html/svg' }, // algorithimc?
       // { id: 4, value: 'glb' },
@@ -572,10 +572,10 @@ export class Search extends Component {
       { id: 9, value: 'ATH' },
       { id: 10, value: 'Miami' },
       { id: 11, value: '🗑️' },
-      
-   
-      
-      
+
+
+
+
     ],
     select: [],
     mouse: false,
@@ -593,7 +593,7 @@ export class Search extends Component {
     let swaps = await fetchSwaps((this.state.offset), 9999999)
     console.log(swaps)
     swaps = swaps.filter(e => !arr.includes(e.creator_id))
-    this.setState({ feed: [...this.state.feed, ...(swaps)] }) 
+    this.setState({ feed: [...this.state.feed, ...(swaps)] })
     // this.setState({ select: 'recent sales' })
     // let tokens = await fetchSales(this.state.offset)
     // tokens = tokens.map(e => e.token)
@@ -731,7 +731,7 @@ export class Search extends Component {
       this.setState({ feed: ([...this.state.feed, ...(res)]) })
     }
 
-  
+
     if (e == 'tag') {
       let res = await fetchTag(this.state.search, this.state.feed[this.state.feed.length - 1].id)
       res = res.filter(e => !arr.includes(e.creator_id))
@@ -744,7 +744,7 @@ export class Search extends Component {
       tokens = tokens.filter(e => !arr.includes(e.creator_id))
       this.setState({ feed: _.uniqBy(_.uniqBy([...this.state.feed, ...tokens], 'id'), 'creator_id') })
     }
-    
+
     if (e == 'recent swaps') {
       let tokens = await fetchSwaps(this.state.offset)
       tokens = tokens.filter(e => !arr.includes(e.creator.address))
@@ -764,7 +764,7 @@ export class Search extends Component {
       res = res.filter(e => !arr.includes(e.creator_id))
       this.setState({ feed: ([...this.state.feed, ...(res)]) })
     }
-    
+
     if (this.state.select == 'new OBJKTs') {
       this.latest()
     }

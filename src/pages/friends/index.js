@@ -19,7 +19,7 @@ async function fetchGraphQL(operationsDoc, operationName, variables) {
 
 const query_frenCreations = `
 query frensGallery($wallets: [String!], $lastId: bigint!) {
-  hic_et_nunc_token(where: {creator_id: {_in: $wallets}, id: {_lt: $lastId}, supply: {_gt: 0}, artifact_uri: {_neq: ""}}, order_by: {id: desc}, limit: 20) {
+  token(where: {creator_id: {_in: $wallets}, id: {_lt: $lastId}, supply: {_gt: 0}, artifact_uri: {_neq: ""}}, order_by: {id: desc}, limit: 20) {
     artifact_uri
     display_uri
     creator_id
@@ -38,7 +38,7 @@ query frensGallery($wallets: [String!], $lastId: bigint!) {
 
 const query_frens = `
 query collectorGallery($address: String!) {
-  hic_et_nunc_token_holder(where: {holder_id: {_eq: $address}, token: {creator_id: {_neq: $address}}}, order_by: {token_id: desc}) {
+  token_holder(where: {holder_id: {_eq: $address}, token: {creator_id: {_neq: $address}}}, order_by: {token_id: desc}) {
     token {
       creator_id
     }
@@ -51,7 +51,7 @@ async function fetchAllFrensAddresses(myWalletAddr) {
   if (errors) console.error(errors);
 
   let frensAddresses = []
-  for (let holding of data.hic_et_nunc_token_holder) {
+  for (let holding of data.token_holder) {
     frensAddresses.push(holding.token.creator_id)
   }
   // uniq address
@@ -78,7 +78,7 @@ export class Friends extends Component {
     });
 
     if (errors) console.error(errors);
-    const result = data.hic_et_nunc_token
+    const result = data.token
 
     let lastId = Math.min.apply(Math, result.map(e => e.id))
     this.setState({ lastId: lastId })

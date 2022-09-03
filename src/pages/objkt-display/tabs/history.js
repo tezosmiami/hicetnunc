@@ -18,12 +18,12 @@ const queryTransfers = `
 `
 const querySubjkt = `
 query subjkt($from_address: [String!], $to_address: [String!]) {
-  from: hic_et_nunc_holder(where: {address: {_in: $from_address}}) {
+  from: holder(where: {address: {_in: $from_address}}) {
     name
     address
   }
 
-  to: hic_et_nunc_holder(where: {address: {_in: $to_address}}) {
+  to: holder(where: {address: {_in: $to_address}}) {
     name
     address
   }
@@ -47,7 +47,7 @@ async function fetchGraphQL(operationsDoc, operationName, variables) {
     }
 
 async function fetchTransfers(id) {
-        const { errors, data } = await fetchGraphQL(queryTransfers, 'transfers', { id: id })  
+        const { errors, data } = await fetchGraphQL(queryTransfers, 'transfers', { id: id })
         if (errors) {
           console.error(errors)
         }
@@ -56,22 +56,22 @@ async function fetchTransfers(id) {
     }
 
 async function fetchSubjkt(from_address, to_address) {
-    const { errors, data } = await fetchGraphQL(querySubjkt, 'subjkt', { from_address: from_address, to_address: to_address })    
+    const { errors, data } = await fetchGraphQL(querySubjkt, 'subjkt', { from_address: from_address, to_address: to_address })
         if (errors) {
           console.error(errors)
         }
         return data
 
-    }     
+    }
 
 export const History = (token_info) => {
     const [history, setHistory] = useState([])
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     let timestamp = new Date(token_info.timestamp)
-    
+
     useEffect(() => {
         const getTransfers = async() => {
-        let data = await fetchTransfers(`${token_info.id}`) 
+        let data = await fetchTransfers(`${token_info.id}`)
         let from_address = data.events.map(e => { return e.from_address } )
         let to_address = data.events.map(e => { return e.to_address } )
         let subjkt = await fetchSubjkt(from_address, to_address)
