@@ -30,7 +30,7 @@ export const CollabsTab = ({ wallet }) => {
             }
 
             let tokens = [];
-            const result = data.hic_et_nunc_shareholder
+            const result = data.shareholder
 
             if (result) {
                 result.forEach((contract) => tokens = tokens.concat(contract.split_contract.contract.tokens))

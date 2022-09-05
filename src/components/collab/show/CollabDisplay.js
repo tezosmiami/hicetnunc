@@ -36,7 +36,7 @@ export const CollabDisplay = () => {
 
     // one of the two will be supplied
 
-    // contract id route - ie. /kt/:id 
+    // contract id route - ie. /kt/:id
     useEffect(() => {
         if (!id && !name) {
             return
@@ -54,8 +54,8 @@ export const CollabDisplay = () => {
             [key]: value,
         }).then(({ data, errors }) => {
             if (data) {
-                setCreations(data.hic_et_nunc_token)
-                setContractInfo(data.hic_et_nunc_splitcontract[0])
+                setCreations(data.token)
+                setContractInfo(data.splitcontract[0])
             }
 
             setLoading(false)

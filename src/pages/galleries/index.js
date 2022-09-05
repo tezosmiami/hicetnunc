@@ -13,7 +13,7 @@ const _ = require('lodash')
 async function fetchObjkts(ids) {
   const { errors, data } = await fetchGraphQL(`
     query Objkts($_in: [bigint!] = "") {
-      hic_et_nunc_token(where: { id: {_in: $_in}}) {
+      token(where: { id: {_in: $_in}}) {
         artifact_uri
         display_uri
         creator_id
@@ -25,7 +25,7 @@ async function fetchObjkts(ids) {
         hdao_balance
       }
     }`, "Objkts", { "_in" : ids })
-  return data.hic_et_nunc_token
+  return data.token
 }
 
 async function fetchGraphQL(operationsDoc, operationName, variables) {

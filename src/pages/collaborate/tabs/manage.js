@@ -44,7 +44,7 @@ export const CollabContractsOverview = ({ showAdminOnly = false }) => {
         setLoadingCollabs(true)
         console.log("Now checking for available collabs")
 
-        // On boot, see what addresses the synced address can manage 
+        // On boot, see what addresses the synced address can manage
         fetchGraphQL(getCollabsForAddress, 'GetCollabs', {
             address: acc.address,
         }).then(({ data, errors }) => {
@@ -52,13 +52,13 @@ export const CollabContractsOverview = ({ showAdminOnly = false }) => {
             setLoadingCollabs(false)
 
             if (data) {
-                const allCollabs = data.hic_et_nunc_splitcontract || []
+                const allCollabs = data.splitcontract || []
                 const adminCollabs = allCollabs.filter(c => c.administrator === acc.address)
                 const participantCollabs = allCollabs.filter(c => c.administrator !== acc.address)
 
                 // Show admin followed by participant
                 const availableCollabs = showAdminOnly ? allCollabs.filter(c => c.administrator === acc.address) : [...adminCollabs, ...participantCollabs]
-                
+
                 setCollabs(availableCollabs)
             }
         })

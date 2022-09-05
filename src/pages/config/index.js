@@ -20,7 +20,7 @@ const ls = require('local-storage')
 
 const query_tz = `
 query addressQuery($address: String!) {
-  hic_et_nunc_holder(where: { address: {_eq: $address}}) {
+  holder(where: { address: {_eq: $address}}) {
     address
     name
     hdao_balance
@@ -37,7 +37,7 @@ async function fetchTz(addr) {
   if (errors) {
     console.error(errors)
   }
-  const result = data.hic_et_nunc_holder
+  const result = data.holder
   // console.log({ result })
   return result
 }
@@ -156,10 +156,10 @@ export class Config extends Component {
   }
 
   toggle = () => this.setState({ toogled: !this.state.toogled })
-  /*     
+  /*
 
    signature studies
-   
+
    const bytes =
          '05' +
          char2Bytes(
@@ -175,8 +175,8 @@ export class Config extends Component {
          sourceAddress: this.context.addr,
        }
        console.log(payload)
-       this.context.sign(payload) 
-       
+       this.context.sign(payload)
+
   */
 
   sign = () => {
