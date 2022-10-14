@@ -1,7 +1,7 @@
 @import '../../../styles/layout.scss';
 
 .audio {
-  
+
   margin: 0 auto;
   display: flex;
   width: 81%;
@@ -9,10 +9,17 @@
   justify-content: space-between;
   object-fit: cover;
   @include respond-to('desktop') {
-    width: 72%;
+    width: 99%;
   }
 }
-
+.preview {
+  margin: 0 auto;
+  display: flex;
+  width: 81%;
+  @include respond-to('desktop') {
+    width: 63%;
+  }
+}
 .container {
   position: relative;
   display: flex;
@@ -32,9 +39,18 @@
   }
 
   img {
-    display: none;
-    width: 81%;
-    height: auto;
+    margin: 0 auto;
+    display: flex;
+    width: 72%;
+    align-items: center;
+    justify-content: space-between;
+    object-fit: cover;
+    @include respond-to('desktop') {
+      width: 72%;
+      .audio{
+        width: 33%;
+      }
+    }
   }
 
   .icons {
