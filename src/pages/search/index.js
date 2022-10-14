@@ -539,7 +539,7 @@ async function fetchHdao(offset) {
 const getRestrictedAddresses = async () =>
   await axios
     .get(
-      'https://raw.githubusercontent.com/hicetnunc2000/hicetnunc-reports/main/filters/w.json'
+      process.env.REACT_APP_BLOCKLIST_WALLET
     )
     .then((res) => res.data.filter( (a) => !getWalletAllowList().includes(a)))
 
@@ -591,8 +591,7 @@ export class Search extends Component {
     // let resTotal = res1.concat(res2).sort((a,b) => b.id - a.id)
     // resTotal = resTotal.filter(e => !arr.includes(e.creator_id))
     let swaps = await fetchSwaps((this.state.offset), 9999999)
-    console.log(swaps)
-    swaps = swaps.filter(e => !arr.includes(e.creator_id))
+    swaps = swaps.filter(e => !arr.includes(e.creator.address))
     this.setState({ feed: [...this.state.feed, ...(swaps)] }) 
     // this.setState({ select: 'recent sales' })
     // let tokens = await fetchSales(this.state.offset)
