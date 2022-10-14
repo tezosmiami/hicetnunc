@@ -17,12 +17,12 @@
     margin: 0 auto;
 
     @include respond-to('tablet') {
-      max-height: 70vh;
+      max-height: 81vh;
       height: initial;
     }
 
     @include respond-to('desktop') {
-      max-height: 60vh;
+      max-height: 72vh;
     }
   }
 }

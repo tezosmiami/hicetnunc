@@ -506,7 +506,7 @@ export const Mint = () => {
         <>
           <Container>
             <Padding>
-              <div style={{ display: 'flex' }}>
+              <div>
                 <Button onClick={() => setStep(0)} fit>
                   <Primary>
                     <strong>back</strong>
@@ -521,6 +521,7 @@ export const Mint = () => {
               <Preview
                 mimeType={file.mimeType}
                 previewUri={file.reader}
+                displayUri={cover.reader  }
                 title={title}
                 description={description}
                 tags={tags}
@@ -538,8 +539,10 @@ export const Mint = () => {
 
           <Container>
             <Padding>
+              <div style={{width: '100%', textAlign: 'center'}}>
               <p>this operation costs 0.08~ tez</p>
               <p>Your royalties upon each sale are {royalties}%</p>
+              </div>
             </Padding>
           </Container>
         </>

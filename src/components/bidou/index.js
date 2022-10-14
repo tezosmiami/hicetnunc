@@ -73,14 +73,15 @@ export const Bidou = () => {
     return res;
 }
 
-useEffect(async() => {
-  
-let total = await fetchBidouCount();
-let random = Math.floor(Math.random() * total);
-let bidou = await fetchRandomBidou(`${random}`)
-setBidou(bidou)
-setBidouRGB(sliceChunks(bidou.eightbid_rgb,6));
-
+useEffect(() => {
+  const fetchData = async() => {
+    let total = await fetchBidouCount();
+    let random = Math.floor(Math.random() * total);
+    let bidou = await fetchRandomBidou(`${random}`)
+    setBidou(bidou)
+    setBidouRGB(sliceChunks(bidou.eightbid_rgb,6));
+  }
+  fetchData()
 }, [])
 
   return (

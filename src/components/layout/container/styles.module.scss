@@ -2,24 +2,24 @@
 @import '../../../styles/layout.scss';
 
 .container {
-  width: 99%;
+  width: 97%;
   margin: 0 auto;
   margin-bottom: 20px;
   word-break: break-word;
 
   @include respond-to('desktop') {
-    width: 81%;
+    width: 72%;
   }
 
   &.large {
     @include respond-to('desktop') {
-      width: 81%;
+      width: 72%;
     }
   }
 
   &.xlarge {
     @include respond-to('desktop') {
-      width: 81%;
+      width: 72%;
     }
   }
 }

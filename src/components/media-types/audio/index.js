@@ -64,11 +64,11 @@ export const AudioComponent = ({
   } else {
     return (
       <>
-        <div >
-          <span>
-            <img style={{ width: '100%' }} src={displayUri} /><br />
-            <audio style={{ width: '100%' }} src={preview ? previewUri : artifactUri} controls />
-          </span>
+        <div>
+          <div>
+            <img  className={styles.audio} src={displayUri} /><br />
+            <audio className={styles.audio} src={preview ? previewUri : artifactUri} controls />
+          </div>
           {/*         {true && <audio src={preview ? previewUri : artifactUri} controls />}
         <img src={displayUri} alt="album cover" /> */}
           {false && <Visualiser ref={visualiser} src={artifactUri} />}
