@@ -331,7 +331,7 @@ export default class Display extends Component {
       let res = await fetchTz(wallet)
       try {
         if (res[0]) {
-          let meta = await axios.get('https://cloudflare-ipfs.com/ipfs/' + res[0].metadata_file.split('//')[1]).then(res => res.data)
+          let meta = await axios.get('https:/ipfs.io/ipfs/' + res[0].metadata_file.split('//')[1]).then(res => res.data)
 
           if (meta.description) this.setState({ description: meta.description })
           if (meta.identicon) this.setState({ identicon: meta.identicon })
@@ -347,7 +347,7 @@ export default class Display extends Component {
       // console.log(decodeURI(window.location.pathname.split('/')[1]))
       //console.log(res)
       if (res[0]?.metadata_file) {
-        let meta = await axios.get('https://cloudflare-ipfs.com/ipfs/' + res[0].metadata_file.split('//')[1]).then(res => res.data)
+        let meta = await axios.get('https://ipfs.io/ipfs/' + res[0].metadata_file.split('//')[1]).then(res => res.data)
         //console.log(meta)
         if (meta.description) this.setState({ description: meta.description })
         if (meta.identicon) this.setState({ identicon: meta.identicon })

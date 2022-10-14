@@ -241,7 +241,7 @@ async function uploadMetadataFile({
         decimals: 0,
         isBooleanAmount: false,
         shouldPreferSymbol: false,
-      })
+      },null,2)
     )
   )
 }
