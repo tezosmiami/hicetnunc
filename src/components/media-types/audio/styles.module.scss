@@ -9,7 +9,7 @@
   justify-content: space-between;
   object-fit: cover;
   @include respond-to('desktop') {
-    width: 96%;
+    width: 98%;
   }
 }
 .preview {
