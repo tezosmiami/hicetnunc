@@ -66,8 +66,8 @@ export const AudioComponent = ({
       <>
         <div>
           <div>
-            <img  className={styles.preview} src={displayUri} /><br />
-            <audio className={styles.preview} src={preview ? previewUri : artifactUri} controls />
+            <img  className={preview ? styles.preview : styles.audio } src={displayUri} /><br />
+            <audio className={preview ? styles.preview : styles.audio } src={preview ? previewUri : artifactUri} controls />
           </div>
           {/*         {true && <audio src={preview ? previewUri : artifactUri} controls />}
         <img src={displayUri} alt="album cover" /> */}
