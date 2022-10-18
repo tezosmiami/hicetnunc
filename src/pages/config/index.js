@@ -13,9 +13,20 @@ import { char2Bytes } from '@taquito/utils'
 import styles from './styles.module.scss'
 import axios from 'axios'
 const { create } = require('ipfs-http-client')
-const infuraUrl = 'https://ipfs.infura.io:5001'
-const ipfs = create(infuraUrl)
 
+const auth =
+    'Basic ' + Buffer.from(process.env.REACT_APP_INFURA_ID + ':' + process.env.REACT_APP_INFURA_KEY).toString('base64');
+
+const infuraUrl = 'ipfs.infura.io:5001'
+
+const ipfs = create({
+  host: 'ipfs.infura.io',
+  port: 5001,
+  protocol: 'https',
+  headers: {
+      authorization: auth,
+  },
+});
 const ls = require('local-storage')
 
 const query_tz = `
