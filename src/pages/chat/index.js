@@ -11,7 +11,7 @@ export const Chat = () => {
     const [alias, setAlias] = useState();
     const [message, setMessage] = useState();
     const [conversation, setConversation] = useState([]);
-    const [isConnectionOpen, setConnectionOpen] = useState(false);
+    const [connectionOpen, setConnectionOpen] = useState(false);
     const { acc } = useContext(HicetnuncContext)
     const scrollTarget = useRef(null);
     const ws = useRef();
@@ -34,16 +34,15 @@ export const Chat = () => {
   }, [acc])
 
   useEffect(() => {
-    ws.current = new WebSocket("wss://hen-chat.herokuapp.com");
-
+    if (alias) {
+    ws.current = new WebSocket("ws://localhost:8080");
     ws.current.onopen = () => {
       console.log("Connection opened");
       setConnectionOpen(true);
       ws.current.send(
         JSON.stringify({
-          sender: alias,
-          body: ' has joined the conversation. . .',
-        })
+          alias: alias
+        }),
       );
     };
 
@@ -55,15 +54,11 @@ export const Chat = () => {
     return () => {
       console.log("Cleaning up...");
       ws.current.close();
-      ws.current.send(
-        JSON.stringify({
-          sender: alias,
-          body: ' has left the conversation. . .',
-        })
-      );
     };
-  }, []);
+  }
+  }, [alias]);
 
+  
   useEffect(() => {
     if (scrollTarget.current) {
       scrollTarget.current.scrollIntoView({ behavior: "smooth" });
@@ -81,16 +76,18 @@ export const Chat = () => {
       );
       setMessage('');
     }
-  //  setMessages(arr => [...arr, message]);
-  //  setMessage('')
-  //  event.target.reset();
-  //  event.target.value=''
+   event.target.reset();
   }
+  
 
-if(!acc) return('please sync wallet for chat')
+if(!acc) return(
+  <Page title="chat" >
+    <div>'please sync wallet for chat'</div>
+  </Page>
+)
 
 return (
-    <Page title="mint" >
+    <Page title="chat" >
        {conversation.map((m,i) => (
     <div className={styles.chat} key={i}>
       {m.sender}: {m.body}

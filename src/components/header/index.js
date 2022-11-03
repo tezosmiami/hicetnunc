@@ -180,7 +180,7 @@ export const Header = () => {
                       </Button>
                     </li>
                     <li>
-                      <Button onClick={() => handleRoute('chat')}>
+                      <Button onClick={() => handleRoute('/chat')}>
                         <Primary>chat</Primary>
                       </Button>
                     </li>
