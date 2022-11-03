@@ -34,7 +34,7 @@ export const Chat = () => {
   }, [acc])
 
   useEffect(() => {
-    ws.current = new WebSocket("ws://hen-chat.herokuapp.com");
+    ws.current = new WebSocket("wss://hen-chat.herokuapp.com");
 
     ws.current.onopen = () => {
       console.log("Connection opened");
