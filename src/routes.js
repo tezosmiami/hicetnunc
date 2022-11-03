@@ -4,6 +4,7 @@ import { FAQ } from './pages/faq'
 import Display from './pages/display'
 import { Latest, Hdao, Random, Featured } from './pages/feeds'
 import { Mint } from './pages/mint'
+import { Chat } from './pages/chat'
 import { ObjktDisplay } from './pages/objkt-display'
 import { Collaborate, CollabDisplay } from './pages/collaborate'
 import { Galleries } from './pages/galleries'
@@ -73,6 +74,11 @@ export const routes = [
     exact: false,
     path: '/mint',
     component: Mint,
+  },
+  {
+    exact: false,
+    path: '/chat',
+    component: Chat,
   },
   {
     exact: false,

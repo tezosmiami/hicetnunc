@@ -29,6 +29,7 @@ export const PATH = {
   OBJKT: '/objkt',
   GALLERY: '/gallery',
   TAGS: '/tags',
+  CHAT: '/chat'
 }
 
 export const MINT_MIN_LIMIT = 1
