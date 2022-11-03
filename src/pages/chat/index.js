@@ -39,6 +39,12 @@ export const Chat = () => {
     ws.current.onopen = () => {
       console.log("Connection opened");
       setConnectionOpen(true);
+      ws.current.send(
+        JSON.stringify({
+          sender: alias,
+          body: ' has joined the conversation. . .',
+        })
+      );
     };
 
     ws.current.onmessage = (event) => {
@@ -49,6 +55,12 @@ export const Chat = () => {
     return () => {
       console.log("Cleaning up...");
       ws.current.close();
+      ws.current.send(
+        JSON.stringify({
+          sender: alias,
+          body: ' has left the conversation. . .',
+        })
+      );
     };
   }, []);
 
