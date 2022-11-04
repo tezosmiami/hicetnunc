@@ -42,7 +42,7 @@ export const Chat = () => {
     ws.current.onopen = () => {
       console.log("Connection opened");
       setConnected(true);
-      ws.current.send(
+      counter == 0 && ws.current.send(
         JSON.stringify({
           alias: alias
         }),
@@ -111,8 +111,13 @@ const handleKeyPress = e => {
 
 if(!acc) return(
   <Page title="chat" >
-    <div>'please sync wallet for chat'</div>
+    <div>please sync wallet for chat. . .</div>
   </Page>
+)
+if (counter >= 18) return (
+<Page title="chat" >
+  <div>disconnected. . .'</div>
+</Page>
 )
 
 return (
