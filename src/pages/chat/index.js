@@ -79,11 +79,14 @@ const sendMessage = (message) => {
 }
 
 const handleKeyPress = e => {
-  if (e.key === "Enter") {
-    e.preventDefault()
-    sendMessage(e.target.value)
-    setMessage('')
-    e.target.value=''
+  console.log(e)
+  if ((e.key === 'Enter' || e.which === 13 
+      || e.code === 13 || e.keyCode === 13)
+       && !e.shiftKey) {
+            e.preventDefault()
+            sendMessage(e.target.value)
+            setMessage('')
+            e.target.value=''
   }
 }
 
