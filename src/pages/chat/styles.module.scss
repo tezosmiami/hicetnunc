@@ -3,10 +3,14 @@
 
 .chat {
   margin: 27px;
+  height:72vh;
+  overflow: auto;
+
 }
 .container {
   position: absolute;
   bottom: 0;
+  height:63px;
   left: 0;
   width: 100%;
   background-color: var(--background-color);

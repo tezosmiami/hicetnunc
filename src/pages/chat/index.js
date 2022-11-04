@@ -87,16 +87,19 @@ if(!acc) return(
 )
 
 return (
-    <Page title="chat" >
+    <div style={{padding: '63px 0 0 0'}}>
+     <div className={styles.chat}>
        {conversation.map((m,i) => (
-    <div className={styles.chat} key={i}>
-      {m.sender}: {m.body}
-    </div>
+      <div style={{marginBottom:'9px'}}ref={scrollTarget} key={i}>
+        {m.sender}: {m.body}
+      </div> 
+    
   ))
        }
+       </div>
          <div className={styles.container}
          style={{borderTop:'1px solid black'}}>
-            <Padding>
+
             <form onSubmit={sendMessage}>
             <label>
             <Input
@@ -110,9 +113,9 @@ return (
               </label>
               {/* <Input type="submit" /> */}
               </form>
-              </Padding>
+       
         </div>
-    </Page>
+    </div>
     )
 
 }
