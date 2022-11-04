@@ -2,14 +2,14 @@
 @import '../../styles/layout.scss';
 
 .chat {
-  margin: 27px;
+  margin: 36px;
   height:72vh;
   overflow: auto;
 
 }
 .container {
   position: absolute;
-  bottom: 0;
+  bottom: -36px;
   height:63px;
   left: 0;
   width: 100%;

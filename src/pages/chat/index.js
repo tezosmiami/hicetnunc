@@ -98,7 +98,7 @@ return (
        }
        </div>
          <div className={styles.container}
-         style={{border:'1px solid black'}}>
+         style={{borderTop:'1px solid black'}}>
 
             <form onSubmit={sendMessage}>
             <label>
