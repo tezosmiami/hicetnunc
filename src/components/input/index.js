@@ -50,6 +50,7 @@ export const Textarea = ({
   label,
   onChange = () => null,
   onBlur = () => null,
+  onKeyPress = () => null,
   disabled,
   value,
 }) => (
@@ -64,6 +65,7 @@ export const Textarea = ({
         maxLength={maxlength}
         defaultValue={value}
         onChange={onChange}
+        onKeyPress={onKeyPress}
         onBlur={onBlur}
         disabled={disabled}
       />

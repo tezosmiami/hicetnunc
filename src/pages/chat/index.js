@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, useRef } from 'react'
 import { HicetnuncContext } from '../../context/HicetnuncContext'
 import { fetchGraphQL, getNameForAddress } from '../../data/hicdex'
-import { Input, Textarea } from '../../components/input'
+import { Textarea } from '../../components/input'
 import { Page, Container, Padding } from '../../components/layout'
 import { walletPreview } from '../../utils/string'
 import styles from './styles.module.scss'
@@ -61,25 +61,32 @@ export const Chat = () => {
   }, [alias]);
 
   
-  useEffect(() => {
-    if (scrollTarget.current) {
-      scrollTarget.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [conversation.length]);
-
-  const sendMessage = (event) => {  
-    event.preventDefault();
-    if (message) {
-      ws.current.send(
-        JSON.stringify({
-          sender: alias,
-          body: message,
-        })
-      );
-      setMessage('');
-    }
-   event.target.reset();
+useEffect(() => {
+  if (scrollTarget.current) {
+    scrollTarget.current.scrollIntoView({ behavior: "smooth" });
   }
+}, [conversation.length]);
+
+const sendMessage = (message) => {  
+  if (message) {
+    ws.current.send(
+      JSON.stringify({
+        sender: alias,
+        body: message,
+      })
+    );
+  }
+}
+
+const handleKeyPress = e => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault()
+    sendMessage(e.target.value)
+    setMessage('')
+    e.target.value=''
+  }
+}
+
 
 if(!acc) return(
   <Page title="chat" >
@@ -106,23 +113,19 @@ return (
   ))
        }
        </div>
-         <div className={styles.container}>
-            <form onSubmit={sendMessage}>
-            <label>
-            <Input
-                type="text"
-                onChange={(e) => setMessage(e.target.value)}
-                autoFocus
-                placeholder="send message"
-                max={270}
-                value={message}
-              />
-              </label>
-              {/* <Input type="submit" /> */}
-              </form>
-       
+        <div className={styles.container}>
+          <Textarea
+              type='text'
+              onChange={(e) => setMessage(e.target.value)}
+              autoFocus
+              placeholder='message'
+              onKeyPress={handleKeyPress}
+              className={styles.container1} 
+              max={270}
+              label='message'
+              value={message}
+          />
         </div>
     </div>
-    )
-
+  )
 }

@@ -122,9 +122,9 @@ export const Header = () => {
       <AnimatePresence>
         {!context.collapsed && (
           <motion.div className={styles.menu} {...fadeIn()}>
-            <Container>
+           
               <Padding>
-                <nav className={styles.content}>
+                <nav className={styles.content} >
                   <ul>
                     <li>
                       <Button onClick={() => handleRoute('/')}>
@@ -195,7 +195,6 @@ export const Header = () => {
                 
               </Padding>
               <Bidou></Bidou>
-            </Container>
            
             <Footer />
           </motion.div>
