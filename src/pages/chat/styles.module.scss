@@ -10,17 +10,17 @@
 .container {
   position: absolute;
   bottom: 0;
-  height:36px;
+  height:63px;
   left: 0;
   width: 100%;
   background-color: var(--background-color);
   color: var(--text-color); 
   transition: background-color #{$theme-duration} ease-out,
     color #{$theme-duration} ease-out;
-  // padding: $mobile-padding;
-  // display: flex;
-  // align-items: center;
-  // flex-direction: column;
+  padding: $mobile-padding;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
   padding: 18px;
   overflow:hidden;
 
