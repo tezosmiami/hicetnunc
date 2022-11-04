@@ -17,7 +17,7 @@ export const Chat = () => {
     const ws = useRef();
 
    useEffect(() => {
-    const updateAlias = async () =>{
+    const updateAlias = async () => {
         acc && fetchGraphQL(getNameForAddress, 'GetNameForAddress', {
             address: acc.address,
           }).then(({ data, errors }) => {
@@ -90,7 +90,7 @@ return (
     <div style={{padding: '63px 0 0 0'}}>
      <div className={styles.chat}>
        {conversation.map((m,i) => (
-      <div style={{marginBottom:'9px'}}ref={scrollTarget} key={i}>
+      <div style={{marginBottom:'9px'}} ref={scrollTarget} key={i}>
         {m.sender}: {m.body}
       </div> 
     

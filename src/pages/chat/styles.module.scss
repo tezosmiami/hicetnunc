@@ -17,10 +17,12 @@
   color: var(--text-color); 
   transition: background-color #{$theme-duration} ease-out,
     color #{$theme-duration} ease-out;
-  padding: $mobile-padding;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
+  // padding: $mobile-padding;
+  // display: flex;
+  // align-items: center;
+  // flex-direction: column;
+  padding: 18px;
+  overflow:hidden;
 
   & > * {
     display: flex;
