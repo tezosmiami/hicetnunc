@@ -118,7 +118,7 @@ if(!acc) return(
 )
 if (counter == 18) return (
 <Page title="chat" >
-  <div>disconnected. . .'</div>
+  <div>disconnected. . .</div>
 </Page>
 )
 
