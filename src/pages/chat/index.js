@@ -38,6 +38,7 @@ export const Chat = () => {
 
   useEffect(() => {
     if (alias) {
+      // console.log(counter)
     ws.current = new WebSocket("wss://hen-chat.herokuapp.com");
     ws.current.onopen = () => {
       console.log("Connection opened");
@@ -65,7 +66,7 @@ export const Chat = () => {
       console.log('ws closed');
 
       if (counter < 18) {
-        counter += 1
+        setCounter(counter+=1)
         setReconnecting(true);
         setTimeout(() => setReconnecting(null), 5000);
       }
