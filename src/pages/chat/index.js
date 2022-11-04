@@ -43,9 +43,10 @@ export const Chat = () => {
     ws.current.onopen = () => {
       console.log("Connection opened");
       setConnected(true);
-      counter == 0 && ws.current.send(
+      ws.current.send(
         JSON.stringify({
-          alias: alias
+          alias: alias,
+          counter: counter
         }),
       );
     };
@@ -66,14 +67,14 @@ export const Chat = () => {
       console.log('ws closed');
 
       if (counter < 18) {
-        setCounter(counter+=1)
+        setCounter(counter+1)
         setReconnecting(true);
         setTimeout(() => setReconnecting(null), 5000);
       }
     };
     ws.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      Array.isArray(data.body) ? setOnline(online.concat(data.body)) :
+      Array.isArray(data.body) ? setOnline(data.body) :
       setConversation((_messages) => [..._messages, data]);
     };
 
