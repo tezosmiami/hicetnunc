@@ -5,10 +5,17 @@
   margin: 27px;
   height:63vh;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
 }
 .online {
   margin: 21px;
   padding : 18px;
+  // text-align: flex-start;
+  // display: flex;
+  // flex-direction: row;
+  // justify-content: space-evenly;
+  // flex-wrap: wrap;
   // width: 333px;
   border: 1px solid black;
 }
