@@ -63,9 +63,11 @@ export const Chat = () => {
       };
       setConnected(false);
       console.log('ws closed');
+
       if (counter < 18) {
-      setReconnecting(true);
-      setTimeout(() => setReconnecting(null), 5000);
+        counter += 1
+        setReconnecting(true);
+        setTimeout(() => setReconnecting(null), 5000);
       }
     };
     ws.current.onmessage = (event) => {
@@ -108,13 +110,12 @@ const handleKeyPress = e => {
   }
 }
 
-
 if(!acc) return(
   <Page title="chat" >
     <div>please sync wallet for chat. . .</div>
   </Page>
 )
-if (counter >= 18) return (
+if (counter == 18) return (
 <Page title="chat" >
   <div>disconnected. . .'</div>
 </Page>
