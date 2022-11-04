@@ -12,6 +12,8 @@ export const Chat = () => {
     const [message, setMessage] = useState();
     const [conversation, setConversation] = useState([]);
     const [connected, setConnected] = useState(false);
+    const [reconnecting, setReconnecting] = useState(null)
+    const [counter, setCounter] = useState(0)
     const [online, setOnline] = useState([])
     const { acc } = useContext(HicetnuncContext)
     const scrollTarget = useRef(null);
@@ -47,6 +49,25 @@ export const Chat = () => {
       );
     };
 
+    ws.current.onclose = () => {
+
+      if (ws.current) {
+        console.log('ws closed by server');
+      } else {
+        console.log('ws closed by app component unmount');
+        return;
+      }
+
+      if (reconnecting) {
+        return;
+      };
+      setConnected(false);
+      console.log('ws closed');
+      if (counter < 18) {
+      setReconnecting(true);
+      setTimeout(() => setReconnecting(null), 5000);
+      }
+    };
     ws.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
       Array.isArray(data.body) ? setOnline(online.concat(data.body)) :
@@ -58,7 +79,7 @@ export const Chat = () => {
       ws.current.close();
     };
   }
-  }, [alias]);
+  }, [alias, reconnecting]);
 
   
 useEffect(() => {
@@ -79,7 +100,6 @@ const sendMessage = (message) => {
 }
 
 const handleKeyPress = e => {
-  console.log(e)
   if (e.key == 'Enter' && !e.shiftKey) {
             e.preventDefault()
             sendMessage(e.target.value)
