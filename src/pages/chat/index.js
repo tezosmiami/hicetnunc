@@ -11,7 +11,8 @@ export const Chat = () => {
     const [alias, setAlias] = useState();
     const [message, setMessage] = useState();
     const [conversation, setConversation] = useState([]);
-    const [connectionOpen, setConnectionOpen] = useState(false);
+    const [connected, setConnected] = useState(false);
+    const [online, setOnline] = useState([])
     const { acc } = useContext(HicetnuncContext)
     const scrollTarget = useRef(null);
     const ws = useRef();
@@ -38,7 +39,7 @@ export const Chat = () => {
     ws.current = new WebSocket("wss://hen-chat.herokuapp.com");
     ws.current.onopen = () => {
       console.log("Connection opened");
-      setConnectionOpen(true);
+      setConnected(true);
       ws.current.send(
         JSON.stringify({
           alias: alias
@@ -48,6 +49,7 @@ export const Chat = () => {
 
     ws.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
+      Array.isArray(data.body) ? setOnline(online.concat(data.body)) :
       setConversation((_messages) => [..._messages, data]);
     };
 
@@ -65,7 +67,7 @@ export const Chat = () => {
     }
   }, [conversation.length]);
 
-  const sendMessage = (event) => {
+  const sendMessage = (event) => {  
     event.preventDefault();
     if (message) {
       ws.current.send(
@@ -78,7 +80,6 @@ export const Chat = () => {
     }
    event.target.reset();
   }
-  
 
 if(!acc) return(
   <Page title="chat" >
@@ -88,6 +89,14 @@ if(!acc) return(
 
 return (
     <div style={{overflow: 'hidden', padding: '63px 0 0 0'}}>
+     <div className={styles.online}>
+     {online.length>=1 && online.map((o,i) => (
+      <div style={{marginBottom:'9px'}} ref={scrollTarget} key={i}>
+        {o}
+      </div> 
+      )) 
+     }
+     </div>
      <div className={styles.chat}>
        {conversation.map((m,i) => (
       <div style={{marginBottom:'9px'}} ref={scrollTarget} key={i}>
