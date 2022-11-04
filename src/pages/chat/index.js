@@ -87,7 +87,7 @@ if(!acc) return(
 )
 
 return (
-    <div style={{padding: '63px 0 0 0'}}>
+    <div style={{overflow: 'hidden', padding: '63px 0 0 0'}}>
      <div className={styles.chat}>
        {conversation.map((m,i) => (
       <div style={{marginBottom:'9px'}} ref={scrollTarget} key={i}>
@@ -105,7 +105,7 @@ return (
             <Input
                 type="text"
                 onChange={(e) => setMessage(e.target.value)}
-                // autoFocus
+                autoFocus
                 placeholder="send message"
                 max={270}
                 value={message}
