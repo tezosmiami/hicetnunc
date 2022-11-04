@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState, useRef } from 'react'
 import { HicetnuncContext } from '../../context/HicetnuncContext'
 import { fetchGraphQL, getNameForAddress } from '../../data/hicdex'
 import { Textarea } from '../../components/input'
-import { Page, Container, Padding } from '../../components/layout'
+import { Page} from '../../components/layout'
 import { walletPreview } from '../../utils/string'
 import styles from './styles.module.scss'
 import { MessageBasedClient } from '@airgap/beacon-sdk'
@@ -38,7 +38,6 @@ export const Chat = () => {
 
   useEffect(() => {
     if (alias) {
-      // console.log(counter)
     ws.current = new WebSocket("wss://hen-chat.herokuapp.com");
     ws.current.onopen = () => {
       console.log("Connection opened");
@@ -124,10 +123,10 @@ if (counter == 18) return (
 )
 
 return (
-    <div style={{overflow: 'hidden', padding: '63px 0 0 0'}}>
+    <div style={{ padding: '63px 0 0 0'}}>
      <div className={styles.online}>
      {online.length>=1 && online.map((o,i) => (
-      <div style={{marginBottom:'9px'}} ref={scrollTarget} key={i}>
+      <div style={{marginBottom:'9px'}} key={i}>
         {o}
       </div> 
       )) 
@@ -149,7 +148,6 @@ return (
               autoFocus
               placeholder='message'
               onKeyPress={handleKeyPress}
-              className={styles.container1} 
               max={270}
               label='message'
               value={message}

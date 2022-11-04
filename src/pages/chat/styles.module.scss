@@ -7,6 +7,7 @@
   overflow: auto;
   display: flex;
   flex-direction: column;
+  padding-bottom: 58px;
 }
 .online {
   margin: 21px;
@@ -17,6 +18,7 @@
   // justify-content: space-evenly;
   // flex-wrap: wrap;
   // width: 333px;
+  
   border: 1px solid black;
 }
 
@@ -37,7 +39,7 @@
   flex-direction: column;
   padding: 18px;
   overflow:hidden;
-
+  
   & > * {
     display: flex;
     align-items: center;
