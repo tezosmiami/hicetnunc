@@ -2,15 +2,15 @@
 @import '../../styles/layout.scss';
 
 .chat {
-  margin: 36px;
+  margin: 27px;
   height:72vh;
   overflow: auto;
 
 }
 .container {
   position: absolute;
-  bottom: -36px;
-  height:63px;
+  bottom: -21px;
+  height: 63px;
   left: 0;
   width: 100%;
   background-color: var(--background-color);
