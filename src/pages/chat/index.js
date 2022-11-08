@@ -113,7 +113,7 @@ const handleKeyPress = e => {
 
 if(!acc) return(
   <Page title="chat" >
-    <div>please sync wallet for chat. . .</div>
+    <div>: sync to join. . .</div>
   </Page>
 )
 if (counter == 18) return (
