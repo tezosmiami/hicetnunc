@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState, useRef } from 'react'
 import { HicetnuncContext } from '../../context/HicetnuncContext'
 import { fetchGraphQL, getNameForAddress } from '../../data/hicdex'
 import { Textarea } from '../../components/input'
-import { Page} from '../../components/layout'
+import { Page } from '../../components/layout'
 import { walletPreview } from '../../utils/string'
 import styles from './styles.module.scss'
 import { MessageBasedClient } from '@airgap/beacon-sdk'
@@ -99,6 +99,7 @@ const sendMessage = (message) => {
         body: message,
       })
     );
+   counter > 0 && setCounter(1);
   }
 }
 
