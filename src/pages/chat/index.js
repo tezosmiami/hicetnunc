@@ -2,9 +2,11 @@ import React, { useContext, useEffect, useState, useRef } from 'react'
 import { HicetnuncContext } from '../../context/HicetnuncContext'
 import { fetchGraphQL, getNameForAddress } from '../../data/hicdex'
 import { Textarea } from '../../components/input'
-import { Page } from '../../components/layout'
 import { walletPreview } from '../../utils/string'
+import { Page } from '../../components/layout'
+import { Link } from 'react-router-dom'
 import styles from './styles.module.scss'
+
 
 
 export const Chat = () => {
@@ -26,7 +28,7 @@ export const Chat = () => {
           }).then(({ data, errors }) => {
             if (data) {
               const holder = data.hic_et_nunc_holder[0]
-              setAlias(holder?.name || walletPreview(acc.address))
+              setAlias(holder?.name || acc.address)
             }
             if (errors) {
               console.error(errors)
@@ -84,7 +86,7 @@ export const Chat = () => {
   }
   }, [alias, reconnecting]);
 
-  
+
 useEffect(() => {
   if (scrollTarget.current) {
     scrollTarget.current.scrollIntoView({ behavior: "smooth" });
@@ -111,7 +113,6 @@ const handleKeyPress = e => {
             e.target.value=''
   }
 }
-
 if(!acc) return(
   <Page title="chat" >
     <div>: sync to join. . .</div>
@@ -128,17 +129,26 @@ return (
      <div className={styles.online}>
      {online.length>=1 && online.map((o,i) => (
       <div style={{paddingLeft: '9px', marginBottom:'9px'}} key={i}>
-        {o}
+          <Link target="_blank" rel="noopener noreferrer" 
+                to={o.slice(2).length == 36 ? `/tz/${o.slice(2)}` : `/${o.slice(2)}` }>
+            {console.log(o)}
+            {o.slice(2).length == 36 ? `*${walletPreview(o.slice(2))}` : o}
+          </Link>
       </div> 
       )) 
      }
      </div>
      <div className={styles.chat}>
        {conversation.map((m,i) => (
-      <div style={{marginBottom:'9px'}} ref={scrollTarget} key={i}>
-        {m.sender}: {m.body}
+      <div style={{paddingLeft: '144px', textIndent: '-144px', marginBottom:'9px'}} ref={scrollTarget} key={i}>
+          <Link target="_blank" rel="noopener noreferrer" 
+                to={m.sender.length == 36 ? `/tz/${m.sender}` : `/${m.sender}` }>
+            {m.sender.length == 36 ? walletPreview(m.sender) : m.sender}
+          </Link>
+          : {m.body}
+          {console.log(m.sender)}
       </div> 
-    
+
   ))
        }
        </div>

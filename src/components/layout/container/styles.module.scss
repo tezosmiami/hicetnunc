@@ -6,7 +6,7 @@
   margin: 0 auto;
   margin-bottom: 20px;
   word-break: break-word;
-  overflow-x: hidden;
+  // overflow-x: hidden;
 
   @include respond-to('desktop') {
     width: 72%;
