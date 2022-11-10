@@ -130,9 +130,8 @@ return (
      {online.length>=1 && online.map((o,i) => (
       <div style={{paddingLeft: '9px', marginBottom:'9px'}} key={i}>
           <Link target="_blank" rel="noopener noreferrer" 
-                to={o.slice(2).length == 36 ? `/tz/${o.slice(2)}` : `/${o.slice(2)}` }>
-            {console.log(o)}
-            {o.slice(2).length == 36 ? `*${walletPreview(o.slice(2))}` : o}
+                to={o.length == 36 ? `/tz/${o}` : `/${o}` }>
+            {o.length == 36 ? `* ${walletPreview(o)}` : `* ${o}`}
           </Link>
       </div> 
       )) 
@@ -143,10 +142,9 @@ return (
       <div style={{paddingLeft: '144px', textIndent: '-144px', marginBottom:'9px'}} ref={scrollTarget} key={i}>
           <Link target="_blank" rel="noopener noreferrer" 
                 to={m.sender.length == 36 ? `/tz/${m.sender}` : `/${m.sender}` }>
-            {m.sender.length == 36 ? walletPreview(m.sender) : m.sender}
+           {m.sender.length == 36 ? walletPreview(m.sender) : m.sender}
           </Link>
           : {m.body}
-          {console.log(m.sender)}
       </div> 
 
   ))
