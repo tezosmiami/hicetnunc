@@ -126,8 +126,8 @@ if (counter == 18) return (
 return (
     <div style={{ padding: '63px 0 0 0'}}>
      <div className={styles.online}>
-     {online.length>=1 && online.map((o,i) => (
-      <div style={{padding: '9px', marginBottom:'9px'}} key={i}>
+     {online.length>=1 && online.reverse().map((o,i) => (
+      <div style={{paddingLeft: '9px', marginBottom:'9px'}} key={i}>
         {o}
       </div> 
       )) 
