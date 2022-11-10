@@ -73,7 +73,7 @@ export const Chat = () => {
     };
     ws.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      Array.isArray(data.body) ? setOnline(data.body) :
+      Array.isArray(data.body) ? setOnline(data.body.reverse()) :
       setConversation((_messages) => [..._messages, data]);
     };
 
@@ -126,7 +126,7 @@ if (counter == 18) return (
 return (
     <div style={{ padding: '63px 0 0 0'}}>
      <div className={styles.online}>
-     {online.length>=1 && online.reverse().map((o,i) => (
+     {online.length>=1 && online.map((o,i) => (
       <div style={{paddingLeft: '9px', marginBottom:'9px'}} key={i}>
         {o}
       </div> 
