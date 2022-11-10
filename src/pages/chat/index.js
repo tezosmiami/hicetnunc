@@ -140,7 +140,7 @@ return (
      </div>
      <div className={styles.chat}>
        {conversation.map((m,i) => (
-      <div style={{paddingLeft: '144px', textIndent: '-144px', marginBottom:'9px'}} ref={scrollTarget} key={i}>
+      <div style={{paddingLeft: '108px', textIndent: '-108px', marginBottom:'9px'}} ref={scrollTarget} key={i}>
           <Link target="_blank" rel="noopener noreferrer" 
                 to={m.sender.length == 36 ? `/tz/${m.sender}` : `/${m.sender}` }>
            {m.sender.length == 36 ? walletPreview(m.sender) : m.sender}
