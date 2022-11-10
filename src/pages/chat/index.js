@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState, useRef } from 'react'
 import { HicetnuncContext } from '../../context/HicetnuncContext'
 import { fetchGraphQL, getNameForAddress } from '../../data/hicdex'
+import { Button } from '../../components/button'
 import { Textarea } from '../../components/input'
 import { walletPreview } from '../../utils/string'
 import { Page } from '../../components/layout'
@@ -104,13 +105,18 @@ const sendMessage = (message) => {
    counter > 0 && setCounter(1);
   }
 }
-
+const handleSubmit = e => {
+  e.preventDefault()
+  sendMessage(message)
+  setMessage('')
+  e.target.reset()
+}
 const handleKeyPress = e => {
   if (e.key == 'Enter' && !e.shiftKey) {
-            e.preventDefault()
-            sendMessage(e.target.value)
-            setMessage('')
-            e.target.value=''
+    e.preventDefault()
+    sendMessage(e.target.value)
+    setMessage('')
+    e.target.value=''
   }
 }
 if(!acc) return(
@@ -143,7 +149,7 @@ return (
       <div style={{paddingLeft: '108px', textIndent: '-108px', marginBottom:'9px'}} ref={scrollTarget} key={i}>
           <Link target="_blank" rel="noopener noreferrer" 
                 to={m.sender.length == 36 ? `/tz/${m.sender}` : `/${m.sender}` }>
-           {m.sender.length == 36 ? walletPreview(m.sender) : m.sender}
+              {m.sender.length == 36 ? walletPreview(m.sender) : m.sender}
           </Link>
           : {m.body}
       </div> 
@@ -152,6 +158,7 @@ return (
        }
        </div>
         <div className={styles.container}>
+          <form onSubmit={handleSubmit}> 
           <Textarea
               type='text'
               onChange={(e) => setMessage(e.target.value)}
@@ -162,6 +169,23 @@ return (
               label='message'
               value={message}
           />
+          
+           <Button type='submit' fit>
+              <svg 
+                  width="55px"
+                  height="55px"
+                  viewBox="0 0 44 44"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  style={{
+                              fill: 'var(--text-color)',
+                              stroke: 'var(--background-color)',
+                            }}
+                >
+              <path d="M22 12L3 20l3.563-8L3 4l19 8zM6.5 12H22"  />
+              </svg>
+          </Button>
+          </form>
         </div>
     </div>
   )

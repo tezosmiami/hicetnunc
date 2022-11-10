@@ -36,8 +36,8 @@
   padding: $mobile-padding;
   display: flex;
   align-items: center;
-  flex-direction: column;
-  padding: 18px;
+  flex-direction: row;
+  padding-top: 55px;
   overflow:hidden;
   
   & > * {
