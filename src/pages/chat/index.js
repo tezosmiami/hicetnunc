@@ -131,8 +131,8 @@ return (
       <div style={{paddingLeft: '9px', marginBottom:'9px'}} key={i}>
             {'* '}
           <Link target="_blank" rel="noopener noreferrer" 
-                to={o.length == 36 ? `/tz/${o}` : `/${o}` }>
-            {o.length == 36 ? walletPreview(o) : o}
+                to={o?.length == 36 ? `/tz/${o}` : `/${o}` }>
+            {o?.length == 36 ? walletPreview(o) : o}
           </Link>
       </div> 
       )) 
