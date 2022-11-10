@@ -5,7 +5,7 @@ import { Textarea } from '../../components/input'
 import { Page } from '../../components/layout'
 import { walletPreview } from '../../utils/string'
 import styles from './styles.module.scss'
-import { MessageBasedClient } from '@airgap/beacon-sdk'
+
 
 export const Chat = () => {
     const [alias, setAlias] = useState();
@@ -127,7 +127,7 @@ return (
     <div style={{ padding: '63px 0 0 0'}}>
      <div className={styles.online}>
      {online.length>=1 && online.map((o,i) => (
-      <div style={{marginBottom:'9px'}} key={i}>
+      <div style={{padding: '9px', marginBottom:'9px'}} key={i}>
         {o}
       </div> 
       )) 
