@@ -129,9 +129,10 @@ return (
      <div className={styles.online}>
      {online.length>=1 && online.map((o,i) => (
       <div style={{paddingLeft: '9px', marginBottom:'9px'}} key={i}>
+            {'* '}
           <Link target="_blank" rel="noopener noreferrer" 
                 to={o.length == 36 ? `/tz/${o}` : `/${o}` }>
-            {o.length == 36 ? `* ${walletPreview(o)}` : `* ${o}`}
+            {o.length == 36 ? walletPreview(o) : o}
           </Link>
       </div> 
       )) 
