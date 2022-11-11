@@ -119,6 +119,7 @@ const handleKeyPress = e => {
     e.target.value=''
   }
 }
+
 if(!acc) return(
   <Page title="chat" >
     <div>: sync to join. . .</div>
@@ -145,17 +146,17 @@ return (
      }
      </div>
      <div className={styles.chat}>
-       {conversation.map((m,i) => (
-        
+       {conversation.map((m,i) => ( 
       <div style={{paddingLeft: `${m.sender?.length == 36 ? 
-        walletPreview(m.sender).length+2 : m.sender?.length+2 }ch`, textIndent:  `-${m.sender?.length == 36 ? 
-          walletPreview(m.sender).length+2 : m.sender?.length+2 }ch`, marginBottom:'9px'}} ref={scrollTarget} key={i}>
-
-          <Link target="_blank" rel="noopener noreferrer" 
-                to={m.sender.length == 36 ? `/tz/${m.sender}` : `/${m.sender}` }>
-              {m.sender.length == 36 ? walletPreview(m.sender) : m.sender}
-          </Link>
-          : {m.body}
+          walletPreview(m.sender).length+2 : m.sender?.length+2 }ch`, 
+          textIndent:  `-${m.sender?.length == 36 ? 
+          walletPreview(m.sender).length+2 : m.sender?.length+2 }ch`,
+          marginBottom:'9px'}} ref={scrollTarget} key={i}>
+            <Link target="_blank" rel="noopener noreferrer" 
+                  to={m.sender.length == 36 ? `/tz/${m.sender}` : `/${m.sender}` }>
+                {m.sender.length == 36 ? walletPreview(m.sender) : m.sender}
+            </Link>
+          : <span style={{wordWrap: 'break-word', whiteSpace:'pre'}}>{m.body}</span>
       </div> 
 
   ))
