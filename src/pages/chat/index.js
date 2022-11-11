@@ -16,11 +16,12 @@ export const Chat = () => {
     const [conversation, setConversation] = useState([]);
     const [connected, setConnected] = useState(false);
     const [reconnecting, setReconnecting] = useState(null)
-    const [counter, setCounter] = useState(0)
+    // const [counter, setCounter] = useState(0)
     const [online, setOnline] = useState([])
     const { acc } = useContext(HicetnuncContext)
     const scrollTarget = useRef(null);
     const ws = useRef();
+    const counter = useRef(0)
 
    useEffect(() => {
     const updateAlias = async () => {
@@ -47,8 +48,7 @@ export const Chat = () => {
       setConnected(true);
       ws.current.send(
         JSON.stringify({
-          alias: alias,
-          counter: counter
+          alias: alias
         }),
       );
     };
@@ -58,7 +58,7 @@ export const Chat = () => {
       if (ws.current) {
         console.log('ws closed by server');
       } else {
-        console.log('ws closed by app component unmount');
+        console.log('ws closed by dapp component unmount');
         return;
       }
 
@@ -68,8 +68,8 @@ export const Chat = () => {
       setConnected(false);
       console.log('ws closed');
 
-      if (counter < 18) {
-        setCounter(counter+1)
+      if (counter.current < 18) {
+        counter.current++
         setReconnecting(true);
         setTimeout(() => setReconnecting(null), 5000);
       }
@@ -102,7 +102,7 @@ const sendMessage = (message) => {
         body: message,
       })
     );
-   counter > 0 && setCounter(1);
+   counter.current > 0 && (counter.current = 1)
   }
 }
 const handleSubmit = e => {
