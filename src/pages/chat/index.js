@@ -41,7 +41,7 @@ export const Chat = () => {
 
   useEffect(() => {
     if (alias) {
-    ws.current = new WebSocket("wss://hen-chat.herokuapp.com");
+    ws.current = new WebSocket('wss://hen-chat.herokuapp.com');
     ws.current.onopen = () => {
       console.log("Connection opened");
       setConnected(true);
@@ -146,7 +146,11 @@ return (
      </div>
      <div className={styles.chat}>
        {conversation.map((m,i) => (
-      <div style={{paddingLeft: '108px', textIndent: '-108px', marginBottom:'9px'}} ref={scrollTarget} key={i}>
+        
+      <div style={{paddingLeft: `${m.sender?.length == 36 ? 
+        walletPreview(m.sender).length+2 : m.sender?.length+2 }ch`, textIndent:  `-${m.sender?.length == 36 ? 
+          walletPreview(m.sender).length+2 : m.sender?.length+2 }ch`, marginBottom:'9px'}} ref={scrollTarget} key={i}>
+
           <Link target="_blank" rel="noopener noreferrer" 
                 to={m.sender.length == 36 ? `/tz/${m.sender}` : `/${m.sender}` }>
               {m.sender.length == 36 ? walletPreview(m.sender) : m.sender}
