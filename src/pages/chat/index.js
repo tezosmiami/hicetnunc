@@ -156,7 +156,7 @@ return (
                   to={m.sender.length == 36 ? `/tz/${m.sender}` : `/${m.sender}` }>
                 {m.sender.length == 36 ? walletPreview(m.sender) : m.sender}
             </Link>
-          : <span style={{wordWrap: 'break-word', whiteSpace:'pre'}}>{m.body}</span>
+          : <span style={{wordWrap: 'break-word', whiteSpace:'pre-line' }}>{m.body}</span>
       </div> 
 
   ))
