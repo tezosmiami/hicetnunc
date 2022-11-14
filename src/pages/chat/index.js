@@ -23,7 +23,7 @@ export const Chat = () => {
     const [connected, setConnected] = useState(false);
     const [reconnecting, setReconnecting] = useState(null)
     // const [counter, setCounter] = useState(0)
-    const [online, setOnline] = useState([])
+    const [online, setOnline] = useState([alias])
     const { acc } = useContext(HicetnuncContext)
     const scrollTarget = useRef(null);
     const ws = useRef();
