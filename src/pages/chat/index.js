@@ -8,6 +8,12 @@ import { Page } from '../../components/layout'
 import { Link } from 'react-router-dom'
 import styles from './styles.module.scss'
 
+const pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+  '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+  '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+  '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+  '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+  '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
 
 
 export const Chat = () => {
@@ -156,7 +162,15 @@ return (
                   to={m.sender.length == 36 ? `/tz/${m.sender}` : `/${m.sender}` }>
                 {m.sender.length == 36 ? walletPreview(m.sender) : m.sender}
             </Link>
-          : <span style={{wordWrap: 'break-word', whiteSpace:'pre-line' }}>{m.body}</span>
+          : {
+            RegExp(pattern, "i").test(m.body) ? 
+            <a href={m.body.slice(0, 4) !== 'http' ? 'https://'+ m.body : m.body}
+              className={styles.message}
+              target="_blank" rel="noopener noreferrer" >
+                {m.body}
+            </a> :        
+            <span className={styles.message}>{m.body}</span>
+          }
       </div> 
 
   ))
