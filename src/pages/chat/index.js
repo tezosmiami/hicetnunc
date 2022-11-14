@@ -35,8 +35,10 @@ export const Chat = () => {
             address: acc.address,
           }).then(({ data, errors }) => {
             if (data) {
-              const holder = data.hic_et_nunc_holder[0]
-              setAlias(holder?.name || acc.address)
+              const holder = data.hic_et_nunc_holder[0]?.name || acc.address
+              setAlias(holder)
+              setOnline([holder])
+              
             }
             if (errors) {
               console.error(errors)
