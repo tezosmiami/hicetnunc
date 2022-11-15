@@ -47,6 +47,7 @@
   flex-direction: row;
   padding-top: 55px;
   overflow:hidden;
+  z-index:101;
   
   & > * {
     display: flex;
@@ -109,6 +110,7 @@
 }
 .cardContainer:hover .card {
   opacity: 0.80;
+
 }
 
 .cardText {
@@ -136,7 +138,7 @@
   text-align: end;
   bottom: 0;
   right: 0;
-  margin: 18px;
+  margin: 11px;
   text-indent:0px;
   
   .cardCollectPrice {

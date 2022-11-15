@@ -225,7 +225,9 @@ return (
                           <Button
                               style={{ position: 'relative' }}
                               key={m.id}
-                              to={`${PATH.OBJKT}/${m.id}`}>
+                              href={`${PATH.OBJKT}/${m.id}`}
+                              target="_blank" rel="noopener noreferrer"
+                            >
                               <div className={styles.container}>
                                 {renderMediaType({
                                   mimeType: m.metadata.mime,
@@ -236,18 +238,20 @@ return (
                               </div>
                           </Button>
                       <div className={`${styles.card} ${styles.collection} ${m.metadata.mime=='audio/mpeg' && styles.audio}`}>
-                          <Link 
-                          target="_blank" rel="noopener noreferrer"
-                          to={`${PATH.OBJKT}/${m.id}`}
+                          <Button
+                          href={`${PATH.OBJKT}/${m.id}`}
                           >
                             <div className={styles.cardText}>   
                               <div>OBJKT#{m.id}</div>
                               <div>{m.metadata.title}</div>
                             </div>
-                          </Link>
+                          </Button>
 
                       <div className={styles.cardText}>   
-                        <Link className={styles.text} to={`${PATH.ISSUER}/${m.metadata.creator.address}`}>
+                        <Link
+                          className={styles.text}
+                          target="_blank" rel="noopener noreferrer"
+                          to={`${PATH.ISSUER}/${m.metadata.creator.address}`}>
                           {m.metadata.creator.name || walletPreview(m.metadata.creator.address)}
                         </Link>
                       </div>
