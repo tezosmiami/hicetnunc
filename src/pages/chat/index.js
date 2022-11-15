@@ -3,7 +3,7 @@ import { ResponsiveMasonry } from '../../components/responsive-masonry'
 import { HicetnuncContext } from '../../context/HicetnuncContext'
 import { fetchGraphQL, getNameForAddress } from '../../data/hicdex'
 import { renderMediaType } from '../../components/media-types'
-import { Page, Container} from '../../components/layout'
+import { Page } from '../../components/layout'
 import { Button } from '../../components/button'
 import { Textarea } from '../../components/input'
 import { walletPreview } from '../../utils/string'
@@ -188,7 +188,6 @@ if (counter == 18) return (
 )
 
 return (
-  // <Page title={'chat'}>
   <>
   {!collapsed ? <Display address={acc.address} setObjkt={setObjkt} setCollapsed={setCollapsed}/> :
     <div style={{ padding: '63px 0 0 0'}}>
@@ -216,8 +215,7 @@ return (
                 {m.sender.length == 36 ? walletPreview(m.sender) : m.sender}
             </Link>
           :
-           {
-            RegExp(pattern, "i").test(m.body) ? 
+           { RegExp(pattern, "i").test(m.body) ? 
             <a href={m.body.slice(0, 4) !== 'http' ? 'https://'+ m.body : m.body}
               className={styles.message}
               target="_blank" rel="noopener noreferrer" >
@@ -225,7 +223,6 @@ return (
             </a> :    
                      m.metadata ? 
                      <>
-                  <Container>
                     <ResponsiveMasonry>
                      <div className={styles.cardContainer} >
                      <Button
@@ -244,7 +241,10 @@ return (
                      
                    <div className={styles.cardContainer}>
                      <div className={`${styles.card} ${styles.collection} ${m.metadata.mime=='audio/mpeg' && styles.audio}`}>
-                       <Link to={`${PATH.OBJKT}/${m.id}`}>
+                       <Link 
+                       target="_blank" rel="noopener noreferrer"
+                       to={`${PATH.OBJKT}/${m.id}`}
+                       >
                          <div className={styles.cardText}>   
                            <div>OBJKT#{m.id}</div>
                            <div>{m.metadata.title}</div>
@@ -268,16 +268,8 @@ return (
                      </div>
                    </div>      
                    </ResponsiveMasonry>
-                   </Container>
                    </>    
-                   : m.body}
-            {/* <span className={styles.message}>{m.metadata ?
-              renderMediaType({
-              mimeType: m.metadata.mime,
-              artifactUri: m.metadata.artifact_uri,
-              displayUri: m.metadata.display_uri,
-              displayView: true
-            }) : m.body}</span> */}
+                   : m.body }
       </div>
     ))
   }

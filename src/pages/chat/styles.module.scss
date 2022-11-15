@@ -112,12 +112,14 @@
   opacity: 1;
   overflow: hidden;
   white-space: nowrap;
+  text-indent:0px;
 }
 
 .cardTitle {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  text-indent:0px;
 }
 
 .cardCollect {
@@ -127,7 +129,9 @@
   right: 0;
   border-right: 2px solid var(--background-color);
   border-bottom: 2px solid var(--background-color);
-  // margin: 18px;
+  margin: 18px;
+  text-indent:0px;
+  
 
   .cardCollectPrice {
     color: var(--background-color);
@@ -173,7 +177,7 @@ span[data-tooltip] {
   &:after,
   &:before {
     position: absolute;
-    visibility: hidden;
+    // visibility: hidden;
     opacity: 1;
     transition: transform 200ms ease, opacity 200ms;
     z-index: 99;
