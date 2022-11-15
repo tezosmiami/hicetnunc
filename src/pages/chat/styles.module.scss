@@ -80,7 +80,8 @@
     transition: background-color #{$theme-duration} ease-out,
       color #{$theme-duration} ease-out;
   }
-  padding-bottom: 27px;
+  // padding-bottom: 27px;
+  margin-bottom: 27px;
 }
 
 
@@ -108,7 +109,6 @@
 }
 .cardContainer:hover .card {
   opacity: 0.80;
-
 }
 
 .cardText {
@@ -130,16 +130,20 @@
 
 .cardCollect {
   @include resetButton;
-  position: absolute;
+  position: relative;
+  justify-content: end;
+  align-items: flex-end;
+  text-align: end;
   bottom: 0;
   right: 0;
-  border-right: 2px solid var(--background-color);
-  border-bottom: 2px solid var(--background-color);
   margin: 18px;
   text-indent:0px;
   
   .cardCollectPrice {
+    padding: 0 27px 0 27px;
     color: var(--background-color);
+    border-right: 2px solid var(--background-color);
+    border-bottom: 2px solid var(--background-color);
   }
 }
 
