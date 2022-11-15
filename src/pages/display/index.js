@@ -1046,7 +1046,7 @@ export default class Display extends Component {
                           </div>
                         </Link>
                           <div className={styles.cardCollect}>
-                            <Button onClick={() => this.context.collect(nft.swaps[0].id, nft.swaps[0].price)}>
+                            <Button onClick={() => nft.swaps[0]?.price && this.context.collect(nft.swaps[0].id, nft.swaps[0].price)}>
                               <Purchase>
                                 <div className={styles.cardCollectPrice}>
                                   {nft.swaps && nft.swaps.length > 0 ? 'collect for ' + nft.swaps[0].price / 1000000 + ' tez' : 'not for sale'}

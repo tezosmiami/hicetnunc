@@ -256,7 +256,7 @@ return (
                         </Link>
                       </div>
                         <div className={styles.cardCollect}>
-                          <Button onClick={() => collect(m.id, m.metadata.swaps[0]?.price)}>
+                          <Button onClick={() => m.metadata.swaps[0]?.price && collect(m.id, m.metadata.swaps[0]?.price)}>
                             <Purchase>
                               <div className={styles.cardCollectPrice}>
                                 {m.metadata.swaps[0]?.price ? 'collect for ' + m.metadata.swaps[0]?.price / 1000000 : 'not for sale'}
