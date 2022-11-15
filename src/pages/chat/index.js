@@ -263,7 +263,7 @@ return (
                       </div>
                     </div>
                   </div>
-                : m.body }
+                : <span>{' '+m.body}</span> }
            </div>
         ))
       }
