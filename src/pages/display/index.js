@@ -276,7 +276,7 @@ export default class Display extends Component {
     render: false,
     loading: true,
     hasMore: true,
-    rstricted: false,
+    restricted: false,
     offset: 0,
     results: [],
     objkts: [],

@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState, useRef } from 'react'
 import { HicetnuncContext } from '../../context/HicetnuncContext'
 import { fetchGraphQL, getNameForAddress } from '../../data/hicdex'
+import { renderMediaType } from '../../components/media-types'
 import { Button } from '../../components/button'
 import { Textarea } from '../../components/input'
 import { walletPreview } from '../../utils/string'
+import Display  from '../../components/objkt-select'
 import { Page } from '../../components/layout'
 import { Link } from 'react-router-dom'
 import styles from './styles.module.scss'
@@ -15,19 +17,52 @@ const pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
   '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
   '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
 
+const query_objkt = `
+  query objkt($id: bigint!) {
+    hic_et_nunc_token_by_pk(id: $id) {
+    id
+    mime
+    display_uri
+    description
+    artifact_uri
+    thumbnail_uri
+    title
+    }
+  }
+`
+  async function fetchObjkt(id) {
+    const { errors, data } = await fetchGraphQL(query_objkt, 'objkt', { id })
+    if (errors) {
+      console.error(errors)
+    }
+    const result = data.hic_et_nunc_token_by_pk
+    return result
+  }
 
 export const Chat = () => {
     const [alias, setAlias] = useState();
     const [message, setMessage] = useState();
+    const [objkt, setObjkt] = useState(0)
     const [conversation, setConversation] = useState([]);
+    const [collapsed, setCollapsed] = useState(true)
     const [connected, setConnected] = useState(false);
     const [reconnecting, setReconnecting] = useState(null)
-    // const [counter, setCounter] = useState(0)
     const [online, setOnline] = useState([alias])
     const { acc } = useContext(HicetnuncContext)
     const scrollTarget = useRef(null);
     const ws = useRef();
     const counter = useRef(0)
+
+  
+   useEffect(() => {
+    const sendObjkt = () => {
+      if (objkt > 1) {
+        sendMessage(' ')
+        setObjkt(0)
+     }
+    }
+    sendObjkt()
+  }, [objkt])
 
    useEffect(() => {
     const updateAlias = async () => {
@@ -82,10 +117,11 @@ export const Chat = () => {
         setTimeout(() => setReconnecting(null), 5000);
       }
     };
-    ws.current.onmessage = (event) => {
+    ws.current.onmessage = async (event) => {
       const data = JSON.parse(event.data);
+      if (data.id) data.metadata = await fetchObjkt(data.id)
       Array.isArray(data.body) ? setOnline(data.body.reverse()) :
-      setConversation((_messages) => [..._messages, data]);
+      setConversation((_messages) => [..._messages, data])
     };
 
     return () => {
@@ -103,11 +139,13 @@ useEffect(() => {
 }, [conversation.length]);
 
 const sendMessage = (message) => {  
-  if (message) {
+  if (message === '/objkt') setCollapsed(false)
+  else if (message) {
     ws.current.send(
       JSON.stringify({
         sender: alias,
         body: message,
+        id: objkt
       })
     );
    counter.current > 0 && (counter.current = 1)
@@ -135,11 +173,13 @@ if(!acc) return(
 )
 if (counter == 18) return (
 <Page title="chat" >
-  <div>disconnected. . .</div>
+  <div> disconnected. . .</div>
 </Page>
 )
 
 return (
+  <>
+  {!collapsed ? <Display address={acc.address} setObjkt={setObjkt} setCollapsed={setCollapsed}/> :
     <div style={{ padding: '63px 0 0 0'}}>
      <div className={styles.online}>
      {online.length>=1 && online.map((o,i) => (
@@ -171,12 +211,17 @@ return (
               target="_blank" rel="noopener noreferrer" >
                 {m.body}
             </a> :        
-            <span className={styles.message}>{m.body}</span>
+            <span className={styles.message}>{m.metadata ?
+              renderMediaType({
+              mimeType: m.metadata.mime,
+              artifactUri: m.metadata.artifact_uri,
+              displayUri: m.metadata.display_uri,
+              displayView: true
+            }) : m.body}</span>
           }
       </div> 
-
-  ))
-       }
+    ))
+  }
        </div>
         <div className={styles.container}>
           <form onSubmit={handleSubmit}> 
@@ -209,5 +254,7 @@ return (
           </form>
         </div>
     </div>
+  }  
+  </>
   )
 }
