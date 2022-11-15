@@ -445,10 +445,10 @@ export default class Display extends Component {
       return (
       <Page title={this.state.alias}>
            {this.state.wallet.substr(0, 2) !== 'KT' && (
-          <Container medium>
+          <Container>
             <Padding>
               <div className={styles.menu}>
-              <div onClick={this.exit} style={{margin: '18px', textAlign:'right'}}>X</div> 
+              <div onClick={this.exit} style={{margin: '18px', textAlign:'right'}}>[X]</div> 
                 <Button onClick={this.creations}>
                   <Primary selected={this.state.creationsState}>
                     creations

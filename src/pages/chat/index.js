@@ -1,13 +1,16 @@
 import React, { useContext, useEffect, useState, useRef } from 'react'
+import { ResponsiveMasonry } from '../../components/responsive-masonry'
 import { HicetnuncContext } from '../../context/HicetnuncContext'
 import { fetchGraphQL, getNameForAddress } from '../../data/hicdex'
 import { renderMediaType } from '../../components/media-types'
+import { Page, Container} from '../../components/layout'
 import { Button } from '../../components/button'
 import { Textarea } from '../../components/input'
 import { walletPreview } from '../../utils/string'
 import Display  from '../../components/objkt-select'
-import { Page } from '../../components/layout'
+import { Purchase } from '../../components/button'
 import { Link } from 'react-router-dom'
+import { PATH } from '../../constants'
 import styles from './styles.module.scss'
 
 const pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
@@ -20,13 +23,20 @@ const pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
 const query_objkt = `
   query objkt($id: bigint!) {
     hic_et_nunc_token_by_pk(id: $id) {
-    id
-    mime
-    display_uri
-    description
-    artifact_uri
-    thumbnail_uri
-    title
+      id
+      mime
+      display_uri
+      description
+      artifact_uri
+      thumbnail_uri
+      title
+      swaps(order_by: {price: asc}, limit: 1, where: {amount_left: {_gte: "1"}, contract_version: {_eq: "2"}, status: {_eq: "0"}}) {
+        price
+      }
+      creator{
+        name
+        address
+      }
     }
   }
 `
@@ -48,12 +58,12 @@ export const Chat = () => {
     const [connected, setConnected] = useState(false);
     const [reconnecting, setReconnecting] = useState(null)
     const [online, setOnline] = useState([alias])
-    const { acc } = useContext(HicetnuncContext)
+    const { acc, collect } = useContext(HicetnuncContext)
+    console.log(acc)
     const scrollTarget = useRef(null);
     const ws = useRef();
     const counter = useRef(0)
 
-  
    useEffect(() => {
     const sendObjkt = () => {
       if (objkt > 1) {
@@ -85,7 +95,7 @@ export const Chat = () => {
 
   useEffect(() => {
     if (alias) {
-    ws.current = new WebSocket('wss://hen-chat.herokuapp.com');
+    ws.current = new WebSocket('ws://localhost:8080');
     ws.current.onopen = () => {
       console.log("Connection opened");
       setConnected(true);
@@ -139,7 +149,7 @@ useEffect(() => {
 }, [conversation.length]);
 
 const sendMessage = (message) => {  
-  if (message === '/objkt') setCollapsed(false)
+  if (message.toUpperCase() === '/objkt'.toUpperCase()) setCollapsed(false)
   else if (message) {
     ws.current.send(
       JSON.stringify({
@@ -178,6 +188,7 @@ if (counter == 18) return (
 )
 
 return (
+  // <Page title={'chat'}>
   <>
   {!collapsed ? <Display address={acc.address} setObjkt={setObjkt} setCollapsed={setCollapsed}/> :
     <div style={{ padding: '63px 0 0 0'}}>
@@ -204,26 +215,74 @@ return (
                   to={m.sender.length == 36 ? `/tz/${m.sender}` : `/${m.sender}` }>
                 {m.sender.length == 36 ? walletPreview(m.sender) : m.sender}
             </Link>
-          : {
+          :
+           {
             RegExp(pattern, "i").test(m.body) ? 
             <a href={m.body.slice(0, 4) !== 'http' ? 'https://'+ m.body : m.body}
               className={styles.message}
               target="_blank" rel="noopener noreferrer" >
                 {m.body}
-            </a> :        
-            <span className={styles.message}>{m.metadata ?
+            </a> :    
+                     m.metadata ? 
+                     <>
+                  <Container>
+                    <ResponsiveMasonry>
+                     <div className={styles.cardContainer} >
+                     <Button
+                       style={{ position: 'relative' }}
+                       key={m.id}
+                       to={`${PATH.OBJKT}/${m.id}`}>
+                       <div className={styles.container}>
+                         {renderMediaType({
+                           mimeType: m.metadata.mime,
+                           artifactUri: m.metadata.artifact_uri,
+                           displayUri: m.metadata.display_uri,
+                           displayView: true
+                         })}
+                       </div>
+                     </Button>
+                     
+                   <div className={styles.cardContainer}>
+                     <div className={`${styles.card} ${styles.collection} ${m.metadata.mime=='audio/mpeg' && styles.audio}`}>
+                       <Link to={`${PATH.OBJKT}/${m.id}`}>
+                         <div className={styles.cardText}>   
+                           <div>OBJKT#{m.id}</div>
+                           <div>{m.metadata.title}</div>
+                         </div>
+                       </Link>
+                     <div className={styles.cardText}>   
+                       <Link className={styles.text} to={`${PATH.ISSUER}/${m.metadata.creator.address}`}>
+                         {m.metadata.creator.name || walletPreview(m.metadata.creator.address)}
+                       </Link>
+                     </div>
+                   </div>
+                    </div>
+                     <div className={styles.cardCollect}>
+                       <Button onClick={() => collect(m.id, m.metadata.swaps[0]?.price)}>
+                         <Purchase>
+                           <div className={styles.cardCollectPrice}>
+                             {m.metadata.swaps[0]?.price ? 'collect for ' + m.metadata.swaps[0]?.price / 1000000 : 'not for sale'}
+                           </div>
+                         </Purchase>
+                       </Button>
+                     </div>
+                   </div>      
+                   </ResponsiveMasonry>
+                   </Container>
+                   </>    
+                   : m.body}
+            {/* <span className={styles.message}>{m.metadata ?
               renderMediaType({
               mimeType: m.metadata.mime,
               artifactUri: m.metadata.artifact_uri,
               displayUri: m.metadata.display_uri,
               displayView: true
-            }) : m.body}</span>
-          }
-      </div> 
+            }) : m.body}</span> */}
+      </div>
     ))
   }
        </div>
-        <div className={styles.container}>
+        <div className={styles.footer}>
           <form onSubmit={handleSubmit}> 
           <Textarea
               type='text'
@@ -256,5 +315,6 @@ return (
     </div>
   }  
   </>
+  // </Page>
   )
 }
