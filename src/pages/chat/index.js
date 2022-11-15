@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState, useRef } from 'react'
-import { ResponsiveMasonry } from '../../components/responsive-masonry'
 import { HicetnuncContext } from '../../context/HicetnuncContext'
 import { fetchGraphQL, getNameForAddress } from '../../data/hicdex'
 import { renderMediaType } from '../../components/media-types'
@@ -59,7 +58,6 @@ export const Chat = () => {
     const [reconnecting, setReconnecting] = useState(null)
     const [online, setOnline] = useState([alias])
     const { acc, collect } = useContext(HicetnuncContext)
-    console.log(acc)
     const scrollTarget = useRef(null);
     const ws = useRef();
     const counter = useRef(0)
@@ -216,63 +214,59 @@ return (
             </Link>
           :
            { RegExp(pattern, "i").test(m.body) ? 
-            <a href={m.body.slice(0, 4) !== 'http' ? 'https://'+ m.body : m.body}
-              className={styles.message}
-              target="_blank" rel="noopener noreferrer" >
-                {m.body}
-            </a> :    
+                <a href={m.body.slice(0, 4) !== 'http' ? 'https://'+ m.body : m.body}
+                  className={styles.message}
+                  target="_blank" rel="noopener noreferrer" >
+                    {m.body}
+                </a> :    
                      m.metadata ? 
-                     <>
-                    <ResponsiveMasonry>
-                     <div className={styles.cardContainer} >
-                     <Button
-                       style={{ position: 'relative' }}
-                       key={m.id}
-                       to={`${PATH.OBJKT}/${m.id}`}>
-                       <div className={styles.container}>
-                         {renderMediaType({
-                           mimeType: m.metadata.mime,
-                           artifactUri: m.metadata.artifact_uri,
-                           displayUri: m.metadata.display_uri,
-                           displayView: true
-                         })}
-                       </div>
-                     </Button>
-                     
-                   <div className={styles.cardContainer}>
-                     <div className={`${styles.card} ${styles.collection} ${m.metadata.mime=='audio/mpeg' && styles.audio}`}>
-                       <Link 
-                       target="_blank" rel="noopener noreferrer"
-                       to={`${PATH.OBJKT}/${m.id}`}
-                       >
-                         <div className={styles.cardText}>   
-                           <div>OBJKT#{m.id}</div>
-                           <div>{m.metadata.title}</div>
-                         </div>
-                       </Link>
-                     <div className={styles.cardText}>   
-                       <Link className={styles.text} to={`${PATH.ISSUER}/${m.metadata.creator.address}`}>
-                         {m.metadata.creator.name || walletPreview(m.metadata.creator.address)}
-                       </Link>
-                     </div>
-                   </div>
+                     <div className={styles.objkt}>
+                      <div className={styles.cardContainer} >
+                          <Button
+                              style={{ position: 'relative' }}
+                              key={m.id}
+                              to={`${PATH.OBJKT}/${m.id}`}>
+                              <div className={styles.container}>
+                                {renderMediaType({
+                                  mimeType: m.metadata.mime,
+                                  artifactUri: m.metadata.artifact_uri,
+                                  displayUri: m.metadata.display_uri,
+                                  displayView: true
+                                })}
+                              </div>
+                          </Button>
+                      <div className={`${styles.card} ${styles.collection} ${m.metadata.mime=='audio/mpeg' && styles.audio}`}>
+                          <Link 
+                          target="_blank" rel="noopener noreferrer"
+                          to={`${PATH.OBJKT}/${m.id}`}
+                          >
+                            <div className={styles.cardText}>   
+                              <div>OBJKT#{m.id}</div>
+                              <div>{m.metadata.title}</div>
+                            </div>
+                          </Link>
+
+                      <div className={styles.cardText}>   
+                        <Link className={styles.text} to={`${PATH.ISSUER}/${m.metadata.creator.address}`}>
+                          {m.metadata.creator.name || walletPreview(m.metadata.creator.address)}
+                        </Link>
+                      </div>
+                        <div className={styles.cardCollect}>
+                          <Button onClick={() => collect(m.id, m.metadata.swaps[0]?.price)}>
+                            <Purchase>
+                              <div className={styles.cardCollectPrice}>
+                                {m.metadata.swaps[0]?.price ? 'collect for ' + m.metadata.swaps[0]?.price / 1000000 : 'not for sale'}
+                              </div>
+                            </Purchase>
+                          </Button>
+                        </div>
+                      </div>
                     </div>
-                     <div className={styles.cardCollect}>
-                       <Button onClick={() => collect(m.id, m.metadata.swaps[0]?.price)}>
-                         <Purchase>
-                           <div className={styles.cardCollectPrice}>
-                             {m.metadata.swaps[0]?.price ? 'collect for ' + m.metadata.swaps[0]?.price / 1000000 : 'not for sale'}
-                           </div>
-                         </Purchase>
-                       </Button>
-                     </div>
-                   </div>      
-                   </ResponsiveMasonry>
-                   </>    
-                   : m.body }
-      </div>
-    ))
-  }
+                  </div>
+                : m.body }
+           </div>
+        ))
+      }
        </div>
         <div className={styles.footer}>
           <form onSubmit={handleSubmit}> 
