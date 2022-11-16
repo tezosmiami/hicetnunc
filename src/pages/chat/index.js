@@ -227,14 +227,17 @@ return (
                 {m.sender.length == 36 ? walletPreview(m.sender) : m.sender}
             </Link>
           :
-           { RegExp(pattern, "i").test(m.body) ? 
+           { RegExp(pattern, "i").test(m.body) ?
                 <a href={m.body.slice(0, 4) !== 'http' ? 'https://'+ m.body : m.body}
                   className={styles.message}
                   target="_blank" rel="noopener noreferrer" >
-                    {m.body}
+                    {'  ' + m.body}
                 </a> :    
                      m.metadata ? 
-                     <div className={styles.objkt}>
+                     <div style={{marginLeft: m.metadata.mime.includes('video') ? 
+                     `${m.sender?.length == 36 ? walletPreview(m.sender).length+2
+                      : m.sender?.length+2 }ch` : '0'}} className={styles.objkt}
+                      >
                       <div className={styles.cardContainer} >
                           <Button
                               style={{ position: 'relative' }}
@@ -251,7 +254,9 @@ return (
                                 })}
                               </div>
                           </Button>
-                      <div className={`${styles.card} ${styles.collection} ${m.metadata.mime=='audio/mpeg' && styles.audio}`}>
+                      <div className={`${styles.card} ${styles.collection}
+                         ${m.metadata.mime=='audio/mpeg' && styles.audio}`}
+                        >
                           <Button
                           href={`${PATH.OBJKT}/${m.id}`}
                           >
