@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState, useRef } from 'react'
 import { HicetnuncContext } from '../../context/HicetnuncContext'
 import { fetchGraphQL, getNameForAddress } from '../../data/hicdex'
+import { getRestrictedAddresses, fetchCollection, query_collection} from '../../components/objkt-select'
 import { renderMediaType } from '../../components/media-types'
 import { Page } from '../../components/layout'
 import { Button } from '../../components/button'
 import { Textarea } from '../../components/input'
 import { walletPreview } from '../../utils/string'
-import Display  from '../../components/objkt-select'
+import  Select  from '../../components/objkt-select'
 import { Purchase } from '../../components/button'
 import { Link } from 'react-router-dom'
 import { PATH } from '../../constants'
@@ -47,6 +48,7 @@ const query_objkt = `
     const result = data.hic_et_nunc_token_by_pk
     return result
   }
+
 
 export const Chat = () => {
     const [alias, setAlias] = useState();
@@ -146,18 +148,30 @@ useEffect(() => {
   }
 }, [conversation.length]);
 
-const sendMessage = (message) => {  
-  if (message.toUpperCase() === '/objkt'.toUpperCase()) setCollapsed(false)
-  else if (message) {
-    ws.current.send(
-      JSON.stringify({
-        sender: alias,
-        body: message,
-        id: objkt
-      })
-    );
-   counter.current > 0 && (counter.current = 1)
-  }
+const sendMessage = async (message) => {  
+  switch (true) {
+    case message.toUpperCase() === '/objkt'.toUpperCase():
+      setCollapsed(false)
+      break
+    case message.toUpperCase() === '/random'.toUpperCase():
+//       setObjkt(Math.floor(Math.random()
+// * (await fetchCollection(acc.address)).length))
+      let collection = await fetchCollection(acc.address)
+      let list = await getRestrictedAddresses()
+      let result = collection.filter(e => !list.includes(e.token.creator.address))
+      setObjkt(result[Math.floor(Math.random() * collection.length)].token.id)
+      break
+    case message.charAt(0) !== '/': 
+      ws.current.send(
+        JSON.stringify({
+          sender: alias,
+          body: message,
+          id: objkt
+        })
+      )
+       break
+    }
+  counter.current > 0 && (counter.current = 1)
 }
 const handleSubmit = e => {
   e.preventDefault()
@@ -187,7 +201,7 @@ if (counter == 18) return (
 
 return (
   <>
-  {!collapsed ? <Display address={acc.address} setObjkt={setObjkt} setCollapsed={setCollapsed}/> :
+  {!collapsed ? <Select address={acc.address} setObjkt={setObjkt} setCollapsed={setCollapsed}/> :
     <div style={{ padding: '63px 0 0 0'}}>
      <div className={styles.online}>
      {online.length>=1 && online.map((o,i) => (

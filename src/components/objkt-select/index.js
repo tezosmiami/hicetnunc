@@ -20,14 +20,14 @@ const sortByTokenId = (a, b) => {
   return b.id - a.id
 }
 
-const getRestrictedAddresses = async () =>
+export const getRestrictedAddresses = async () =>
   await axios
     .get(
       'https://raw.githubusercontent.com/teia-community/teia-report/main/restricted.json'
     )
     .then((res) => res.data.filter((a) => !getWalletAllowList().includes(a)))
 
-const query_collection = `
+export const query_collection = `
 query collectorGallery($address: String!) {
   hic_et_nunc_token_holder(where: {holder_id: {_eq: $address}, token: {creator: {address: {_neq: $address}}}, quantity: {_gt: "0"}}, order_by: {token_id: desc}) {
     token {
@@ -60,7 +60,7 @@ async function fetchGraphQL(operationsDoc, operationName, variables) {
   return await result.json()
 }
 
-async function fetchCollection(addr) {
+export async function fetchCollection(addr) {
   const { errors, data } = await fetchGraphQL(
     query_collection,
     'collectorGallery',
@@ -139,7 +139,7 @@ async function fetchCreations(addr) {
 
 
 
-export default class Display extends Component {
+export default class Select extends Component {
   static contextType = HicetnuncContext
   constructor(props) {
     super(props)
