@@ -235,12 +235,12 @@ return (
                 </a> :    
                      m.metadata ? 
                      <div style={{marginLeft: m.metadata.mime.includes('video') ? 
-                     `${m.sender?.length == 36 ? walletPreview(m.sender).length+2
-                      : m.sender?.length+2 }ch` : '0'}} className={styles.objkt}
+                      `${m.sender?.length == 36 ? walletPreview(m.sender).length+2
+                        : m.sender?.length+2 }ch` : '0'}} className={styles.objkt}
                       >
                       <div className={styles.cardContainer} >
                           <Button
-                              style={{ position: 'relative' }}
+                              style={{position: 'relative'}}
                               key={m.id}
                               href={`${PATH.OBJKT}/${m.id}`}
                               target="_blank" rel="noopener noreferrer"
@@ -254,7 +254,9 @@ return (
                                 })}
                               </div>
                           </Button>
-                      <div className={`${styles.card} ${styles.collection}
+                      <div style={{marginLeft: m.metadata.mime.includes('video') ? 
+                         `-${m.sender?.length == 36 ? walletPreview(m.sender).length+2
+                         : m.sender?.length+2 }ch` : '0'}} className={`${styles.card} ${styles.collection}
                          ${m.metadata.mime=='audio/mpeg' && styles.audio}`}
                         >
                           <Button
