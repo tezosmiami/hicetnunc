@@ -32,6 +32,7 @@ const query_objkt = `
       title
       swaps(order_by: {price: asc}, limit: 1, where: {amount_left: {_gte: "1"}, contract_version: {_eq: "2"}, status: {_eq: "0"}}) {
         price
+        id
       }
       creator{
         name
@@ -149,6 +150,7 @@ useEffect(() => {
 }, [conversation.length]);
 
 const sendMessage = async (message) => {  
+  if (!message) return
   switch (true) {
     case message.toUpperCase() === '/objkt'.toUpperCase():
       setCollapsed(false)
@@ -291,7 +293,7 @@ return (
                         </Link>
                       </div>
                         <div className={styles.cardCollect}>
-                          <Button onClick={() => m.metadata.swaps[0]?.price && collect(m.id, m.metadata.swaps[0]?.price)}>
+                          <Button onClick={() => m.metadata.swaps[0]?.price && collect(m.metadata.swaps[0]?.id, m.metadata.swaps[0]?.price)}>
                             <Purchase>
                               <div className={styles.cardCollectPrice}>
                                 {m.metadata.swaps[0]?.price ? 'collect for ' + m.metadata.swaps[0]?.price / 1000000 : 'not for sale'}
