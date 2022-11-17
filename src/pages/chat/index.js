@@ -161,6 +161,20 @@ const sendMessage = async (message) => {
       let result = collection.filter(e => !list.includes(e.token.creator.address))
       setObjkt(result[Math.floor(Math.random() * collection.length)].token.id)
       break
+    case message.toUpperCase() === '/tezos'.toUpperCase():
+      try {
+        const response = await fetch('https://api.teztools.io/v1/xtz-price');
+        if (response) {
+          const data = await response.json();
+          sendMessage(`1ꜩ = $${parseFloat(data.price.toFixed(2))}`) 
+        }
+        else {
+            console.log( "price not available" ) 
+        }
+        } catch (error) {
+          console.error(error);
+        }   
+      break  
     case message.charAt(0) !== '/': 
       ws.current.send(
         JSON.stringify({
