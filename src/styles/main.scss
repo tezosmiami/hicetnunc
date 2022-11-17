@@ -6,12 +6,13 @@ html {
   padding: 0;
   width: 100vw;
   height: 100vh;
-
+  font-family: 'Julia Mono'
 }
+
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Julia Mono', 'IBM Plex Mono', 'Courier New', monospace;
+  font-family: 'Julia Mono', 'IBM Plex Mono', 'Courier New';
   // font-family: 'IBM Plex Mono', 'Courier New', monospace;
   // font-family: 'OCR A Std', monospace; // README: crzypatchwork, this font doesn't look great.
   // font-family: 'Courier New', 'Courier', monospace; // README: old font
