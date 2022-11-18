@@ -17,6 +17,7 @@ export const ItemInfo = ({
   id,
   swaps,
   creator,
+  token,
   is_signed,
   token_signatures,
   feed,
@@ -126,10 +127,10 @@ export const ItemInfo = ({
 
                 {!isCollab && (
                   <Button to={`${PATH.ISSUER}/${creator.address}`}>
-                    {creator.name ? (
-                      <Primary>{encodeURI(creator.name)}</Primary>
+                    {creator.name || token.creator.name ? (
+                      <Primary>{encodeURI(creator.name || token.creator.name)}</Primary>
                     ) : (
-                      <Primary>{walletPreview(creator.address)}</Primary>
+                      <Primary>{walletPreview(creator.address || token.creator.address)}</Primary>
                     )}
                   </Button>
                 )}
@@ -223,13 +224,13 @@ export const ItemInfo = ({
           <div className={styles.inline}>
             <Button
               to={
-                `/tz/${creator?.address}`
+                `/tz/${creator?.address || token.creator?.address}`
               }
             >
-              {creator?.name ? (
-                <Primary>{encodeURI(creator?.name)}</Primary>
+              {creator?.name || token.creator?.name ? (
+                <Primary>{encodeURI(creator?.name || token.creator?.name)}</Primary>
               ) : (
-                <Primary>{walletPreview(creator?.address)}</Primary>
+                <Primary>{walletPreview(creator?.address || token.creator?.address)}</Primary>
               )}
             </Button>
           </div>

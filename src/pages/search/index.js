@@ -348,24 +348,25 @@ async function fetchRandomObjkts() {
 async function fetchSwaps(offset) {
   const { errors, data } = await fetchGraphQL(`
   query querySwaps {
-    hic_et_nunc_token(where: {swaps: {price: {_gt: "0"}, contract_version: {_eq: "2"}}, supply: {_gt: 0}}, order_by: {id: desc}, limit : 15, offset : ${offset} ) {
+    hic_et_nunc_swap(where: {contract_version: {_eq: "2"}}, order_by: {id: desc}, limit: 15,  offset : ${offset}) {
       id
-      artifact_uri
-      display_uri
-      mime
-      swaps {
-        contract_version
+      creator_id
+      token {
+        mime
+        artifact_uri
+        display_uri
+        creator_id
+        creator {
+          address
+          name
+        }
       }
-      creator {
-        address
-        name
-      }
-    }
+    } 
   }
   `, 'querySwaps', {})
 
   try {
-    return data.hic_et_nunc_token
+    return data.hic_et_nunc_swap
   } catch (e) {
     return undefined
   }
@@ -591,7 +592,7 @@ export class Search extends Component {
     // let resTotal = res1.concat(res2).sort((a,b) => b.id - a.id)
     // resTotal = resTotal.filter(e => !arr.includes(e.creator_id))
     let swaps = await fetchSwaps((this.state.offset), 9999999)
-    swaps = swaps.filter(e => !arr.includes(e.creator.address))
+    swaps = swaps.filter(e => !arr.includes(e.token.creator.address))
     this.setState({ feed: [...this.state.feed, ...(swaps)] }) 
     // this.setState({ select: 'recent sales' })
     // let tokens = await fetchSales(this.state.offset)
@@ -746,7 +747,7 @@ export class Search extends Component {
     
     if (e == 'recent swaps') {
       let tokens = await fetchSwaps(this.state.offset)
-      tokens = tokens.filter(e => !arr.includes(e.creator.address))
+      tokens = tokens.filter(e => !arr.includes(e.token.creator.address))
       this.setState({ feed: _.uniqBy([...this.state.feed, ...tokens], 'id')})
     }
 

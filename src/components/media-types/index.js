@@ -192,7 +192,6 @@ export const renderMediaType = ({
             preview={preview}
             onDetailView={interactive}
             displayView={displayView}
-            displayView={displayView}
           />
         </Container>
       )
