@@ -22,7 +22,7 @@
   align-items: center;
   height: 108px;
   overflow: scroll;
-  border: 1px solid black;
+  border: 1px solid var(--text-color);
 }
 
 .objkt{
@@ -33,7 +33,7 @@
 .footer {
   position: fixed;
   bottom: 0px;
-  border: 1px solid black;
+  border: 1px solid var(--text-color);
   height: 81px;
   left: 0;
   width: 100%;
