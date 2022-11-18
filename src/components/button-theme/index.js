@@ -13,8 +13,10 @@ export const ButtonTheme = () => {
         context.setTheme(context.theme === 'blue' ? 'green' : 
                          context.theme === 'green' ? 'orange' : 
                          context.theme === 'orange' ? 'charcol' :
-                         context.theme === 'charcol' ? 'pink' :
-                         context.theme === 'pink' ? 'blue' : 
+                         context.theme === 'charcol' ? 'black' :
+                         context.theme === 'black' ? 'pink' : 
+                         context.theme === 'pink' ? 'white' :
+                         context.theme === 'white' ? 'blue' :
                          context.theme, true )
       }}
     />

@@ -90,12 +90,14 @@ Tezos.setWalletProvider(wallet)
 
 
 const colors = { 
+  'white': "#ffffff",
   'blue' : '#69cdff',
   'green' : '#72e072',
   'orange' : '#ffad33',
   'charcol' : '#888888', 
-  'pink' : '#ffbeff'
-      }     
+  'pink' : '#ffbeff',
+  'black' : '#000000'
+  }     
 
 const keys = Object.keys(colors)
 const color = keys[Math.floor(Math.random() * keys.length)]
@@ -265,12 +267,14 @@ class HicetnuncContextProviderClass extends Component {
           theme === 'blue' ? colors.green :
           theme === 'green' ? colors.orange :
           theme === 'orange' ? colors. charcol :
-          theme === 'charcol' ? colors.pink :
-          theme === 'pink' ? colors.blue :
-          'white'
+          theme === 'charcol' ? colors.black :
+          theme === 'black' ? colors.pink :
+          theme === 'pink' ? colors.white :
+          theme === 'white' ? colors.blue :
+          'green'
         )
   
-        root.style.setProperty('--text-color', '#000000' )
+        root.style.setProperty('--text-color',  theme === 'black' ? colors.white  : '#000000' )
         root.style.setProperty(
           '--border-color',
           'rgba(0,0,0,0.1)'
