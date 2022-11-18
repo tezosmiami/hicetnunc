@@ -90,7 +90,7 @@ Tezos.setWalletProvider(wallet)
 
 
 const colors = { 
-  'white': "#ffffff",
+  'white': "#72e072",
   'blue' : '#69cdff',
   'green' : '#72e072',
   'orange' : '#ffad33',
