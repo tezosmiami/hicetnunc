@@ -278,6 +278,7 @@ class HicetnuncContextProviderClass extends Component {
           '--text-color',
             theme === 'black' ? colors.green :
             theme === 'blue' ? colors.white  : 
+            theme === 'charcol' ? colors.pink  : 
             '#000000'
              ),
           
