@@ -152,10 +152,10 @@ useEffect(() => {
 const sendMessage = async (message) => {  
   if (!message) return
   switch (true) {
-    case message.toUpperCase() === '/objkt'.toUpperCase():
+    case message.slice(0,6).toUpperCase() === '/objkt'.toUpperCase():
       setCollapsed(false)
       break
-    case message.toUpperCase() === '/random'.toUpperCase():
+    case message.slice(0,7).toUpperCase() === '/random'.toUpperCase():
 //       setObjkt(Math.floor(Math.random()
 // * (await fetchCollection(acc.address)).length))
       let collection = await fetchCollection(acc.address)
@@ -168,7 +168,7 @@ const sendMessage = async (message) => {
       let result = collection.filter(e => !list.includes(e.token.creator.address))
       setObjkt(result[Math.floor(Math.random() * collection.length)].token.id)
       break
-    case message.toUpperCase() === '/tezos'.toUpperCase():
+    case message.slice(0,6).toUpperCase() === '/tezos'.toUpperCase():
       try {
         const response = await fetch('https://api.teztools.io/v1/xtz-price');
         if (response) {
