@@ -591,7 +591,8 @@ export class Search extends Component {
     let swaps = await fetchSwaps((this.state.offset), 9999999)
     swaps.forEach(e => { e.creator = e.token.creator; e.id = e.token.id});
     swaps = swaps.filter(e => !arr.includes(e.creator.address))
-    this.setState({ feed: [...this.state.feed, ...(swaps)] }) 
+    this.setState({ feed: _.uniqBy([...this.state.feed, ...swaps], 'id') })
+    // this.setState({ feed: [...this.state.feed, ...(swaps)] }) 
     // this.setState({ select: 'recent sales' })
     // let tokens = await fetchSales(this.state.offset)
     // tokens = tokens.map(e => e.token)
