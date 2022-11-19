@@ -748,7 +748,7 @@ export class Search extends Component {
       let tokens = await fetchSwaps(this.state.offset)
       tokens.forEach(e => { e.creator = e.token.creator; e.id = e.token.id});
       tokens = tokens.filter(e => !arr.includes(e.creator.address))
-      this.setState({ feed: [...this.state.feed, ...(tokens)] }) 
+      this.setState({ feed: _.uniqBy([...this.state.feed, ...tokens], 'id') })
       // this.setState({ feed: _.uniqBy([...this.state.feed, ...tokens], 'id')})
     }
 
