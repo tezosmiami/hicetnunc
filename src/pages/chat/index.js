@@ -156,10 +156,12 @@ export const Chat = () => {
       if (Array.isArray(data.body))  setOnline(data.body.reverse())
       else {
       setConversation((_messages) => [..._messages, data])
-      const favicon = document.getElementById("favicon")
-      favicon.href = '/message.ico'
+        if (data.sender !== (walletPreview(acc.address) && alias)) {
+          const favicon = document.getElementById("favicon")
+          favicon.href = '/message.ico'
+        }
       }
-    };
+    }
 
     return () => {
       console.log("Cleaning up...");
