@@ -159,6 +159,11 @@ const sendMessage = async (message) => {
 //       setObjkt(Math.floor(Math.random()
 // * (await fetchCollection(acc.address)).length))
       let collection = await fetchCollection(acc.address)
+      let offset = 0
+      while (collection.length % 500 === 0) {
+        offset = offset+500
+        collection = collection.concat(await fetchCollection(acc.address, offset))
+      }
       let list = await getRestrictedAddresses()
       let result = collection.filter(e => !list.includes(e.token.creator.address))
       setObjkt(result[Math.floor(Math.random() * collection.length)].token.id)

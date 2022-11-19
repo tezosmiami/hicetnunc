@@ -352,6 +352,7 @@ async function fetchSwaps(offset) {
       id
       creator_id
       token {
+        id
         mime
         artifact_uri
         display_uri
@@ -443,7 +444,6 @@ async function fetchSales(offset) {
 }
 
 async function fetchSubjkts(subjkt) {
-  //console.log(subjkt)
   const { errors, data } = await fetchGraphQL(`
   query subjktsQuery {
     hic_et_nunc_holder(where: { name: {_ilike: "%${subjkt}%"}}, order_by: {hdao_balance: desc}) {
@@ -592,7 +592,8 @@ export class Search extends Component {
     // let resTotal = res1.concat(res2).sort((a,b) => b.id - a.id)
     // resTotal = resTotal.filter(e => !arr.includes(e.creator_id))
     let swaps = await fetchSwaps((this.state.offset), 9999999)
-    swaps = swaps.filter(e => !arr.includes(e.token.creator.address))
+    swaps.forEach(e => { e.creator = e.token.creator; e.id = e.token.id});
+    swaps = swaps.filter(e => !arr.includes(e.creator_id))
     this.setState({ feed: [...this.state.feed, ...(swaps)] }) 
     // this.setState({ select: 'recent sales' })
     // let tokens = await fetchSales(this.state.offset)

@@ -5,7 +5,6 @@ import { Page, Container, Padding } from '../../components/layout'
 import { Loading } from '../../components/loading'
 import { renderMediaType } from '../../components/media-types'
 import { walletPreview } from '../../utils/string'
-import { VisuallyHidden } from '../../components/visually-hidden'
 import { getWalletAllowList } from '../../constants'
 import { ResponsiveMasonry } from '../../components/responsive-masonry'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -28,8 +27,8 @@ export const getRestrictedAddresses = async () =>
     .then((res) => res.data.filter((a) => !getWalletAllowList().includes(a)))
 
 export const query_collection = `
-query collectorGallery($address: String!) {
-  hic_et_nunc_token_holder(where: {holder_id: {_eq: $address}, token: {creator: {address: {_neq: $address}}}, quantity: {_gt: "0"}}, order_by: {token_id: desc}) {
+query collectorGallery($address: String!, $offset: Int!) {
+  hic_et_nunc_token_holder(where: {holder_id: {_eq: $address}, token: {creator: {address: {_neq: $address}}}, quantity: {_gt: "0"}}, order_by: {token_id: desc}, offset : $offset) {
     token {
       id
       artifact_uri
@@ -60,11 +59,12 @@ async function fetchGraphQL(operationsDoc, operationName, variables) {
   return await result.json()
 }
 
-export async function fetchCollection(addr) {
+export async function fetchCollection(addr, offset = 0) {
   const { errors, data } = await fetchGraphQL(
     query_collection,
     'collectorGallery',
-    { address: addr }
+    { address: addr,
+      offset: offset }
   )
   if (errors) {
     console.error(errors)
@@ -310,8 +310,12 @@ export default class Select extends Component {
     if (!list.includes(this.state.wallet)) {
       this.setState({ loading: false, items: [] })
       let collection = await fetchCollection(this.state.wallet)
+      let offset = 0
+      while (collection.length % 500 === 0) {
+        offset = offset+500
+        collection = collection.concat(await fetchCollection(this.state.wallet, offset))
+      }
       let swaps = await fetchV2Swaps(this.state.wallet)
-      // console.log(swaps)
       let combinedCollection = await this.combineCollection(collection, swaps)
       this.sortCollection(combinedCollection)
       this.setState({ collection: combinedCollection })

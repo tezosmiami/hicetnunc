@@ -48,7 +48,6 @@ export const ItemInfo = ({
         )[0].quantity
         : 'X'
     swaps = swaps.filter(e => parseInt(e.contract_version) === 2 && parseInt(e.status) === 0 && e.is_valid)
-    //console.log(swaps)
     let s = _.minBy(swaps, (o) => Number(o.price))
     let maxPrice = _.maxBy(swaps, (o) => Number(o.price))
 
@@ -127,10 +126,10 @@ export const ItemInfo = ({
 
                 {!isCollab && (
                   <Button to={`${PATH.ISSUER}/${creator.address}`}>
-                    {creator.name || token.creator.name ? (
-                      <Primary>{encodeURI(creator.name || token.creator.name)}</Primary>
+                    {creator.name ? (
+                      <Primary>{encodeURI(creator.name)}</Primary>
                     ) : (
-                      <Primary>{walletPreview(creator.address || token.creator.address)}</Primary>
+                      <Primary>{walletPreview(creator.address)}</Primary>
                     )}
                   </Button>
                 )}
@@ -224,13 +223,13 @@ export const ItemInfo = ({
           <div className={styles.inline}>
             <Button
               to={
-                `/tz/${creator?.address || token.creator?.address}`
+                `/tz/${creator?.address }`
               }
             >
-              {creator?.name || token.creator?.name ? (
-                <Primary>{encodeURI(creator?.name || token.creator?.name)}</Primary>
+              {creator?.name ? (
+                <Primary>{encodeURI(creator?.name)}</Primary>
               ) : (
-                <Primary>{walletPreview(creator?.address || token.creator?.address)}</Primary>
+                <Primary>{walletPreview(creator?.address)}</Primary>
               )}
             </Button>
           </div>

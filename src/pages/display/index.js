@@ -32,8 +32,8 @@ const getRestrictedAddresses = async () =>
     .then((res) => res.data.filter((a) => !getWalletAllowList().includes(a)))
 
 const query_collection = `
-query collectorGallery($address: String!) {
-  hic_et_nunc_token_holder(where: {holder_id: {_eq: $address}, token: {creator: {address: {_neq: $address}}}, quantity: {_gt: "0"}}, order_by: {token_id: desc}) {
+query collectorGallery($address: String!, $offset: Int!) {
+  hic_et_nunc_token_holder(where: {holder_id: {_eq: $address}, token: {creator: {address: {_neq: $address}}}, quantity: {_gt: "0"}}, order_by: {token_id: desc}, offset: $offset) {
     token {
       id
       artifact_uri
@@ -66,11 +66,12 @@ async function fetchGraphQL(operationsDoc, operationName, variables) {
   return await result.json()
 }
 
-async function fetchCollection(addr) {
+async function fetchCollection(addr, offset = 0) {
   const { errors, data } = await fetchGraphQL(
     query_collection,
     'collectorGallery',
-    { address: addr }
+    { address: addr,
+      offset: offset }
   )
   if (errors) {
     console.error(errors)
@@ -537,11 +538,14 @@ export default class Display extends Component {
     if (!list.includes(this.state.wallet)) {
       this.setState({ loading: false, items: [] })
       let collection = await fetchCollection(this.state.wallet)
+      let offset = 0
+      while (collection.length % 500 === 0) {
+        offset = offset+500
+        collection = collection.concat(await fetchCollection(this.state.wallet, offset))
+      }
       let swaps = await fetchV2Swaps(this.state.wallet)
-      // console.log(swaps)
       let combinedCollection = await this.combineCollection(collection, swaps)
       this.sortCollection(combinedCollection)
-      console.log(combinedCollection)
       this.setState({ collection: combinedCollection })
       this.setState({ marketV1: await fetchV1Swaps(this.state.wallet) })
     } else {
