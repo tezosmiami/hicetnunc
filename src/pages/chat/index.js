@@ -59,6 +59,7 @@ export const Chat = () => {
     const [collapsed, setCollapsed] = useState(true)
     const [connected, setConnected] = useState(false);
     const [reconnecting, setReconnecting] = useState(null)
+    const [tabFocus, setTabFocus] = useState(true);
     const [online, setOnline] = useState([alias])
     const { acc, collect } = useContext(HicetnuncContext)
     const scrollTarget = useRef(null);
@@ -74,6 +75,27 @@ export const Chat = () => {
     }
     sendObjkt()
   }, [objkt])
+
+  useEffect(() => {
+    const handleFocus = () => {
+      const favicon = document.getElementById("favicon")
+      favicon.href = '/favicon.ico'
+      setTabFocus(true);
+    };
+
+    const handleBlur = () => {
+      setTabFocus(false);
+    };
+
+    window.addEventListener('focus', handleFocus);
+    window.addEventListener('blur', handleBlur);
+
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('blur', handleBlur);
+    };
+  }, []);
+
 
    useEffect(() => {
     const updateAlias = async () => {
@@ -131,8 +153,12 @@ export const Chat = () => {
     ws.current.onmessage = async (event) => {
       const data = JSON.parse(event.data);
       if (data.id) data.metadata = await fetchObjkt(data.id)
-      Array.isArray(data.body) ? setOnline(data.body.reverse()) :
+      if (Array.isArray(data.body))  setOnline(data.body.reverse())
+      else {
       setConversation((_messages) => [..._messages, data])
+      const favicon = document.getElementById("favicon")
+      favicon.href = '/message.ico'
+      }
     };
 
     return () => {
