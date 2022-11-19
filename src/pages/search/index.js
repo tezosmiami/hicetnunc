@@ -42,7 +42,6 @@ query LatestFeed {
     console.error(errors);
   }
   const result = data.hic_et_nunc_token
-  /* console.log({ result }) */
   return result
 }
 
@@ -297,7 +296,6 @@ query creatorGallery {
     console.error(errors)
   }
   const result = data.hic_et_nunc_token
-  /* console.log({ result }) */
   return result
 }
 
@@ -356,7 +354,6 @@ async function fetchSwaps(offset) {
         mime
         artifact_uri
         display_uri
-        creator_id
         creator {
           address
           name
@@ -593,7 +590,7 @@ export class Search extends Component {
     // resTotal = resTotal.filter(e => !arr.includes(e.creator_id))
     let swaps = await fetchSwaps((this.state.offset), 9999999)
     swaps.forEach(e => { e.creator = e.token.creator; e.id = e.token.id});
-    swaps = swaps.filter(e => !arr.includes(e.creator_id))
+    swaps = swaps.filter(e => !arr.includes(e.creator.address))
     this.setState({ feed: [...this.state.feed, ...(swaps)] }) 
     // this.setState({ select: 'recent sales' })
     // let tokens = await fetchSales(this.state.offset)
@@ -745,11 +742,13 @@ export class Search extends Component {
       tokens = tokens.filter(e => !arr.includes(e.creator_id))
       this.setState({ feed: _.uniqBy(_.uniqBy([...this.state.feed, ...tokens], 'id'), 'creator_id') })
     }
-    
+
     if (e == 'recent swaps') {
       let tokens = await fetchSwaps(this.state.offset)
-      tokens = tokens.filter(e => !arr.includes(e.token.creator.address))
-      this.setState({ feed: _.uniqBy([...this.state.feed, ...tokens], 'id')})
+      tokens.forEach(e => { e.creator = e.token.creator; e.id = e.token.id});
+      tokens = tokens.filter(e => !arr.includes(e.creator.address))
+      this.setState({ feed: [...this.state.feed, ...(tokens)] }) 
+      // this.setState({ feed: _.uniqBy([...this.state.feed, ...tokens], 'id')})
     }
 
     if (e == 'Miami') {
@@ -791,9 +790,6 @@ export class Search extends Component {
 
 
   search = async (e) => {
-
-    //console.log(e)
-
     this.setState({ items: [], feed: [], search: e })
     this.setState({ subjkt: await fetchSubjkts(this.state.search) })
 
@@ -802,9 +798,6 @@ export class Search extends Component {
     } else {
       this.setState({ feed: (await fetchTag(this.state.search.toLowerCase(), 9999999)), select: 'tag' })
     }
-
-
-    //console.log(this.state.feed)
   }
 
   hoverState = (bool) => this.setState({ mouse: bool })
@@ -817,7 +810,6 @@ export class Search extends Component {
   }
 
   handleKey = (e) => {
-    //console.log(this.state.search)
     if (e.key == 'Enter') this.search(this.state.search)
   }
   render() {
