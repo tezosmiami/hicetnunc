@@ -871,13 +871,13 @@ export default class Display extends Component {
                       onClick={() => {
                         this.sortByPrice();
                       }}>
-                      <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="22" height="22" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M8 16H4l6 6V2H8zm6-11v17h2V8h4l-6-6z" fill="currentColor"/></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="22" height="22" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M8 16H4l6 6V2H8zm6-11v17h2V8h4l-6-6z" fill="var(--text-color)"/></svg>
                     </Button>}&nbsp;
                     <Button
                       onClick={() => {
                         this.sortById();
                       }}>
-                      <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="22" height="22" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M8 16H4l6 6V2H8zm6-11v17h2V8h4l-6-6z" fill="currentColor"/></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="22" height="22" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M8 16H4l6 6V2H8zm6-11v17h2V8h4l-6-6z" fill="var(--text-color)"/></svg>
                     </Button>&nbsp;&nbsp;
                     
                   <Button onClick={() => this.setState({

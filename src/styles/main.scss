@@ -6,7 +6,6 @@ html {
   padding: 0;
   width: 100vw;
   height: 100vh;
-  font-family: 'Julia Mono'
 }
 
 body {
@@ -30,7 +29,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
-  font-family: 'Julia Mono', 'IBM Plex Mono', 'Courier New', monospace;
+  font-family: 'Julia Mono', 'IBM Plex Mono', 'Courier New';
   // font-family: 'OCR A Std', monospace;// README: crzypatchwork, this font doesn't look great.
   // font-family: 'Courier New', 'Courier', monospace;// README: oldfont
 }
