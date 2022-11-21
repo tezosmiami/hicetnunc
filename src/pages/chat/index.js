@@ -242,7 +242,7 @@ if(!acc) return(
     <div>: sync to join. . .</div>
   </Page>
 )
-if (counter == 18) return (
+if (counter.current === 18) return (
 <Page title="chat" >
   <div> disconnected. . .</div>
 </Page>
