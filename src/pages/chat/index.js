@@ -177,6 +177,18 @@ useEffect(() => {
   }
 }, [conversation.length]);
 
+const getCollection = async () => {
+  let collection = await fetchCollection(acc.address)
+  let offset = 0
+  while (collection.length % 500 === 0) {
+    offset = offset+500
+    collection = collection.concat(await fetchCollection(acc.address, offset))
+  }
+  let list = await getRestrictedAddresses()
+  let result = collection.filter(e => !list.includes(e.token.creator.address))
+  return result
+}
+
 const sendMessage = async (message) => {  
   if (!message) return
   switch (true) {
@@ -186,16 +198,10 @@ const sendMessage = async (message) => {
     case message.slice(0,7).toUpperCase() === '/random'.toUpperCase():
 //       setObjkt(Math.floor(Math.random()
 // * (await fetchCollection(acc.address)).length))
-      let collection = await fetchCollection(acc.address)
-      let offset = 0
-      while (collection.length % 500 === 0) {
-        offset = offset+500
-        collection = collection.concat(await fetchCollection(acc.address, offset))
-      }
-      let list = await getRestrictedAddresses()
-      let result = collection.filter(e => !list.includes(e.token.creator.address))
-      setObjkt(result[Math.floor(Math.random() * collection.length)].token.id)
+      let collection = await getCollection(); 
+      setObjkt(collection[Math.floor(Math.random() * collection.length)].token.id)
       break
+      
     case message.slice(0,6).toUpperCase() === '/tezos'.toUpperCase():
       try {
         const response = await fetch('https://api.teztools.io/v1/xtz-price');
@@ -210,6 +216,14 @@ const sendMessage = async (message) => {
           console.error(error);
         }   
       break  
+    
+    case message.slice(0,8).toUpperCase() === '/imagine'.toUpperCase():
+      let words = (await getCollection()).map(a => a.token.description
+        .split(' ')[Math.floor(Math.random() * (a.token.description.split(' ').length - 1))])
+      let shuffled = [...words].sort(() => 0.5 - Math.random())
+      sendMessage(shuffled.slice(0, (1 + Math.floor(Math.random() * 11))).join(' ').toLowerCase())
+      break
+      
     case message.charAt(0) !== '/': 
       ws.current.send(
         JSON.stringify({
@@ -244,7 +258,7 @@ if(!acc) return(
 )
 if (counter.current === 18) return (
 <Page title="chat" >
-  <div> disconnected. . .</div>
+  <div style={{margin:'18px'}}> disconnected. . .</div>
 </Page>
 )
 
