@@ -221,7 +221,9 @@ const sendMessage = async (message) => {
       let words = (await getCollection()).map(a => a.token.description
         .split(' ')[Math.floor(Math.random() * (a.token.description.split(' ').length - 1))])
       let shuffled = [...words].sort(() => 0.5 - Math.random())
-      sendMessage(shuffled.slice(0, (1 + Math.floor(Math.random() * 11))).join(' ').toLowerCase())
+      let filtered = shuffled.filter(e => !((/\d/.test(e)) || e.length<3 || e.length>15
+       || e.includes('@') || e.includes('#')))
+      sendMessage(filtered.slice(0, (1 + Math.floor(Math.random() * 11))).join(' ').toLowerCase())
       break
       
     case message.charAt(0) !== '/': 
