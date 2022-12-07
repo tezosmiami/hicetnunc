@@ -303,7 +303,7 @@ if(!acc) return(
   </Page>
 )
 
-if (peer.current.disconnected) return (
+if (peer.current.disconnected()) return (
 <Page title="chat" >
   <div style={{margin:'18px'}}> disconnected. . .</div>
 </Page>
