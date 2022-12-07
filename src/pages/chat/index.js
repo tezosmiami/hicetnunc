@@ -167,9 +167,7 @@ export const Chat = () => {
               console.log('connected with ', conn.peer)
               conn.on('data', async (data) => {
                 if (data.objktId && data.objktId > 0) {data.metadata = await fetchObjkt(data.objktId)}
-                if (data.alias) {online.some(i => i.alias === data.alias)
-                  ? setOnline(online.filter(i => i.alias !== data.alias))
-                  : setOnline(online => [{alias:data.alias, id: conn.peer}, ...online])}
+                if (data.alias) {setOnline(online => [{alias:data.alias, id: conn.peer}, ...online])}
               else {
                 setConversation((messages) => [...messages, data])
                 if (data.sender !== (walletPreview(acc.address) && alias)) {
@@ -196,8 +194,7 @@ export const Chat = () => {
             conn.on('open', () => {
               console.log('connected with ', conn.peer)
               conn.send({ alias: alias })
-              !online.some(i => i.alias === conn.metadata.alias)
-              && setOnline(online => [{alias: conn.metadata.alias, id: conn.peer}, ...online])
+              setOnline(online => [{alias: conn.metadata.alias, id: conn.peer}, ...online])
               setPeerIds(peerIds => [...peerIds, conn.peer])
   
               conn.on('data', async (data) => {
@@ -335,7 +332,7 @@ return (
   {!collapsed ? <Select address={acc.address} setObjkt={setObjkt} setCollapsed={setCollapsed}/> :
     <div style={{ padding: '63px 0 0 0'}}>
      <div className={styles.online}>
-     {online.length>=1 && online.map((o,i) => (
+     {online.length>=1 && [...new Map(online.map((m) => [m.alias, m])).values()].map((o,i) => (
       <div style={{paddingLeft: '9px', marginBottom:'9px'}} key={i}>
             {'* '}
           <Link target="_blank" rel="noopener noreferrer" 
