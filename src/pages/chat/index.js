@@ -125,7 +125,7 @@ export const Chat = () => {
         {
           host: 'hen-chat.herokuapp.com',
           secure: true,
-          debug: 1,
+          debug: 3,
           path: "/hicetnunc",
         })
         peer.current.on('open', (id) =>{
@@ -134,7 +134,7 @@ export const Chat = () => {
         })
         
       let peers = await axios.get('https://hen-chat.herokuapp.com/hicetnunc/peerjs/peers').then(res => res.data)
-
+          console.log(peers)
         //peer mesh
       for (let p in peers) {
         var conn = peer.current.connect(peers[p], {
@@ -145,6 +145,8 @@ export const Chat = () => {
           console.log('connected with ', conn.peer)
           setPeerIds([...peerIds, conn.peer])
           conn.on('data', async (data) => {
+            console.log(data)
+            console.log(online)
             if (data.objktId && data.objktId > 0) {data.metadata = await fetchObjkt(data.objktId)}
             if (data.alias) {online.some(i => i.alias === data.alias)
               ? setOnline(online.filter(i => i.alias !== data.alias))
@@ -154,12 +156,14 @@ export const Chat = () => {
             if (data.sender !== (walletPreview(acc.address) && alias)) {
               const favicon = document.getElementById("favicon")
               favicon.href = '/message.ico'
-            }}     
+            }}
+            console.log(data)     
           })
           conn.on('error', (e) => {
             console.log('error : ', e)
           })
           conn.on('close', () => {
+            console.log(conn.peer)
             setPeerIds(ids => ids.filter(i => i !== conn.peer))
             setOnline(online => online.filter(i => i.id !== conn.peer))
             console.log('closed connection')
@@ -182,6 +186,7 @@ export const Chat = () => {
           setPeerIds([...peerIds, conn.peer])
 
           conn.on('data', async (data) => {
+            console.log(data)
             if (data.objktId) data.metadata = await fetchObjkt(data.objktId)
             setConversation((messages) => [...messages, data])
             const favicon = document.getElementById("favicon")
