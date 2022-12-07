@@ -123,7 +123,7 @@ export const Chat = () => {
     if (alias) {
       peer.current = new Peer(
         {
-          host: 'https://hen-chat.herokuapp.com',
+          host: 'hen-chat.herokuapp.com',
           secure: true,
           debug: 1,
           path: "/hicetnunc",
