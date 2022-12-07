@@ -157,72 +157,72 @@ export const Chat = () => {
           console.log(peers)
         //peer mesh
       setTimeout(() => {
-      for (let p in peers) {
-          var conn = peer.current.connect(peers[p], {
-            metadata: { 'alias': alias, 'address': acc.address }
-          })
+        for (let p in peers) {
+            var conn = peer.current.connect(peers[p], {
+              metadata: { 'alias': alias, 'address': acc.address }
+            })
 
-          conn.on('open',  () => {
-            console.log('connected with ', conn.peer)
-            setPeerIds([...peerIds, conn.peer])
-            conn.on('data', async (data) => {
-              console.log(data)
+            conn.on('open',  () => {
+              console.log('connected with ', conn.peer)
+              // setPeerIds([...peerIds, conn.peer])
+              conn.on('data', async (data) => {
+                console.log(data)
+                console.log(online)
+                if (data.objktId && data.objktId > 0) {data.metadata = await fetchObjkt(data.objktId)}
+                if (data.alias) {online.some(i => i.alias === data.alias)
+                  ? setOnline(online.filter(i => i.alias !== data.alias))
+                  : setOnline(online => [{alias:data.alias, id: conn.peer}, ...online])}
+              else {
+                setConversation((messages) => [...messages, data])
+                if (data.sender !== (walletPreview(acc.address) && alias)) {
+                  const favicon = document.getElementById("favicon")
+                  favicon.href = '/message.ico'
+                }}
+ 
+              })
+              conn.on('error', (e) => {
+                console.log('error : ', e)
+              })
+              conn.on('close', () => {
+                console.log(conn.peer)
+                setPeerIds(ids => ids.filter(i => i !== conn.peer))
+                setOnline(online => online.filter(i => i.id !== conn.peer))
+                console.log('closed connection')
+              })
+              setConnections([...connections, conn])
+            })
+            setPeerIds([...peerIds], [peer])
+          }
+          peer.current.on("connection", (conn) => {
+            conn.on('open', () => {
+              console.log('connected with ', conn.peer)
+              conn.send({ alias: alias })
               console.log(online)
-              if (data.objktId && data.objktId > 0) {data.metadata = await fetchObjkt(data.objktId)}
-              if (data.alias) {online.some(i => i.alias === data.alias)
-                ? setOnline(online.filter(i => i.alias !== data.alias))
-                : setOnline(online => [{alias:data.alias, id: conn.peer}, ...online])}
-            else {
-              setConversation((messages) => [...messages, data])
-              if (data.sender !== (walletPreview(acc.address) && alias)) {
+              !online.some(i => i.alias === conn.metadata.alias)
+              && setOnline(online => [{alias: conn.metadata.alias, id: conn.peer}, ...online])
+              setPeerIds([...peerIds, conn.peer])
+  
+              conn.on('data', async (data) => {
+                console.log(data)
+                console.log(online)
+                if (data.objktId) data.metadata = await fetchObjkt(data.objktId)
+                setConversation((messages) => [...messages, data])
                 const favicon = document.getElementById("favicon")
                 favicon.href = '/message.ico'
-              }}
-              console.log(data)     
-            })
-            conn.on('error', (e) => {
-              console.log('error : ', e)
-            })
-            conn.on('close', () => {
-              console.log(conn.peer)
-              setPeerIds(ids => ids.filter(i => i !== conn.peer))
-              setOnline(online => online.filter(i => i.id !== conn.peer))
-              console.log('closed connection')
-            })
-            setConnections([...connections, conn])
-        })
-        setPeerIds([...peerIds], [peer])
-      }
+              })
   
-
-      peer.current.on("connection", (conn) => {
-          conn.on('open', () => {
-            console.log('connected with ', conn.peer)
-            conn.send({ alias: alias })
-            !online.some(i => i.alias === conn.metadata.alias)
-            && setOnline(online => [{alias: conn.metadata.alias, id: conn.peer}, ...online])
-            setPeerIds([...peerIds, conn.peer])
-
-            conn.on('data', async (data) => {
-              console.log(data)
-              if (data.objktId) data.metadata = await fetchObjkt(data.objktId)
-              setConversation((messages) => [...messages, data])
-              const favicon = document.getElementById("favicon")
-              favicon.href = '/message.ico'
-            })
-
-            conn.on('error', (e) => {
-              console.log('error: ', e)
-            })
-            conn.on('close', () => {
-              setPeerIds(ids => ids.filter(i => i !== conn.peer))
-              setOnline(online => online.filter(i => i.alias !== conn.metadata.alias))
-              console.log('closed connection')
-            })
-            setConnections([...connections, conn])
-          }) 
-        })
-      }, 1000); 
+              conn.on('error', (e) => {
+                console.log('error: ', e)
+              })
+              conn.on('close', () => {
+                setPeerIds(ids => ids.filter(i => i !== conn.peer))
+                setOnline(online => online.filter(i => i.alias !== conn.metadata.alias))
+                console.log('closed connection')
+              })
+              setConnections([...connections, conn])
+            }) 
+          })
+        }, 1000); 
         return () => {
           console.log("cleaning up...");
           peer.current.disconnect();
