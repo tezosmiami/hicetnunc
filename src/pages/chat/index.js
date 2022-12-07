@@ -158,11 +158,14 @@ export const Chat = () => {
         //peer mesh
       setTimeout(() => {
         for (let p in peers) {
+          console.log(peers[p])
+          setTimeout(() => {
             var conn = peer.current.connect(peers[p], {
               metadata: { 'alias': alias, 'address': acc.address }
             })
 
             conn.on('open',  () => {
+              console.log(conn.peer)
               console.log('connected with ', conn.peer)
               // setPeerIds([...peerIds, conn.peer])
               conn.on('data', async (data) => {
@@ -188,7 +191,7 @@ export const Chat = () => {
                 setPeerIds(ids => ids.filter(i => i !== conn.peer))
                 setOnline(online => online.filter(i => i.id !== conn.peer))
                 console.log('closed connection')
-              })
+              })}, 1000)
               setConnections([...connections, conn])
             })
             setPeerIds([...peerIds], [peer])
