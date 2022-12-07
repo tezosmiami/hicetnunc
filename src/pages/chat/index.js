@@ -125,7 +125,7 @@ export const Chat = () => {
         {
           host: 'hen-chat.herokuapp.com',
           secure: true,
-          debug: 3,
+          debug: 0,
           path: "/hicetnunc",
           config: {'iceServers': [
             {
@@ -158,19 +158,14 @@ export const Chat = () => {
         //peer mesh
       setTimeout(() => {
         for (let p in peers) {
-          console.log(peers[p])
           setTimeout(() => {
             var conn = peer.current.connect(peers[p], {
               metadata: { 'alias': alias, 'address': acc.address }
             })
 
             conn.on('open',  () => {
-              console.log(conn.peer)
               console.log('connected with ', conn.peer)
-              // setPeerIds([...peerIds, conn.peer])
               conn.on('data', async (data) => {
-                console.log(data)
-                console.log(online)
                 if (data.objktId && data.objktId > 0) {data.metadata = await fetchObjkt(data.objktId)}
                 if (data.alias) {online.some(i => i.alias === data.alias)
                   ? setOnline(online.filter(i => i.alias !== data.alias))
@@ -187,27 +182,25 @@ export const Chat = () => {
                 console.log('error : ', e)
               })
               conn.on('close', () => {
-                console.log(conn.peer)
                 setPeerIds(ids => ids.filter(i => i !== conn.peer))
                 setOnline(online => online.filter(i => i.id !== conn.peer))
+                setConnections(c => c.filter(i => i !== conn))
                 console.log('closed connection')
-              })}, 1000)
-              setConnections([...connections, conn])
+              })
+            }, 1000)
+              setConnections(connections => [...connections, conn])
             })
-            setPeerIds([...peerIds], [peer])
+            setPeerIds(peers)
           }
           peer.current.on("connection", (conn) => {
             conn.on('open', () => {
               console.log('connected with ', conn.peer)
               conn.send({ alias: alias })
-              console.log(online)
               !online.some(i => i.alias === conn.metadata.alias)
               && setOnline(online => [{alias: conn.metadata.alias, id: conn.peer}, ...online])
-              setPeerIds([...peerIds, conn.peer])
+              setPeerIds(peerIds => [...peerIds, conn.peer])
   
               conn.on('data', async (data) => {
-                console.log(data)
-                console.log(online)
                 if (data.objktId) data.metadata = await fetchObjkt(data.objktId)
                 setConversation((messages) => [...messages, data])
                 const favicon = document.getElementById("favicon")
@@ -220,9 +213,10 @@ export const Chat = () => {
               conn.on('close', () => {
                 setPeerIds(ids => ids.filter(i => i !== conn.peer))
                 setOnline(online => online.filter(i => i.alias !== conn.metadata.alias))
+                setConnections(c => c.filter(i => i !== conn))
                 console.log('closed connection')
               })
-              setConnections([...connections, conn])
+              setConnections(connections => [...connections, conn])
             }) 
           })
         }, 1000); 
@@ -302,10 +296,11 @@ const sendMessage = async (message) => {
           body: message,
           objktId: objkt
         })
+      }
       break
     }
   }
-}
+
 
 const handleSubmit = e => {
   e.preventDefault()
@@ -334,8 +329,7 @@ if(!acc) return(
 //   <div style={{margin:'18px'}}> disconnected. . .</div>
 // </Page>
 // )
-console.log(peerIds)
-console.log(online)
+
 return (
   <>
   {!collapsed ? <Select address={acc.address} setObjkt={setObjkt} setCollapsed={setCollapsed}/> :
