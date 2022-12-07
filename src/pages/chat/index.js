@@ -156,11 +156,8 @@ export const Chat = () => {
       let peers = await axios.get('https://hen-chat.herokuapp.com/hicetnunc/peerjs/peers').then(res => res.data)
           console.log(peers)
         //peer mesh
-        setTimeout(() => {
-
-        
-        for (let p in peers) 
-        {
+      setTimeout(() => {
+      for (let p in peers) {
           var conn = peer.current.connect(peers[p], {
             metadata: { 'alias': alias, 'address': acc.address }
           })
@@ -193,44 +190,45 @@ export const Chat = () => {
               console.log('closed connection')
             })
             setConnections([...connections, conn])
-            return () => {
-              console.log("cleaning up...");
-              peer.current.disconnect();
-            };
         })
         setPeerIds([...peerIds], [peer])
       }
-    }, 3000); 
+  
 
-    peer.current.on("connection", (conn) => {
-        conn.on('open', () => {
-          console.log('connected with ', conn.peer)
-          conn.send({ alias: alias })
-          !online.some(i => i.alias === conn.metadata.alias)
-           && setOnline(online => [{alias: conn.metadata.alias, id: conn.peer}, ...online])
-          setPeerIds([...peerIds, conn.peer])
+      peer.current.on("connection", (conn) => {
+          conn.on('open', () => {
+            console.log('connected with ', conn.peer)
+            conn.send({ alias: alias })
+            !online.some(i => i.alias === conn.metadata.alias)
+            && setOnline(online => [{alias: conn.metadata.alias, id: conn.peer}, ...online])
+            setPeerIds([...peerIds, conn.peer])
 
-          conn.on('data', async (data) => {
-            console.log(data)
-            if (data.objktId) data.metadata = await fetchObjkt(data.objktId)
-            setConversation((messages) => [...messages, data])
-            const favicon = document.getElementById("favicon")
-            favicon.href = '/message.ico'
-          })
+            conn.on('data', async (data) => {
+              console.log(data)
+              if (data.objktId) data.metadata = await fetchObjkt(data.objktId)
+              setConversation((messages) => [...messages, data])
+              const favicon = document.getElementById("favicon")
+              favicon.href = '/message.ico'
+            })
 
-          conn.on('error', (e) => {
-            console.log('error: ', e)
-          })
-          conn.on('close', () => {
-            setPeerIds(ids => ids.filter(i => i !== conn.peer))
-            setOnline(online => online.filter(i => i.alias !== conn.metadata.alias))
-            console.log('closed connection')
-          })
-          setConnections([...connections, conn])
+            conn.on('error', (e) => {
+              console.log('error: ', e)
+            })
+            conn.on('close', () => {
+              setPeerIds(ids => ids.filter(i => i !== conn.peer))
+              setOnline(online => online.filter(i => i.alias !== conn.metadata.alias))
+              console.log('closed connection')
+            })
+            setConnections([...connections, conn])
+          }) 
         })
-      })
+      }, 1000); 
+        return () => {
+          console.log("cleaning up...");
+          peer.current.disconnect();
+        }
+      }  
     }
-  }
     p2pSync()
   }, [alias]);
 
@@ -333,7 +331,8 @@ if(!acc) return(
 //   <div style={{margin:'18px'}}> disconnected. . .</div>
 // </Page>
 // )
-
+console.log(peerIds)
+console.log(online)
 return (
   <>
   {!collapsed ? <Select address={acc.address} setObjkt={setObjkt} setCollapsed={setCollapsed}/> :
