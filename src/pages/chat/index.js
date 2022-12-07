@@ -7,11 +7,14 @@ import { Page } from '../../components/layout'
 import { Button } from '../../components/button'
 import { Textarea } from '../../components/input'
 import { walletPreview } from '../../utils/string'
-import  Select  from '../../components/objkt-select'
 import { Purchase } from '../../components/button'
 import { Link } from 'react-router-dom'
 import { PATH } from '../../constants'
+import { Peer } from "peerjs"
 import styles from './styles.module.scss'
+import Select  from '../../components/objkt-select'
+
+const axios= require('axios')
 
 const pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
   '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
@@ -57,14 +60,13 @@ export const Chat = () => {
     const [objkt, setObjkt] = useState(0)
     const [conversation, setConversation] = useState([]);
     const [collapsed, setCollapsed] = useState(true)
-    const [connected, setConnected] = useState(false);
-    const [reconnecting, setReconnecting] = useState(null)
+    const [connections, setConnections] = useState([])
+    const [peerIds, setPeerIds] = useState([])
     const [tabFocus, setTabFocus] = useState(true);
-    const [online, setOnline] = useState([alias])
+    const [online, setOnline] = useState([{alias:alias, id:''}])
     const { acc, collect } = useContext(HicetnuncContext)
     const scrollTarget = useRef(null);
-    const ws = useRef();
-    const counter = useRef(0)
+    const peer = useRef();
 
    useEffect(() => {
     const sendObjkt = () => {
@@ -105,7 +107,7 @@ export const Chat = () => {
             if (data) {
               const holder = data.hic_et_nunc_holder[0]?.name || acc.address
               setAlias(holder)
-              setOnline([holder])
+              setOnline([{ alias:holder, id:'' }])
               
             }
             if (errors) {
@@ -117,58 +119,95 @@ export const Chat = () => {
   }, [acc])
 
   useEffect(() => {
+    const p2pSync = async () => {
     if (alias) {
-    ws.current = new WebSocket('wss://hen-chat.herokuapp.com');
-    ws.current.onopen = () => {
-      console.log("Connection opened");
-      setConnected(true);
-      ws.current.send(
-        JSON.stringify({
-          alias: alias
-        }),
-      );
-    };
+      peer.current = new Peer(
+        {
+          host: 'https://hen-chat.herokuapp.com',
+          secure: true,
+          debug: 1,
+          path: "/hicetnunc",
+        })
+        peer.current.on('open', (id) =>{
+          console.log('id: ', id)
+          setOnline([{alias: alias, id: id}])
+        })
+        
+      let peers = await axios.get('https://hen-chat.herokuapp.com/hicetnunc/peerjs/peers').then(res => res.data)
+          console.log(peers)
+        //peer mesh
+      for (let p in peers) {
+        var conn = peer.current.connect(peers[p], {
+          metadata: { 'alias': alias, 'address': acc.address }
+        })
 
-    ws.current.onclose = () => {
-
-      if (ws.current) {
-        console.log('ws closed by server');
-      } else {
-        console.log('ws closed by dapp component unmount');
-        return;
-      }
-
-      if (reconnecting) {
-        return;
-      };
-      setConnected(false);
-      console.log('ws closed');
-
-      if (counter.current < 18) {
-        counter.current++
-        setReconnecting(true);
-        setTimeout(() => setReconnecting(null), 5000);
-      }
-    };
-    ws.current.onmessage = async (event) => {
-      const data = JSON.parse(event.data);
-      if (data.id) data.metadata = await fetchObjkt(data.id)
-      if (Array.isArray(data.body))  setOnline(data.body.reverse())
-      else {
-      setConversation((_messages) => [..._messages, data])
-        if (data.sender !== (walletPreview(acc.address) && alias)) {
-          const favicon = document.getElementById("favicon")
-          favicon.href = '/message.ico'
-        }
-      }
+        conn.on('open',  () => {
+          console.log('connected with ', conn.peer)
+          setPeerIds([...peerIds, conn.peer])
+          conn.on('data', async (data) => {
+            console.log(data)
+            console.log(online)
+            if (data.objktId && data.objktId > 0) {data.metadata = await fetchObjkt(data.objktId)}
+            if (data.alias) {online.some(i => i.alias === data.alias)
+              ? setOnline(online.filter(i => i.alias !== data.alias))
+              : setOnline(online => [{alias:data.alias, id: conn.peer}, ...online])}
+          else {
+            setConversation((messages) => [...messages, data])
+            if (data.sender !== (walletPreview(acc.address) && alias)) {
+              const favicon = document.getElementById("favicon")
+              favicon.href = '/message.ico'
+            }}
+            console.log(data)     
+          })
+          conn.on('error', (e) => {
+            console.log('error : ', e)
+          })
+          conn.on('close', () => {
+            console.log(conn.peer)
+            setPeerIds(ids => ids.filter(i => i !== conn.peer))
+            setOnline(online => online.filter(i => i.id !== conn.peer))
+            console.log('closed connection')
+          })
+          setConnections([...connections, conn])
+          return () => {
+            console.log("Cleaning up...");
+            peer.current.disconnect();
+          };
+      })
+      setPeerIds([...peerIds], [peer])
     }
 
-    return () => {
-      console.log("Cleaning up...");
-      ws.current.close();
-    };
+    peer.current.on("connection", (conn) => {
+        conn.on('open', () => {
+          console.log('connected with ', conn.peer)
+          conn.send({ alias: alias })
+          !online.some(i => i.alias === conn.metadata.alias)
+           && setOnline(online => [{alias: conn.metadata.alias, id: conn.peer}, ...online])
+          setPeerIds([...peerIds, conn.peer])
+
+          conn.on('data', async (data) => {
+            console.log(data)
+            if (data.objktId) data.metadata = await fetchObjkt(data.objktId)
+            setConversation((messages) => [...messages, data])
+            const favicon = document.getElementById("favicon")
+            favicon.href = '/message.ico'
+          })
+
+          conn.on('error', (e) => {
+            console.log('error: ', e)
+          })
+          conn.on('close', () => {
+            setPeerIds(ids => ids.filter(i => i !== conn.peer))
+            setOnline(online => online.filter(i => i.alias !== conn.metadata.alias))
+            console.log('closed connection')
+          })
+          setConnections([...connections, conn])
+        })
+      })
+    }
   }
-  }, [alias, reconnecting]);
+    p2pSync()
+  }, [alias]);
 
 
 useEffect(() => {
@@ -178,8 +217,8 @@ useEffect(() => {
 }, [conversation.length]);
 
 const getCollection = async () => {
-  let collection = await fetchCollection(acc.address)
   let offset = 0
+  let collection = await fetchCollection(acc.address, offset)
   while (collection.length % 500 === 0) {
     offset = offset+500
     collection = collection.concat(await fetchCollection(acc.address, offset))
@@ -227,23 +266,28 @@ const sendMessage = async (message) => {
       break
       
     case message.charAt(0) !== '/': 
-      ws.current.send(
-        JSON.stringify({
+      let metadata = ''
+      if (objkt > 0 ) {metadata = await fetchObjkt(objkt)}
+      setConversation((messages) => [...messages, {sender: alias, body: message,  metadata: metadata}])
+      for (let c in connections) {
+        connections[c].send(
+        {
           sender: alias,
           body: message,
-          id: objkt
+          objktId: objkt
         })
-      )
-       break
+      break
     }
-  counter.current > 0 && (counter.current = 1)
+  }
 }
+
 const handleSubmit = e => {
   e.preventDefault()
   sendMessage(message)
   setMessage('')
   e.target.reset()
 }
+
 const handleKeyPress = e => {
   if (e.key == 'Enter' && !e.shiftKey) {
     e.preventDefault()
@@ -258,12 +302,12 @@ if(!acc) return(
     <div>: sync to join. . .</div>
   </Page>
 )
-if (counter.current === 18) return (
+
+if (peer.current.disconnected) return (
 <Page title="chat" >
   <div style={{margin:'18px'}}> disconnected. . .</div>
 </Page>
 )
-
 return (
   <>
   {!collapsed ? <Select address={acc.address} setObjkt={setObjkt} setCollapsed={setCollapsed}/> :
@@ -273,8 +317,8 @@ return (
       <div style={{paddingLeft: '9px', marginBottom:'9px'}} key={i}>
             {'* '}
           <Link target="_blank" rel="noopener noreferrer" 
-                to={o?.length == 36 ? `/tz/${o}` : `/${o}` }>
-            {o?.length == 36 ? walletPreview(o) : o}
+                to={o?.alias?.length == 36 ? `/tz/${o.alias}` : `/${o.alias}` }>
+            {o?.alias?.length == 36 ? walletPreview(o.alias) : o.alias}
           </Link>
       </div> 
       )) 
