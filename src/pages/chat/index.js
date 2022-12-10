@@ -164,7 +164,7 @@ export const Chat = () => {
             })
 
             conn.on('open',  () => {
-              console.log('connected with ', conn.peer)
+              console.log('connected with', conn.peer)
               conn.on('data', async (data) => {
                 if (data.objktId && data.objktId > 0) {data.metadata = await fetchObjkt(data.objktId)}
                 if (data.alias) {setOnline(online => [{alias:data.alias, id: conn.peer}, ...online])}
@@ -183,7 +183,7 @@ export const Chat = () => {
                 setPeerIds(ids => ids.filter(i => i !== conn.peer))
                 setOnline(online => online.filter(i => i.id !== conn.peer))
                 setConnections(c => c.filter(i => i !== conn))
-                console.log('closed connection')
+                console.log('closed connection with', conn.peer)
               })
             }, 1000)
               setConnections(connections => [...connections, conn])
@@ -192,7 +192,7 @@ export const Chat = () => {
           }
           peer.current.on("connection", (conn) => {
             conn.on('open', () => {
-              console.log('connected with ', conn.peer)
+              console.log('connected with', conn.peer)
               conn.send({ alias: alias })
               setOnline(online => [{alias: conn.metadata.alias, id: conn.peer}, ...online])
               setPeerIds(peerIds => [...peerIds, conn.peer])
@@ -211,8 +211,16 @@ export const Chat = () => {
                 setPeerIds(ids => ids.filter(i => i !== conn.peer))
                 setOnline(online => online.filter(i => i.alias !== conn.metadata.alias))
                 setConnections(c => c.filter(i => i !== conn))
-                console.log('closed connection')
+                console.log('closed connection with', conn.peer)
               })
+              conn.peerConnection.oniceconnectionstatechange = function() {
+                if(conn.peerConnection.iceConnectionState == 'disconnected') {
+                  setPeerIds(ids => ids.filter(i => i !== conn.peer))
+                  setOnline(online => online.filter(i => i.alias !== conn.metadata.alias))
+                  setConnections(c => c.filter(i => i !== conn))
+                  console.log('closed connection with', conn.peer)
+               }
+              }
               setConnections(connections => [...connections, conn])
             }) 
           })
