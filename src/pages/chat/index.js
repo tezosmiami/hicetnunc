@@ -185,6 +185,14 @@ export const Chat = () => {
                 setConnections(c => c.filter(i => i !== conn))
                 console.log('closed connection with', conn.peer)
               })
+              conn.peerConnection.oniceconnectionstatechange = () => {
+                if(conn.peerConnection.iceConnectionState == 'disconnected') {
+                  setPeerIds(ids => ids.filter(i => i !== conn.peer))
+                  setOnline(online => online.filter(i => i.alias !== conn.metadata.alias))
+                  setConnections(c => c.filter(i => i !== conn))
+                  console.log('closed connection with', conn.peer)
+               }
+              }
             }, 1000)
               setConnections(connections => [...connections, conn])
             })
@@ -196,14 +204,12 @@ export const Chat = () => {
               conn.send({ alias: alias })
               setOnline(online => [{alias: conn.metadata.alias, id: conn.peer}, ...online])
               setPeerIds(peerIds => [...peerIds, conn.peer])
-  
               conn.on('data', async (data) => {
                 if (data.objktId) data.metadata = await fetchObjkt(data.objktId)
                 setConversation((messages) => [...messages, data])
                 const favicon = document.getElementById("favicon")
                 favicon.href = '/message.ico'
               })
-  
               conn.on('error', (e) => {
                 console.log('error: ', e)
               })
@@ -213,7 +219,7 @@ export const Chat = () => {
                 setConnections(c => c.filter(i => i !== conn))
                 console.log('closed connection with', conn.peer)
               })
-              conn.peerConnection.oniceconnectionstatechange = function() {
+              conn.peerConnection.oniceconnectionstatechange = () => {
                 if(conn.peerConnection.iceConnectionState == 'disconnected') {
                   setPeerIds(ids => ids.filter(i => i !== conn.peer))
                   setOnline(online => online.filter(i => i.alias !== conn.metadata.alias))
