@@ -281,6 +281,11 @@ const sendMessage = async (message) => {
        || e.includes('@') || e.includes('#')))
       sendMessage(filtered.slice(0, (1 + Math.floor(Math.random() * 11))).join(' ').toLowerCase())
       break
+
+    case message.slice(0,5).toUpperCase() === '/help'.toUpperCase():
+      const help = `p2p decentralized chat\n---------------------------------------\n/objkt - select to show \n/random - show random collected\n/imagine - random words from collected\n/tezos - current $ price of ꜩ\n---------------------------------------`
+      setConversation((messages) => [...messages, {sender: '', body: help}])
+      break  
       
     case message.charAt(0) !== '/': 
       let metadata = ''
@@ -321,7 +326,7 @@ if(!acc) return(
   </Page>
 )
 
-// if (peer.current.disconnected()) return (
+// if (peer.current?.disconnected) return (
 // <Page title="chat" >
 //   <div style={{margin:'18px'}}> disconnected. . .</div>
 // </Page>
@@ -416,7 +421,7 @@ return (
                       </div>
                     </div>
                   </div>
-                : <span>{' '+m.body}</span> }
+                : <span style={{wordWrap: 'break-word', whiteSpace:'pre-wrap' }}>{` ${m.body}`}</span> }
            </div>
         ))
       }
@@ -427,7 +432,7 @@ return (
               type='text'
               onChange={(e) => setMessage(e.target.value)}
               autoFocus
-              placeholder='message'
+              placeholder='message - /help'
               onKeyPress={handleKeyPress}
               max={270}
               label='message'
