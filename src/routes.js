@@ -14,6 +14,7 @@ import { Search } from './pages/search'
 import { Tags } from './pages/tags'
 import { Friends } from './pages/friends'
 
+
 export const routes = [
   {
     exact: true,
@@ -82,6 +83,11 @@ export const routes = [
   },
   {
     exact: false,
+    path: '/:id/live',
+    component: Chat,
+  },
+  {
+    exact: false,
     path: '/collaborate/:action?',
     component: Collaborate,
   },
@@ -128,5 +134,5 @@ export const routes = [
     exact: false,
     path: '/:id/:collection?',
     component: Display,
-  },
+  }
 ]

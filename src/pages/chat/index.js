@@ -8,7 +8,7 @@ import { Button } from '../../components/button'
 import { Textarea } from '../../components/input'
 import { walletPreview } from '../../utils/string'
 import { Purchase } from '../../components/button'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { PATH } from '../../constants'
 import { Peer } from "peerjs"
 import styles from './styles.module.scss'
@@ -65,7 +65,8 @@ export const Chat = () => {
     const [tabFocus, setTabFocus] = useState(true);
     const [online, setOnline] = useState([{alias:alias, id:''}])
     const { acc, collect } = useContext(HicetnuncContext)
-    const scrollTarget = useRef(null);
+    const{ id: channel } = useParams()
+    const scrollTarget = useRef(null)
     const peer = useRef();
 
    useEffect(() => {
@@ -160,11 +161,10 @@ export const Chat = () => {
         for (let p in peers) {
           setTimeout(() => {
             var conn = peer.current.connect(peers[p], {
-              metadata: { 'alias': alias, 'address': acc.address }
+              metadata: { 'channel': channel, 'alias': alias, 'address': acc.address }
             })
-
             conn.on('open',  () => {
-              console.log('connected with', conn.peer)
+              // console.log('connected with', conn.peer)
               conn.on('data', async (data) => {
                 if (data.objktId && data.objktId > 0) {data.metadata = await fetchObjkt(data.objktId)}
                 if (data.alias) {setOnline(online => [{alias:data.alias, id: conn.peer}, ...online])}
@@ -183,14 +183,14 @@ export const Chat = () => {
                 setPeerIds(ids => ids.filter(i => i !== conn.peer))
                 setOnline(online => online.filter(i => i.id !== conn.peer))
                 setConnections(c => c.filter(i => i !== conn))
-                console.log('closed connection with', conn.peer)
+                // console.log('closed connection with', conn.peer)
               })
               conn.peerConnection.oniceconnectionstatechange = () => {
                 if(conn.peerConnection.iceConnectionState == 'disconnected') {
                   setPeerIds(ids => ids.filter(i => i !== conn.peer))
                   setOnline(online => online.filter(i => i.alias !== conn.metadata.alias))
                   setConnections(c => c.filter(i => i !== conn))
-                  console.log('closed connection with', conn.peer)
+                  // console.log('closed connection with', conn.peer)
                }
               }
             }, 1000)
@@ -200,7 +200,8 @@ export const Chat = () => {
           }
           peer.current.on("connection", (conn) => {
             conn.on('open', () => {
-              console.log('connected with', conn.peer)
+              if (conn.metadata.channel !== channel) {conn.close(); return}
+              // console.log('connected with', conn.peer)
               conn.send({ alias: alias })
               setOnline(online => [{alias: conn.metadata.alias, id: conn.peer}, ...online])
               setPeerIds(peerIds => [...peerIds, conn.peer])
@@ -217,14 +218,14 @@ export const Chat = () => {
                 setPeerIds(ids => ids.filter(i => i !== conn.peer))
                 setOnline(online => online.filter(i => i.alias !== conn.metadata.alias))
                 setConnections(c => c.filter(i => i !== conn))
-                console.log('closed connection with', conn.peer)
+                // console.log('closed connection with', conn.peer)
               })
               conn.peerConnection.oniceconnectionstatechange = () => {
                 if(conn.peerConnection.iceConnectionState == 'disconnected') {
                   setPeerIds(ids => ids.filter(i => i !== conn.peer))
                   setOnline(online => online.filter(i => i.alias !== conn.metadata.alias))
                   setConnections(c => c.filter(i => i !== conn))
-                  console.log('closed connection with', conn.peer)
+                  // console.log('closed connection with', conn.peer)
                }
               }
               setConnections(connections => [...connections, conn])
@@ -337,6 +338,11 @@ const handleKeyPress = e => {
 if(!acc) return(
   <Page title="chat" >
     <div>: sync to join. . .</div>
+  </Page>
+)
+if (channel && !online.find(o => o.alias === channel)) return(
+  <Page title="be live" >
+    <div>: {channel} is offline</div>
   </Page>
 )
 
