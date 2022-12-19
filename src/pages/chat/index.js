@@ -342,7 +342,7 @@ if(!acc) return(
 )
 if (channel && !online.find(o => o.alias === channel)) return(
   <Page title="be live" >
-    <div>: {channel} is offline</div>
+    <div>: <Button to={channel}>{channel}</Button> is offline</div>
   </Page>
 )
 
@@ -394,8 +394,8 @@ return (
                       <div className={styles.cardContainer} >
                           <Button
                               style={{position: 'relative'}}
-                              key={m.id}
-                              href={`${PATH.OBJKT}/${m.id}`}
+                              key={m.metadata.id}
+                              href={`${PATH.OBJKT}/${m.metadata.id}`}
                               target="_blank" rel="noopener noreferrer"
                             >
                               <div className={styles.container}>
@@ -413,10 +413,10 @@ return (
                          ${m.metadata.mime=='audio/mpeg' && styles.audio}`}
                         >
                           <Button
-                          href={`${PATH.OBJKT}/${m.id}`}
+                          href={`${PATH.OBJKT}/${m.metadata.id}`}
                           >
                             <div className={styles.cardText}>   
-                              <div>OBJKT#{m.id}</div>
+                              <div>OBJKT#{m.metadata.id}</div>
                               <div>{m.metadata.title}</div>
                             </div>
                           </Button>
