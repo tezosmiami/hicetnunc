@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState, useRef } from 'react'
 import { HicetnuncContext } from '../../context/HicetnuncContext'
 import { fetchGraphQL, getNameForAddress } from '../../data/hicdex'
 import { getRestrictedAddresses, fetchCollection, query_collection} from '../../components/objkt-select'
+import { fetchTag } from '../search'
 import { renderMediaType } from '../../components/media-types'
 import { Page } from '../../components/layout'
 import { Button } from '../../components/button'
@@ -301,6 +302,13 @@ const sendMessage = async (message) => {
       const help = `p2p decentralized chat\n---------------------------------------\n/objkt - select to show \n/random - show random collected\n/imagine - random words from collected\n/tezos - current $ price of ꜩ\n---------------------------------------`
       setConversation((messages) => [...messages, {sender: '', body: help}])
       break  
+    
+    case message.slice(0,6).toUpperCase() === '/trash'.toUpperCase()
+      ||  message.slice(0,9).toUpperCase() === '/teztrash'.toUpperCase():
+      const trash = await fetchTag(( 'teztrash'), 9999999)
+      setObjkt(trash[Math.floor(Math.random() * trash.length)].id)
+ 
+      break   
       
     case message.charAt(0) !== '/': 
       let metadata = ''

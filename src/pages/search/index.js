@@ -464,7 +464,7 @@ async function fetchSubjkts(subjkt) {
   return result
 }
 
-async function fetchTag(tag, offset) {
+export async function fetchTag(tag, offset) {
   const { errors, data } = await fetchGraphQL(
     `query ObjktsByTag {
   hic_et_nunc_token(where: {supply : { _neq : 0 }, token_tags: {tag: {tag: {_ilike: ${tag}}}}, id: {_lt: ${offset}}}, limit : 188, order_by: {id: desc}) {
