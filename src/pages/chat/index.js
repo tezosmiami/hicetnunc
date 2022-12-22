@@ -69,8 +69,14 @@ export const Chat = () => {
     const{ id: channel } = useParams()
     const scrollTarget = useRef(null)
     const peer = useRef();
-
-   useEffect(() => {
+    
+  const onClose = (conn) => {
+    setPeerIds(ids => ids.filter(i => i !== conn.peer))
+    setOnline(online => online.filter(i => i.id !== conn.peer))
+    setConnections(c => c.filter(i => i !== conn))
+    // console.log('closed connection with', conn.peer)
+  }
+  useEffect(() => {
     const sendObjkt = () => {
       if (objkt > 1) {
         sendMessage(' ')
@@ -81,22 +87,22 @@ export const Chat = () => {
   }, [objkt])
 
   useEffect(() => {
-    const handleFocus = () => {
+    const onFocus = () => {
       const favicon = document.getElementById("favicon")
       favicon.href = '/favicon.ico'
       setTabFocus(true);
     };
 
-    const handleBlur = () => {
+    const onBlur = () => {
       setTabFocus(false);
     };
 
-    window.addEventListener('focus', handleFocus);
-    window.addEventListener('blur', handleBlur);
+    window.addEventListener('focus', onFocus);
+    window.addEventListener('blur', onBlur);
 
     return () => {
-      window.removeEventListener('focus', handleFocus);
-      window.removeEventListener('blur', handleBlur);
+      window.removeEventListener('focus', onFocus);
+      window.removeEventListener('blur', onBlur);
     };
   }, []);
 
@@ -181,17 +187,11 @@ export const Chat = () => {
                 console.log('error : ', e)
               })
               conn.on('close', () => {
-                setPeerIds(ids => ids.filter(i => i !== conn.peer))
-                setOnline(online => online.filter(i => i.id !== conn.peer))
-                setConnections(c => c.filter(i => i !== conn))
-                // console.log('closed connection with', conn.peer)
+                onClose(conn)
               })
               conn.peerConnection.oniceconnectionstatechange = () => {
                 if(conn.peerConnection.iceConnectionState == 'disconnected') {
-                  setPeerIds(ids => ids.filter(i => i !== conn.peer))
-                  setOnline(online => online.filter(i => i.id !== conn.peer))
-                  setConnections(c => c.filter(i => i !== conn))
-                  // console.log('closed connection with', conn.peer)
+                 onClose(conn)
                }
               }
             }, 1000)
@@ -216,17 +216,11 @@ export const Chat = () => {
                 console.log('error: ', e)
               })
               conn.on('close', () => {
-                setPeerIds(ids => ids.filter(i => i !== conn.peer))
-                setOnline(online => online.filter(i => i.alias !== conn.metadata.alias))
-                setConnections(c => c.filter(i => i !== conn))
-                // console.log('closed connection with', conn.peer)
+                onClose(conn)
               })
               conn.peerConnection.oniceconnectionstatechange = () => {
                 if(conn.peerConnection.iceConnectionState == 'disconnected') {
-                  setPeerIds(ids => ids.filter(i => i !== conn.peer))
-                  setOnline(online => online.filter(i => i.id !== conn.peer))
-                  setConnections(c => c.filter(i => i !== conn))
-                  // console.log('closed connection with', conn.peer)
+                  onClose(conn)
                }
               }
               setConnections(connections => [...connections, conn])
@@ -299,7 +293,7 @@ const sendMessage = async (message) => {
       break
 
     case message.slice(0,5).toUpperCase() === '/help'.toUpperCase():
-      const help = `p2p decentralized chat\n---------------------------------------\n/objkt - select to show \n/random - show random collected\n/imagine - random words from collected\n/tezos - current $ price of ꜩ\n---------------------------------------`
+      const help = `p2p decentralized chat\n---------------------------------------\n/objkt - select to show \n/random - show random collected\n/imagine - random words from collected\n/trash - show random #teztrash\n/tezos - current $ price of ꜩ\n---------------------------------------`
       setConversation((messages) => [...messages, {sender: '', body: help}])
       break  
     
@@ -327,14 +321,14 @@ const sendMessage = async (message) => {
   }
 
 
-const handleSubmit = e => {
+const onSubmit = e => {
   e.preventDefault()
   sendMessage(message)
   setMessage('')
   e.target.reset()
 }
 
-const handleKeyPress = e => {
+const onKeyPress = e => {
   if (e.key == 'Enter' && !e.shiftKey) {
     e.preventDefault()
     sendMessage(e.target.value)
@@ -455,13 +449,13 @@ return (
       }
        </div>
         <div className={styles.footer}>
-          <form onSubmit={handleSubmit}> 
+          <form onSubmit={onSubmit}> 
           <Textarea
               type='text'
               onChange={(e) => setMessage(e.target.value)}
               autoFocus
               placeholder='message - /help'
-              onKeyPress={handleKeyPress}
+              onKeyPress={onKeyPress}
               max={270}
               label='message'
               value={message}
