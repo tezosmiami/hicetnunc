@@ -63,7 +63,7 @@ export const Chat = () => {
     const [connections, setConnections] = useState([])
     const [peerIds, setPeerIds] = useState([])
     const [tabFocus, setTabFocus] = useState(true);
-    const [online, setOnline] = useState([{alias:alias, id:''}])
+    const [online, setOnline] = useState([{alias:alias, id:alias}])
     const { acc, collect } = useContext(HicetnuncContext)
     const{ id: channel } = useParams()
     const scrollTarget = useRef(null)
@@ -108,7 +108,7 @@ export const Chat = () => {
             if (data) {
               const holder = data.hic_et_nunc_holder[0]?.name || acc.address
               setAlias(holder)
-              setOnline([{ alias:holder, id:'' }])
+              setOnline([{ alias:holder, id:alias }])
               
             }
             if (errors) {
@@ -188,7 +188,7 @@ export const Chat = () => {
               conn.peerConnection.oniceconnectionstatechange = () => {
                 if(conn.peerConnection.iceConnectionState == 'disconnected') {
                   setPeerIds(ids => ids.filter(i => i !== conn.peer))
-                  setOnline(online => online.filter(i => i.alias !== conn.metadata.alias))
+                  setOnline(online => online.filter(i => i.id !== conn.peer))
                   setConnections(c => c.filter(i => i !== conn))
                   // console.log('closed connection with', conn.peer)
                }
@@ -223,7 +223,7 @@ export const Chat = () => {
               conn.peerConnection.oniceconnectionstatechange = () => {
                 if(conn.peerConnection.iceConnectionState == 'disconnected') {
                   setPeerIds(ids => ids.filter(i => i !== conn.peer))
-                  setOnline(online => online.filter(i => i.alias !== conn.metadata.alias))
+                  setOnline(online => online.filter(i => i.id !== conn.peer))
                   setConnections(c => c.filter(i => i !== conn))
                   // console.log('closed connection with', conn.peer)
                }
