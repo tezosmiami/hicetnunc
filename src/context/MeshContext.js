@@ -26,6 +26,7 @@ const MeshContextProvider = ({ children }) => {
     const [dimension, setDimension] = useState('hicetnunc')
     const [online, setOnline] = useState([])
     const [calls, setCalls] = useState([])
+    const [tabFocus, setTabFocus] = useState(true);
     const { acc } = useContext(HicetnuncContext)
     const peer = useRef(null);
 
@@ -44,10 +45,10 @@ const MeshContextProvider = ({ children }) => {
                 o.conn.on('data', async (data) => {
                     if (data.type === 'new') {setOnline(online => !online.find(o => o.id === data.id) ? [{alias:data.alias, id: o.conn.peer, dimension: data.dimension, conn:o.conn}, ...online] : online)}
                     if (data.type === 'dimension') {setOnline(online => online.map(o=> o.id === data.id ? {...o, dimension: data.dimension} : o))} 
-                    if (data.alias !== acc.address && data.alias !== alias) {
+                    if (data.invite || data.message) {
                         const favicon = document.getElementById("favicon")
                         favicon.href = '/message.ico'
-                    }
+                        }
                 })
             })
 
@@ -64,8 +65,10 @@ const MeshContextProvider = ({ children }) => {
                 if (data.type === 'dimension') {setOnline(online => online.map(o=> o.id === data.id ? 
                     {...o, dimension: data.dimension}
                     : o))} 
-                const favicon = document.getElementById("favicon")
-                favicon.href = '/message.ico'
+                if (data.invite || data.message) {
+                    const favicon = document.getElementById("favicon")
+                    favicon.href = '/message.ico'
+                }
             })
             conn.on('error', (e) => {
                 console.log('error: ', e)
@@ -114,6 +117,26 @@ const MeshContextProvider = ({ children }) => {
            }
         if (dimension === 'hicetnunc' && peer.current) onIncoming()         
     }, [dimension])
+
+    useEffect(() => {
+        const onFocus = () => {
+          const favicon = document.getElementById("favicon")
+          favicon.href = '/favicon.ico'
+          setTabFocus(true);
+        };
+    
+        const onBlur = () => {
+          setTabFocus(false);
+        };
+    
+        window.addEventListener('focus', onFocus);
+        window.addEventListener('blur', onBlur);
+    
+        return () => {
+          window.removeEventListener('focus', onFocus)
+          window.removeEventListener('blur', onBlur)  
+        };
+      }, []);
  
     useEffect(() => {
         const syncMesh = async () => {
@@ -160,17 +183,16 @@ const MeshContextProvider = ({ children }) => {
                         })
                         conn.on('open',  () => {
                             conn.on('data', async (data) => {
-                                console.log(data,'data')
                             if (data.type === 'new') {setOnline(online => !online.find(o => o.id === data.id) ?
                                 [{alias:data.alias, id: conn.peer, dimension: data.dimension, conn:conn}, ...online]
                                 : online)} 
                             if (data.type === 'dimension') {setOnline(online => online.map(o=> o.id === data.id ?
                                 {...o, dimension: data.dimension}
                                 : o))} 
-                            if (data.alias !== acc.address && data.alias !== alias) {
+                            if (data.invite || data.message) {
                                 const favicon = document.getElementById("favicon")
                                 favicon.href = '/message.ico'
-                            }
+                                }
                             })
                             conn.on('error', (e) => {
                             console.log('error : ', e)

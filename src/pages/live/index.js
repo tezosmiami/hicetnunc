@@ -108,7 +108,7 @@ export const Live = () => {
   const [conversation, setConversation] = useState([]);
   const [invitations, setInvitations] = useState([])
   const [collapsed, setCollapsed] = useState(true)
-  const [tabFocus, setTabFocus] = useState(true);
+
   const [audioStream, setAudioStream] = useState(false)
   const { acc, collect, syncTaquito} = useContext(HicetnuncContext)
   const { id:channel } = useParams()
@@ -212,7 +212,7 @@ export const Live = () => {
               : invitations.filter(j => j !== data.invite))
             onCall()  
           }
-          data.body && setConversation((messages) => [...messages, data])
+          data.message && setConversation((messages) => [...messages, data])
           const favicon = document.getElementById("favicon")
           favicon.href = '/message.ico'
         })
@@ -257,27 +257,6 @@ const onKeyPress = e => {
     sendObjkt()
   }, [objkt])
 
-  useEffect(() => {
-    const onFocus = () => {
-      const favicon = document.getElementById("favicon")
-      favicon.href = '/favicon.ico'
-      setTabFocus(true);
-    };
-
-    const onBlur = () => {
-      setTabFocus(false);
-    };
-
-    window.addEventListener('focus', onFocus);
-    window.addEventListener('blur', onBlur);
-
-    return () => {
-      window.removeEventListener('focus', onFocus)
-      window.removeEventListener('blur', onBlur)  
-      setDimension('hicetnunc')  
-      peer.current?.off('call')
-    };
-  }, []);
   
   useEffect(() => {
     const updateConn =  () => {
@@ -320,7 +299,7 @@ const onKeyPress = e => {
                   : invitations.filter(j => j !== data.invite))
                   onCall()  
                   }
-                data.body && setConversation((messages) => [...messages, data])
+                data.message && setConversation((messages) => [...messages, data])
                 if (data.alias !== acc.address && data.alias !== alias) {
                   const favicon = document.getElementById("favicon")
                   favicon.href = '/message.ico'
@@ -386,6 +365,13 @@ useEffect(() => {
   dimension === 'live' && setMedia([])
 }, [dimension, audioStream])
 
+useEffect(() => {
+  return () => {
+    setDimension('hicetnunc')  
+    peer.current?.off('call')
+  }
+}, [])
+
 
 useEffect(() => {
   if (scrollTarget.current) {
@@ -430,7 +416,7 @@ const sendMessage = async (message) => {
 
     case message.slice(0,5).toUpperCase() === '/help'.toUpperCase():
       const help = `p2p decentralized system\n---------------------------------------\n/objkt - select to show \n/random - show random collected\n/imagine - random words from collected\n/trash - show random #teztrash\n/tezos - current $ price of ꜩ\n${(dimension===alias) ? '/audio - stream audio\n/invite alias - invite to audiostream\n' : ''}${invitations.includes(alias) ? '/audio - stream audio\n' :''}${dimension==='live' && alias.length !==36 ? `/live - start session\n` : ''}---------------------------------------`
-      setConversation((messages) => [...messages, {alias: '', body: help}])
+      setConversation((messages) => [...messages, {alias: '', message: help}])
       break  
     
     case message.slice(0,5).toUpperCase() === '/live'.toUpperCase():
@@ -453,11 +439,11 @@ const sendMessage = async (message) => {
     case message.charAt(0) !== '/': 
       let metadata = ''
       if (objkt > 0 ) {metadata = await fetchObjkt(objkt)}
-      setConversation((messages) => [...messages, {alias: alias, body: message.toString(),  metadata: metadata}])
+      setConversation((messages) => [...messages, {alias: alias, message: message.toString(),  metadata: metadata}])
       online.filter(o => o.dimension === dimension).map((s) => s.conn && s.conn.send(
         {
           alias: alias,
-          body: message,
+          message: message,
           objktId: objkt,
           dimension: dimension
         })
@@ -585,11 +571,11 @@ return (
                       {m.alias.length == 36 ? walletPreview(m.alias) : m.alias}
                   </Link>
               {`: `} 
-              {m.body && RegExp(pattern, "i").test(m.body) ? 
-                    <a href={m.body.slice(0, 4) !== 'http' ? 'https://'+ m.body : m.body}
+              {m.message && RegExp(pattern, "i").test(m.message) ? 
+                    <a href={m.message.slice(0, 4) !== 'http' ? 'https://'+ m.message : m.message}
                       className={styles.message}
                       target="_blank" rel="noopener noreferrer" >
-                        {m.body}
+                        {m.message}
                     </a> :    
                         m.metadata ? 
                         <div style={{marginLeft: m.metadata.mime.includes('video') ? 
@@ -646,7 +632,7 @@ return (
                           </div>
                         </div>
                       </div>
-                    : <span style={{wordWrap: 'break-word', whiteSpace:'pre-wrap' }}>{  m.body}</span> 
+                    : <span style={{wordWrap: 'break-word', whiteSpace:'pre-wrap' }}>{  m.message}</span> 
                     }
               </div>
             ))
