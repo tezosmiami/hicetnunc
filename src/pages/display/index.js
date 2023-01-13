@@ -842,7 +842,7 @@ export default class Display extends Component {
                   )}
                   {!window.location.pathname.includes(PATH.ISSUER) &&
                     <Button to={window.location.pathname+'/live'}>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg>
                     </Button> 
                   }    
                 </div>
@@ -865,11 +865,11 @@ export default class Display extends Component {
                     collection
                   </Primary>
                 </Button>
-                <Button onClick={this.collabs}>
+                {/* <Button onClick={this.collabs}>
                   <Primary selected={this.state.collabsState}>
                     collabs
                   </Primary>
-                </Button>              
+                </Button>               */}
                 <div className={styles.filter}>
                 {this.state.creationsState && 
                 <Button
@@ -993,11 +993,11 @@ export default class Display extends Component {
                         null
                       }
 
-                      {this.state.marketV1.map((e, key) => {
+                      {this.state.marketV1.map((e, i) => {
                         // console.log(e)
                         return (
                           <>
-                            <Container key={key}>
+                            <Container key={i}>
                               <Padding>
                                 <Button to={`${PATH.OBJKT}/${e.token_id}`}>
                                   {/* {console.log(e)} */}
@@ -1029,13 +1029,13 @@ export default class Display extends Component {
                 endMessage={undefined}
               >
                 <ResponsiveMasonry>
-                  {this.state.items.map((nft) => {
+                  {this.state.items.map((nft,i) => {
                     // console.log('swaps ' + JSON.stringify(nft))
                     return (
-                      <div className={styles.cardContainer} key={nft.token}>
+                      <div className={styles.cardContainer} key={i}>
                         <Button
                           style={{ position: 'relative' }}
-                          key={nft.id}
+                          key={i}
                           to={`${PATH.OBJKT}/${nft.id}`}>
                           <div className={styles.container}>
                             {renderMediaType({
@@ -1144,11 +1144,11 @@ export default class Display extends Component {
                         null
                       }
 
-                      {this.state.marketV1.map((e, key) => {
+                      {this.state.marketV1.map((e, i) => {
                         // console.log(e)
                         return (
                           <>
-                            <Container key={key}>
+                            <Container key={i}>
                               <Padding>
                                 <Button to={`${PATH.OBJKT}/${e.token_id}`}>
                                   {/* {console.log(e)} */}
@@ -1181,13 +1181,13 @@ export default class Display extends Component {
                 endMessage={<p></p>}
               >
                 <ResponsiveMasonry>
-                  {this.state.items.map((nft) => {
+                  {this.state.items.map((nft,i) => {
                     //console.log('nft: ' + JSON.stringify(nft))
                     return (
-                      <div className={styles.cardContainer} key={nft.token.id}>
+                      <div className={styles.cardContainer} key={i}>
                         <Button
                           style={{ position: 'relative' }}
-                          key={nft.token.id}
+                          key={i}
                           to={`${PATH.OBJKT}/${nft.token.id}`}>
                           <div className={styles.container}>
                             {renderMediaType({

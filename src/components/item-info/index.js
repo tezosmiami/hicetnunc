@@ -240,7 +240,7 @@ export const ItemInfo = ({
             <Button onClick={() => curate(id)}>
               <Primary>
                 <span
-                  className={styles.top}
+                  // className={styles.top}
                   data-position={'top'}
                   data-tooltip={'curate'}
                 >

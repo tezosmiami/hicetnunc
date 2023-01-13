@@ -8,7 +8,7 @@
   padding-top: 20px;
   padding-bottom: 20px;
   // word-break: normal;
-  width: 96%;
+  width: 98%;
 }
 
 .spread {
@@ -57,12 +57,12 @@
 span[data-tooltip].top {
   &:before,
   &:after {
-    transform: translate(-50%, 10px);
+    transform: translate(-18%, 10px);
   }
 
   &:hover:after,
   &:hover:before {
-    transform: translate(-50%, 0px);
+    transform: translate(-18%, 0px);
   }
 }
 

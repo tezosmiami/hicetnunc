@@ -3,6 +3,8 @@ import React, { useContext, useEffect } from 'react'
 import { useHistory } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
 import { HicetnuncContext } from '../../context/HicetnuncContext'
+import  { useMeshContext } from '../../context/MeshContext'
+import { getItem, setItem } from '../../utils/storage'
 import { Footer } from '../footer'
 import { Container, Padding } from '../layout'
 import { Button, Primary } from '../button'
@@ -11,8 +13,8 @@ import { Menu } from '../icons'
 import { walletPreview } from '../../utils/string'
 import { VisuallyHidden } from '../visually-hidden'
 import styles from './styles.module.scss'
-import { getItem, setItem } from '../../utils/storage'
 import { Bidou } from '../bidou'
+
 /* import { BeaconWallet } from '@taquito/beacon-wallet'
 
 const wallet = new BeaconWallet({
@@ -23,6 +25,8 @@ const wallet = new BeaconWallet({
 export const Header = () => {
   const history = useHistory()
   const context = useContext(HicetnuncContext)
+  const mesh = useMeshContext()
+
   // let root = document.documentElement
   // const color = root.style.getPropertyValue('--background-color')
   // console.log(color)
@@ -63,12 +67,16 @@ export const Header = () => {
       context.syncTaquito()
     }
   }
-
+  const handleMeshUnmesh = () => {
+    !mesh.meshed ? setItem('syncmesh', true) : setItem('syncmesh', false)
+    mesh.setMeshed(meshed => !meshed)
+    mesh.meshed && mesh.peer.current.destroy()
+  }
   return (
     <>
       <header className={styles.container}>
         <div className={styles.content}>
-          <a href='/'> 
+        <Button onClick={() => handleRoute('/')}>
             <div className={styles.logo}>
               {/* HIC LOGO */}
               {true && (
@@ -94,7 +102,7 @@ export const Header = () => {
               {/* PRIDE LOGO */}
               {false && <img src="/hen-pride.gif" alt="pride 2021" />}
             </div>
-          </a>
+          </Button>
 
           <div className={styles.right}>
             {!context.collapsed && context.proxyAddress && (
@@ -108,7 +116,10 @@ export const Header = () => {
             <Button onClick={handleSyncUnsync} secondary>
               <Primary>{button}</Primary> {/* Main address display here */}
             </Button>
-
+            {context.acc?.address && !context.collapsed && '/'}
+            {context.acc?.address && !context.collapsed && <Button onClick={handleMeshUnmesh} secondary>
+            <Primary>{mesh.meshed ? 'unmesh' : 'mesh'}</Primary>
+            </Button>}
             <Button onClick={context.toogleNavbar} secondary>
               <VisuallyHidden>
                 {`${context.collapsed ? 'show' : 'hide'} menu`}
@@ -131,7 +142,13 @@ export const Header = () => {
                         <Primary>explore</Primary>
                       </Button>
                     </li>
-                    
+                    <li>
+                      <Button onClick={() => handleRoute('/live')}>
+                      <Primary>
+                          live<span style={{ fontSize: '18px' }}> (lobby)</span>
+                        </Primary>
+                      </Button>
+                    </li>
                     <li>
                       <Button onClick={() => handleRoute('/mint')}>
                         <Primary>
@@ -139,11 +156,11 @@ export const Header = () => {
                         </Primary>
                       </Button>
                     </li>
-                    <li>
+                    {/* <li>
                       <Button onClick={() => handleRoute('/collaborate')}>
                         <Primary>collaborate</Primary>
                       </Button>
-                    </li>
+                    </li> */}
                     <li>
                       <Button onClick={() => handleRoute('/sync', 'tz')}>
                         <Primary>manage assets</Primary>
@@ -179,11 +196,7 @@ export const Header = () => {
                         <Primary>about</Primary>
                       </Button>
                     </li>
-                    <li>
-                      <Button onClick={() => handleRoute('/chat')}>
-                        <Primary>chat</Primary>
-                      </Button>
-                    </li>
+
                     <li>
                       <Button onClick={() => handleRoute('/faq')}>
                         <Primary>faq</Primary>

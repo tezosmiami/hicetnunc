@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import HicetnuncContextProvider from './context/HicetnuncContext'
+import  MeshContextProvider  from './context/MeshContext';
 import { getInitialData } from './data/api'
 import { Header } from './components/header'
 import { Loading as Preloading } from './components/loading'
@@ -23,13 +24,15 @@ const App = () => {
 
   return (
     <HicetnuncContextProvider>
-      <Header />
-      <FeedbackComponent />
-      <Switch>
-        {routes.map(({ exact, path, component: Comp }) => (
-          <Route path={path} exact={exact} key={path} component={Comp} />
-        ))}
-      </Switch>
+      <MeshContextProvider>
+        <Header />
+        <FeedbackComponent />
+        <Switch>
+          {routes.map(({ exact, path, component: Comp }) => (
+            <Route path={path} exact={exact} key={path} component={Comp} />
+          ))}
+        </Switch>
+      </MeshContextProvider> 
     </HicetnuncContextProvider>
   )
 }

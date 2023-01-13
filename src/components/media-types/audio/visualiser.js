@@ -18,18 +18,19 @@ export class Visualiser extends PureComponent {
 
   init() {
     this.audio = new Audio()
-    this.audio.src = this.props.src
+    // this.audio.src = this.props.src
+    this.audio.srcObject = this.props.src
     this.audio.controls = false
-    this.audio.loop = true
-    this.audio.autoplay = false
+    this.audio.loop = false
+    this.audio.autoplay = true
     this.audio.crossOrigin = 'anonymous'
 
     this.audioCtx = new AudioContext()
-
     this.analyser = this.audioCtx.createAnalyser()
-    // this.analyser.fftSize = 2048
+    this.analyser.fftSize = 2048
 
-    this.source = this.audioCtx.createMediaElementSource(this.audio)
+    // this.source = this.audioCtx.createMediaElementSource(this.audio)
+    this.source = this.audioCtx.createMediaStreamSource(this.props.src)
     this.source.connect(this.analyser)
 
     this.source.connect(this.audioCtx.destination)
@@ -41,14 +42,16 @@ export class Visualiser extends PureComponent {
   }
 
   play() {
-    this.audio.play()
-
+      
+    this.audioCtx.resume()
+    this.audio.srcObject.getTracks()[0].enabled = true;
     this.raf = requestAnimationFrame(this.update)
   }
 
   pause(reset) {
-    this.audio.pause()
-
+    // this.audio.pause()
+    this.audioCtx.suspend()
+    this.audio.srcObject.getTracks()[0].enabled = false;
     cancelAnimationFrame(this.raf)
 
     if (reset) {
@@ -57,8 +60,8 @@ export class Visualiser extends PureComponent {
   }
 
   resize() {
-    const width = 320
-    const height = 320
+    const width = 108
+    const height = 21
     this.ctx.canvas.width = width * this.ratio
     this.ctx.canvas.height = height * this.ratio
     this.ctx.canvas.style.width = `${width}px`

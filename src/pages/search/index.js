@@ -829,7 +829,7 @@ export class Search extends Component {
                 />
             {
               <div style={{ marginTop: '15px' }}>
-                {this.state.tags.map(e => <a className='tag' href='#' onClick={() => {
+                {this.state.tags.map((e,i) => <a key={i} className='tag' href='#' onClick={() => {
                   this.update(e.value, true)
                 }}>{e.value}</a>)}
               </div>
@@ -838,7 +838,7 @@ export class Search extends Component {
               (this.state.subjkt.length > 0) && (this.state.search !== "") ?
                 <div style={{ maxHeight: '200px', overflow: 'scroll' }}>
                   {
-                    this.state.subjkt.map(e => <div style={{ marginTop: '10px' }}><a href={`/${e.name}`}>{e.name}</a> {e.metadata.description}</div>)
+                    this.state.subjkt.map((e,i) => <div key={i} style={{ marginTop: '10px' }}><a href={`/${e.name}`}>{e.name}</a> {e.metadata.description}</div>)
                   }
                 </div>
                 :
