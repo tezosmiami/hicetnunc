@@ -102,7 +102,6 @@ async function fetchObjkt(id) {
   return result
 }
 
-// tab icon
 export const Live = () => {
   const [message, setMessage] = useState();
   const [objkt, setObjkt] = useState(0)
@@ -117,8 +116,6 @@ export const Live = () => {
   const history = useHistory()
 
   const {peer, alias, dimension, setDimension, media, setMedia, online, setOnline, meshed, setMeshed, calls, setCalls, onClose, onStream} =  useMeshContext()
-  console.log(peer)
-  console.log(dimension)
 
   const onAudio = (id) => {
     navigator.mediaDevices
@@ -288,8 +285,6 @@ const onKeyPress = e => {
     if (meshed && peer.current) {
       onCall()
       onIncoming()
-      console.log(online)
-      console.log(online.filter((o) => (o.dimension === dimension) && o.alias !== alias))
       online.filter((o) => (o.dimension === dimension || o.dimension === 'live') && o.alias !== alias).map((s) =>  {
             s.conn.off('data')
               s.conn.on('data', async (data) => {
@@ -486,7 +481,7 @@ if((!acc || !meshed) && (dimension !== alias)) return(
    <Footer />
   </Page>
 )
-console.log('i',invitations)
+
 if ((!online.find(o => (o.alias === dimension && o.dimension === dimension)) && dimension !== 'live')) {
   conversation.length > 0 && setConversation([])
   audioStream && setAudioStream(false)   
@@ -503,7 +498,7 @@ if ((!online.find(o => (o.alias === dimension && o.dimension === dimension)) && 
 //   <div style={{margin:'18px'}}> disconnected. . .</div>
 // </Page>
 // )
-console.log(online)
+
 return (
   <>
     {!collapsed ? <Select address={acc.address} setObjkt={setObjkt} setCollapsed={setCollapsed}/> :
