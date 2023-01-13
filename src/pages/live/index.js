@@ -474,8 +474,8 @@ if((!acc || !meshed) && (dimension !== alias)) return(
 if ((!online.find(o => (o.alias === dimension && o.dimension === dimension)) && dimension !== 'live')) {
   conversation.length > 0 && setConversation([])
   audioStream && setAudioStream(false)   
-  invitations.length > 0 && !calls && setInvitations([])
-
+  invitations.length > 0 && setInvitations([])
+  media.length > 0 && setMedia([])
  return(
   <Page title="be live" >
     <div>: <Button to={dimension}>{dimension}</Button> is offline</div>
