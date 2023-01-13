@@ -41,7 +41,7 @@ function avatar(address) {
     xsb.push({ x, y, n })
   }
 
-  let path = 'M '
+  let path = ''
   let disk = false
   for (let i = 0; i < xsb.length; i++) {
     const n = xsb[i]

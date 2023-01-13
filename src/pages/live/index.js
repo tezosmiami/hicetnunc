@@ -88,7 +88,7 @@ const Audio = ({media, alias }) => {
            <span>-{media.alias.length===36 ? walletPreview(media.alias) : media.alias}</span>
          </div>
         
-        {media.alias !== alias && <Visualiser ref={visualiser} src={media.stream}/>}
+        {media.alias !== alias && <Visualiser style={{width: '108px'}} ref={visualiser} src={media.stream}/>}
     </div>
   );
 }
