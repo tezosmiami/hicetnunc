@@ -136,19 +136,19 @@ export const Live = () => {
 
   const onInvite = (m) => {
     const invite = (message || m)?.split('/invite')[1].split(' ')[1]
-    const invites = online.filter(o => o.alias === invite)
+    const invites = online.filter(o => o.dimension === dimension && o.alias !== alias)
     if (invites.length > 0) {
-      !invitations.includes(invite)? setInvitations(invitations => [...invitations, invite])
+      !invitations.includes(invite) ? setInvitations(invitations => [...invitations, invite])
       : setInvitations(invitations => invitations.filter(i => i !== invite))
         invites.map(i => i.conn.send(
           {
             type: 'invite',
             invite: invite,
             alias: alias,
-            dimension: channel
+            dimension: dimension
         })
       )
-    }    
+    }
   }  
 
   const onCall = () => {
@@ -156,6 +156,7 @@ export const Live = () => {
     peer.current.on('call', (call) => {
       dimension !== alias && setInvitations(call.metadata.invites)
       if ((dimension === call.metadata.alias) || invitations.includes(call.metadata.alias)) {
+
         call.answer();
         call.peerConnection.oniceconnectionstatechange = () => {
           if(call.peerConnection.iceConnectionState == 'disconnected') {
@@ -210,6 +211,7 @@ export const Live = () => {
             setInvitations(invitations => !invitations.find(i => i === data.invite) ?
               [...invitations, data.invite]
               : invitations.filter(j => j !== data.invite))
+            if (alias === data.invite && audioStream) {audioStream = false}
             onCall()  
           }
           data.message && setConversation((messages) => [...messages, data])
@@ -293,11 +295,12 @@ const onKeyPress = e => {
                     }   
                   }
                 else {
-                if (data.type === 'invite') {
-                  setInvitations(invitations => !invitations.find(i => i === data.invite) ?
-                  [...invitations, data.invite]
-                  : invitations.filter(j => j !== data.invite))
-                  onCall()  
+                  if (data.type === 'invite') {
+                    setInvitations(invitations => !invitations.find(i => i === data.invite) ?
+                      [...invitations, data.invite]
+                      : invitations.filter(j => j !== data.invite))
+                    if (alias === data.invite && audioStream) {setAudioStream(false)}
+                    onCall()  
                   }
                 data.message && setConversation((messages) => [...messages, data])
                 if (data.alias !== acc.address && data.alias !== alias) {
@@ -355,8 +358,8 @@ useEffect(() => {
 
 useEffect(() => {
   if (peer.current) {
-    onIncoming()
     onCall()
+    onIncoming()
   }
 }, [invitations])
 
