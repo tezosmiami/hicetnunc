@@ -108,7 +108,6 @@ export const Live = () => {
   const [conversation, setConversation] = useState([]);
   const [invitations, setInvitations] = useState([])
   const [collapsed, setCollapsed] = useState(true)
-
   const [audioStream, setAudioStream] = useState(false)
   const { acc, collect, syncTaquito} = useContext(HicetnuncContext)
   const { id:channel } = useParams()
@@ -118,20 +117,13 @@ export const Live = () => {
   const {peer, alias, dimension, setDimension, media, setMedia, online, setOnline, meshed, setMeshed, calls, setCalls, onClose, onStream} =  useMeshContext()
 
   const onAudio = (id) => {
-    navigator.mediaDevices
-    .getUserMedia({
-      audio: true,
-      video: false
-    })
-    .then(stream => {
-      const call = peer.current.call(id, stream, {metadata: {alias:alias, dimension: dimension, invites:invitations}})  
+      const call = peer.current.call(id, media.find(m=> m.alias===alias).stream, {metadata: {alias:alias, dimension: dimension, invites:invitations}})  
       call.peerConnection.oniceconnectionstatechange = () => {
         if(call.peerConnection.iceConnectionState == 'disconnected') {
           setCalls(c => c.filter(i => i !== call))
         } 
       }
       setCalls(calls => [...calls, call])
-    })
   }
 
   const onInvite = (m) => {
@@ -174,10 +166,11 @@ export const Live = () => {
   const onIncoming = () => {
     peer.current.off('connection')
     peer.current.on('connection', (conn) => {
-      if (audioStream && conn.metadata.dimension === dimension) {
-        onAudio(conn.peer)
-      }
+     
       conn.on('open', () => {
+        if (audioStream && conn.metadata.dimension === dimension) {
+          onAudio(conn.peer)
+        }
         console.log('connected with', conn.peer)
         conn.send({ type: 'new', alias: alias, dimension: dimension, id: peer.current.id, dimension: dimension })
         !online.find(o => o.id === conn.peer) && setOnline(online => [{alias: conn.metadata.alias, id: conn.peer, dimension: conn.metadata.dimension, conn: conn}, ...online])
@@ -185,7 +178,25 @@ export const Live = () => {
           if (data.objktId) data.metadata = await fetchObjkt(data.objktId)
           if (data.type === 'new') {setOnline(online => !online.find(o => o.id === data.id) ?
             [{alias:data.alias, id: conn.peer, dimension: data.dimension, conn:conn}, ...online]
-            : online)}
+            : online)
+            if (audioStream) {
+              if (data.dimension === dimension && !calls.find(c=> c.peer === data.id)){
+                const call = peer.current.call(data.id, media.find(m=> m.alias===alias).stream, {metadata: {alias:alias, dimension: dimension, invites:invitations}})  
+                call.peerConnection.oniceconnectionstatechange = () => {
+                  if(call.peerConnection.iceConnectionState == 'disconnected') {
+                      setCalls(c => c.filter(i => i !== call))
+                    } 
+                  }
+              setCalls(calls => [...calls, call])   
+               }
+              else {
+                calls?.find(c => c.peer === data.id).close()
+                setInvitations(invitations => invitations.filter(i => i !== data.alias))
+                setMedia(media => media.filter(m => m.alias !== data.alias))
+                setCalls(calls => calls.filter(c => c.metadata.alias !== data.alias))
+              }
+            }   
+            }
             if (data.type === 'dimension') {
               setOnline(online => online.map(o=> o.id === data.id ?
                 {...o, dimension: data.dimension} : o))
@@ -272,7 +283,25 @@ const onKeyPress = e => {
                 if (data.objktId && data.objktId > 0) {data.metadata = await fetchObjkt(data.objktId)}
                 if (data.type === 'new') {setOnline(online => !online.find(o => o.id === data.id) ?
                   [{alias:data.alias, id: s.conn.peer, dimension: data.dimension, conn:s.conn}, ...online]
-                  : online)} 
+                  : online)
+                  if (audioStream) {
+                    if (data.dimension === dimension && !calls.find(c=> c.peer === data.id)){
+                      const call = peer.current.call(data.id, media.find(m=> m.alias===alias).stream, {metadata: {alias:alias, dimension: dimension, invites:invitations}})  
+                      call.peerConnection.oniceconnectionstatechange = () => {
+                        if(call.peerConnection.iceConnectionState == 'disconnected') {
+                            setCalls(c => c.filter(i => i !== call))
+                          } 
+                        }
+                    setCalls(calls => [...calls, call])   
+                     }
+                    else {
+                      calls?.find(c => c.peer === data.id).close()
+                      setInvitations(invitations => invitations.filter(i => i !== data.alias))
+                      setMedia(media => media.filter(m => m.alias !== data.alias))
+                      setCalls(calls => calls.filter(c => c.metadata.alias !== data.alias))
+                    }
+                  }   
+                } 
                   if (data.type === 'dimension') {
                     setOnline(online => online.map(o=> o.id === data.id ?
                       {...o, dimension: data.dimension} : o))
@@ -454,7 +483,7 @@ const sendMessage = async (message) => {
       break
     }
   }
-
+  
 if((!acc || !meshed) && (dimension !== alias)) return(
   <Page title="be live">
     <div>
