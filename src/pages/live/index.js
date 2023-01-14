@@ -63,9 +63,9 @@ const Audio = ({media, alias }) => {
   const visualiser = useRef();
   const [play, setPlay] = useState(true)
   useEffect(() => {
-    
     if (media.alias === alias) {
-      play ? media.stream.getAudioTracks()[0].enabled = true : media.stream.getAudioTracks()[0].enabled = false
+      play ? media.stream.getAudioTracks()[0].enabled = true
+        : media.stream.getAudioTracks()[0].enabled = false
     }
     if (visualiser.current) {
       visualiser.current.init()
@@ -148,7 +148,6 @@ export const Live = () => {
     peer.current.on('call', (call) => {
       dimension !== alias && setInvitations(call.metadata.invites)
       if ((dimension === call.metadata.alias) || invitations.includes(call.metadata.alias)) {
-
         call.answer();
         call.peerConnection.oniceconnectionstatechange = () => {
           if(call.peerConnection.iceConnectionState == 'disconnected') {
@@ -156,7 +155,7 @@ export const Live = () => {
             setCalls(c => c.filter(i => i.peer !== call.peer))
           } 
         }
-        call.on('stream', stream => onStream({stream, alias:call.metadata.alias}))
+        call.on('stream', stream => onStream({s: stream, a:call.metadata.alias}))
         setCalls(calls => [...calls, call])
         sendMessage('/')
       }  
@@ -353,8 +352,7 @@ useEffect(() => {
         video: false
           })
         .then(stream => {
-          onStream({stream,alias})
-          // let peers = online.filter((o) => (o.dimension === dimension) && o.alias !== alias).map(a => a.id)
+          onStream({s: stream,a: alias})
           let peers = [...new Map(online.filter((o) => (o.dimension === dimension) && o.alias !== alias).map((m) => [m.id, m])).values()].map(a =>a.id)
           peers.map((p) => {
               const call = peer.current.call(p, stream, {metadata: {alias:alias, invites:invitations,dimension:dimension}}); 
@@ -393,9 +391,11 @@ useEffect(() => {
 }, [invitations])
 
 useEffect(() => {
-  media.forEach(m => m.stream.getTracks()[0].stop())  
-  dimension === 'live' && setMedia([])
-}, [dimension, audioStream])
+  if (dimension === 'live') {
+    media?.forEach(m => m.stream.getTracks()[0].stop())
+    setMedia([])
+  }
+}, [dimension])
 
 useEffect(() => {
   return () => {
@@ -403,7 +403,6 @@ useEffect(() => {
     peer.current?.off('call')
   }
 }, [])
-
 
 useEffect(() => {
   if (scrollTarget.current) {

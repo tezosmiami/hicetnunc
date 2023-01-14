@@ -2,7 +2,6 @@ import { useEffect, useState, createContext, useContext, useRef} from "react";
 import { fetchGraphQL, getNameForAddress } from '../data/hicdex'
 import { getItem, setItem } from '../utils/storage'
 import { HicetnuncContext } from './HicetnuncContext'
-import { walletPreview } from '../utils/string'
 import { Peer } from "peerjs"
 
 const axios= require('axios')
@@ -35,8 +34,9 @@ const MeshContextProvider = ({ children }) => {
         console.log('closed connection with', conn.peer)
       }
     
-    const onStream = ({stream,alias}) => {
-        setMedia(media => [...media, {stream,alias}])
+    const onStream = ({s,a}) => {
+        setMedia(media => a !== alias ? [...media, {stream: s,alias: a}]
+            : [{stream: s,alias: a}, ...media])
       }
 
     const onIncoming = () => {
@@ -84,7 +84,7 @@ const MeshContextProvider = ({ children }) => {
             }) 
         })
     }
-    
+
     useEffect(() => {
     const updateAlias = async () => {
         acc && fetchGraphQL(getNameForAddress, 'GetNameForAddress', {
