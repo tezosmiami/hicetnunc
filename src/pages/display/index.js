@@ -332,7 +332,7 @@ export default class Display extends Component {
       let res = await fetchTz(wallet)
       try {
         if (res[0]) {
-          let meta = await axios.get('https:/ipfs.io/ipfs/' + res[0].metadata_file.split('//')[1]).then(res => res.data)
+          let meta = await axios.get('https:/ipfs.io/ipfs/' + res[0].metadata_file.split('//')[1], {headers: {Accept: 'text/plain'}}).then(res => res.data)
 
           if (meta.description) this.setState({ description: meta.description })
           if (meta.identicon) this.setState({ identicon: meta.identicon })

@@ -458,7 +458,7 @@ if ((!online.find(o => (o.alias === dimension && o.dimension === dimension)) && 
   invitations.length > 0 && setInvitations([])
  return(
   <Page title="be live" >
-    <div>: <Button to={dimension}>{dimension}</Button> is offline</div>
+    <div>: <Button to={`/${dimension}`}>{dimension}</Button> is offline</div>
   </Page>
 )}
 
@@ -622,32 +622,31 @@ return (
         </div>
         <div className={styles.footer}>
           <form onSubmit={onSubmit}> 
-          <Textarea
-              type='text'
-              onChange={(e) => setMessage(e.target.value)}
-              autoFocus
-              placeholder='message - /help'
-              onKeyPress={onKeyPress}
-              max={270}
-              label='message'
-              value={message}
-          />
-          
-           <Button type='submit' fit>
-              <svg 
-                  width="55px"
-                  height="55px"
-                  viewBox="0 0 44 44"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  style={{
-                              fill: 'var(--text-color)',
-                              stroke: 'var(--background-color)',
-                            }}
-                >
-              <path d="M22 12L3 20l3.563-8L3 4l19 8zM6.5 12H22"  />
-              </svg>
-          </Button>
+            <Textarea
+                type='text'
+                onChange={(e) => setMessage(e.target.value)}
+                autoFocus
+                placeholder='message - /help'
+                onKeyPress={onKeyPress}
+                max={270}
+                label='message'
+                value={message}
+            />
+            <Button type='submit' fit>
+                <svg 
+                    width="55px"
+                    height="55px"
+                    viewBox="0 0 44 44"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    style={{
+                                fill: 'var(--text-color)',
+                                stroke: 'var(--background-color)',
+                              }}
+                  >
+                <path d="M22 12L3 20l3.563-8L3 4l19 8zM6.5 12H22"  />
+                </svg>
+            </Button>
           </form>
         </div>
     </div>
