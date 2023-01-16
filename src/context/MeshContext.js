@@ -109,7 +109,7 @@ const MeshContextProvider = ({ children }) => {
         setOnline(online => online.map(o=> (o.id === peer.current.id) ? {...o, dimension: dimension}
           : o
          ))
-        if (dimension === ('hicetnunc' || 'live')) {
+        if (dimension === 'hicetnunc' || dimension === 'live') {
             media?.forEach(m => m.stream.getTracks()[0].stop())  
             setMedia([])
             calls.map(c => c.close())
@@ -195,7 +195,7 @@ const MeshContextProvider = ({ children }) => {
                                 }
                             })
                             conn.on('error', (e) => {
-                            console.log('error : ', e)
+                            console.log('error: ', e)
                             })
                             conn.on('close', () => {
                             onClose(conn)
