@@ -330,6 +330,7 @@ export default class Display extends Component {
         if (data.data.dns) this.setState({ dns })
       })
       let res = await fetchTz(wallet)
+      console.log('res',res)
       try {
         if (res[0]) {
           let meta = await axios.get('https:/ipfs.io/ipfs/' + res[0].metadata_file.split('//')[1], {headers: {Accept: 'text/plain'}}).then(res => res.data)
@@ -348,7 +349,7 @@ export default class Display extends Component {
       // console.log(decodeURI(window.location.pathname.split('/')[1]))
       //console.log(res)
       if (res[0]?.metadata_file) {
-        let meta = await axios.get('https://ipfs.io/ipfs/' + res[0].metadata_file.split('//')[1]).then(res => res.data)
+      let meta = await axios.get('https:/ipfs.io/ipfs/' + res[0].metadata_file.split('//')[1], {headers: {Accept: 'text/plain'}}).then(res => res.data)
         //console.log(meta)
         if (meta.description) this.setState({ description: meta.description })
         if (meta.identicon) this.setState({ identicon: meta.identicon })
