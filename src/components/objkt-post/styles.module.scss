@@ -3,9 +3,10 @@
 
 .objktview {
   position: relative;
-  overflow: hidden;
+  // overflow: hidden;
   display: flex;
   align-items: center;
+  object-fit: contain;
   justify-content: center;
 
   @include respond-to('tablet') {
