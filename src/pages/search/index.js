@@ -25,12 +25,13 @@ const isFloat = (n) => Number(n) === n && n % 1 !== 0
 async function fetchFeed(lastId) {
   const { errors, data } = await fetchGraphQL(`
 query LatestFeed {
-  hic_et_nunc_token(order_by: {id: desc}, limit: 15, where: {id: {_lt: ${lastId}}, artifact_uri: {_neq: ""}}) {
+  hic_et_nunc_token(order_by: {id: desc}, limit: 15, where: {id: {_lt: ${lastId}}, supply: {_neq: "0"}, artifact_uri: {_neq: ""}}) {
     artifact_uri
     display_uri
     creator_id
     id
     mime
+    royalties
     thumbnail_uri
     timestamp
     title
@@ -46,7 +47,6 @@ query LatestFeed {
       contract_version
     }
     token_holders(where: {quantity: {_gt: "0"}}) {
-    {
       holder_id
       quantity
     }
@@ -55,11 +55,6 @@ query LatestFeed {
       address
       name
       metadata
-      shares {
-        shareholder {
-          holder_type
-        }
-      }
     }
   }
 }`, "LatestFeed", {});
@@ -145,6 +140,7 @@ async function fetchObjkts(ids) {
         id
         mime
         thumbnail_uri
+        royalties
         timestamp
         title
         token_signatures {
@@ -429,6 +425,7 @@ async function fetchSwaps(offset) {
         artifact_uri
         display_uri
         description
+        royalties
         is_signed
         token_signatures {
           holder_id
@@ -733,21 +730,22 @@ export class Search extends Component {
     flag: false,
     lastId: undefined,
     tags: [
-      { id: 0, value: '○ hDAO' },
-      { id: 1, value: 'random' },
-      { id: 2, value: 'new OBJKTs' },
-      { id: 3, value: 'recent sales' },
-      { id: 4, value: 'music' },
-      { id: 5, value: 'photography' }, 
+      { id: 0, value: 'h=n swaps' },
+      { id: 1, value: 'new OBJKTs' },
+      { id: 2, value: 'recent sales'},
+      { id: 3, value: 'music' },
+      { id: 4, value: 'photography' }, 
+      { id: 5, value: 'random' },
+      { id: 6, value: '🗑️' },
       // { id: 7, value: 'gif' },
       // { id: 6, value: 'html/svg' }, // algorithimc?
       // { id: 4, value: 'glb' },
-      { id: 6, value: '1D' },
-      { id: 7, value: '1W' },
-      { id: 8, value: '1M' },
-      { id: 9, value: 'ATH' },
-      { id: 10, value: 'Miami' },
-      { id: 11, value: '🗑️' },
+      { id: 7, value: '1D' },
+      { id: 8, value: '1W' },
+      { id: 9, value: '1M' },
+      { id: 10, value: 'ATH' },
+      { id: 11, value: '○ hDAO' },
+      { id: 12, value: 'Miami' },
       
    
       
@@ -761,22 +759,27 @@ export class Search extends Component {
 
   componentWillMount = async () => {
     let arr = await getRestrictedAddresses()
-    this.setState({ select: 'recent swaps' })
+    this.setState({ select: 'new OBJKTs' })
     // let res1 = await fetchTag(( 'teztrash'), 9999999)
     // let res2 = await fetchTag(( 'tezflowers'), 9999999)
     // let resTotal = res1.concat(res2).sort((a,b) => b.id - a.id)
     // resTotal = resTotal.filter(e => !arr.includes(e.creator_id))
-    let swaps = await fetchSwaps((this.state.offset))
-    swaps.forEach(e => { e.creator = e.token.creator; e.id = e.token.id});
-    swaps = swaps.filter(e => !arr.includes(e.creator.address))
-    this.setState({ feed: _.uniqBy([...this.state.feed, ...swaps], 'id') })
+
+    // let swaps = await fetchSwaps((this.state.offset))
+    // swaps.forEach(e => { e.creator = e.token.creator; e.id = e.token.id});
+    // swaps = swaps.filter(e => !arr.includes(e.creator.address))
+    // this.setState({ feed: _.uniqBy([...this.state.feed, ...swaps], 'id') })
+
     // this.setState({ feed: [...this.state.feed, ...(swaps)] }) 
     // this.setState({ select: 'recent sales' })
     // let tokens = await fetchSales(this.state.offset)
     // tokens = tokens.map(e => e.token)
+    // let tokens = await fetchFeed(this.state.offset)
+    // tokens = tokens.map(e => e.token)
     // tokens = tokens.filter(e => !arr.includes(e.creator_id))
     // this.setState({ feed: _.uniqBy(_.uniqBy([...this.state.feed, ...tokens], 'id'), 'creator_id') })
-    //this.latest(999999)
+    this.latest(999999)
+    
   }
 
   handleChange = (e) => {
@@ -922,7 +925,7 @@ export class Search extends Component {
       this.setState({ feed: _.uniqBy(_.uniqBy([...this.state.feed, ...tokens], 'id'), 'creator_id') })
     }
 
-    if (e == 'recent swaps') {
+    if (e == 'h=n swaps') {
       let tokens = await fetchSwaps(this.state.offset)
       tokens.forEach(e => { e.creator = e.token.creator; e.id = e.token.id});
       tokens = tokens.filter(e => !arr.includes(e.creator.address))
@@ -950,7 +953,7 @@ export class Search extends Component {
 
     // new listings
 
-    this.setState({ reset: false })
+    // this.setState({ reset: false })
 
   }
 
@@ -1030,9 +1033,9 @@ export class Search extends Component {
               </div>
             {
               <div style={{ marginTop: '15px' }}>
-                {this.state.tags.map((e,i) => <a key={i} className='tag' href='#' onClick={() => {
+                {this.state.tags.map((e,i) => <div key={i} className='tag' href='#' onClick={() => {
                   this.update(e.value, true)
-                }}>{e.value}</a>)}
+                }}>{e.value}</div>)}
               </div>
             }
             {

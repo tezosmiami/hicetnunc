@@ -23,7 +23,9 @@ export const ObjktPost = (item) => {
           width: '100%'
         }}
         className="objkt-display">
-          <Identicon address={objkt.creator.address} logo={objkt.creator.metadata?.identicon} feed={true}/><br/>
+          <Button to={`${PATH.OBJKT}/${objkt.id}`}>
+            <Identicon address={objkt.creator.address} logo={objkt.creator.metadata?.identicon} feed={true}/><br/>
+          </Button>
         <div className={
           objkt.mime == 'application/x-directory' || objkt.mime == 'image/svg+xml' ? 'objktview-zipembed objktview ' + styles.objktview :
             [(
