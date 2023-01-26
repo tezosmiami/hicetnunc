@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState} from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button } from '../button'
 import { PATH } from '../../constants'
 import { Container, Padding } from '../layout'
@@ -12,7 +12,19 @@ import './style.css'
 
 export const ObjktPost = (item) => {
     const [objkt, setObjkt] = useState(JSON.parse(JSON.stringify(item.token ? item.token : item)))
- 
+    const [logo, setLogo] = useState()
+    const axios = require('axios')
+
+    useEffect(() => {
+      const getMetadataFile = async () => {
+        if (objkt.creator.metadata_file) {
+          let meta = await axios.get('https:/ipfs.io/ipfs/' + objkt.creator.metadata_file.split('//')[1], {headers: {Accept: 'text/plain'}}).then(res => res.data)
+          setLogo(meta.identicon) 
+        }
+      }
+      getMetadataFile()
+    }, [])
+
   return (
     <> 
       <br/>
@@ -24,7 +36,7 @@ export const ObjktPost = (item) => {
         }}
         className="objkt-display">
           <Button to={`${PATH.OBJKT}/${objkt.id}`}>
-            <Identicon address={objkt.creator.address} logo={objkt.creator.metadata?.identicon} feed={true}/><br/>
+            <Identicon address={objkt.creator.address} logo={logo} feed={true}/><br/>
           </Button>
         <div className={
           objkt.mime == 'application/x-directory' || objkt.mime == 'image/svg+xml' ? 'objktview-zipembed objktview ' + styles.objktview :

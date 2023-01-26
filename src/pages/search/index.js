@@ -55,7 +55,7 @@ query LatestFeed {
       is_split
       address
       name
-      metadata
+      metadata_file
       shares {
         shareholder {
           holder_type
@@ -170,7 +170,7 @@ async function fetchObjkts(ids) {
           is_split
           address
           name
-          metadata
+          metadata_file
           shares {
             shareholder {
               holder_type
@@ -306,7 +306,7 @@ async function fetchMusic(offset) {
         is_split
         address
         name
-        metadata
+        metadata_file
         shares {
           shareholder {
             holder_type
@@ -460,7 +460,7 @@ async function fetchSwaps(offset) {
           is_split
           address
           name
-          metadata
+          metadata_file
           shares {
             shareholder {
               holder_type
@@ -516,7 +516,7 @@ async function fetchDay(day, offset) {
           is_split
           address
           name
-          metadata
+          metadata_file
           shares {
             shareholder {
               holder_type
@@ -571,7 +571,7 @@ async function fetchSales(offset) {
         creator {
           name
           address
-          metadata
+          metadata_file
           shares {
             shareholder {
               holder_type
@@ -657,7 +657,7 @@ export async function fetchTag(tag, offset) {
       is_split
       address
       name
-      metadata
+      metadata_file
       shares {
         shareholder {
           holder_type
@@ -721,7 +721,7 @@ const query_hdao = `query hDAOFeed($offset: Int = 0) {
       is_split
       address
       name
-      metadata
+      metadata_file
       shares {
         shareholder {
           holder_type
