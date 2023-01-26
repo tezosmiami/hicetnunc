@@ -43,7 +43,7 @@ export const ObjktPost = (item) => {
               displayUri: objkt.display_uri,
               creator: objkt.creator,
               objkt: objkt.id,
-              interactive: true,
+              interactive: false,
               displayView: true
             })}
           </Button>

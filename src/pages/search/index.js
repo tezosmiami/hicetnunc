@@ -140,8 +140,8 @@ async function fetchObjkts(ids) {
         creator_id
         id
         mime
-        thumbnail_uri
         royalties
+        thumbnail_uri
         timestamp
         title
         description
@@ -157,7 +157,6 @@ async function fetchObjkts(ids) {
           contract_version
         }
         token_holders(where: {quantity: {_gt: "0"}}) {
-        {
           holder_id
           quantity
         }
@@ -166,14 +165,10 @@ async function fetchObjkts(ids) {
           address
           name
           metadata
-          shares {
-            shareholder {
-              holder_type
-            }
-          }
         }
       }
-    }`, "Objkts", { "ids": ids });
+    }
+`, "Objkts", { "ids": ids });
   if (errors) {
     console.log(errors)
   }
@@ -270,11 +265,14 @@ async function fetchMusic(offset) {
   const { errors, data } = await fetchGraphQL(`
   query AudioObjkts {
     hic_et_nunc_token(where: {mime: {_in: ["audio/ogg", "audio/wav", "audio/mpeg"]}, supply : {_neq: "0"}}, limit : 15, offset : ${offset}, order_by: {id: desc}) {
-      id
       artifact_uri
       display_uri
-      mime
       creator_id
+      id
+      mime
+      royalties
+      thumbnail_uri
+      timestamp
       title
       description
       token_signatures {
@@ -289,7 +287,6 @@ async function fetchMusic(offset) {
         contract_version
       }
       token_holders(where: {quantity: {_gt: "0"}}) {
-      {
         holder_id
         quantity
       }
@@ -298,11 +295,6 @@ async function fetchMusic(offset) {
         address
         name
         metadata
-        shares {
-          shareholder {
-            holder_type
-          }
-        }
       }
     }
   }
@@ -483,6 +475,7 @@ async function fetchDay(day, offset) {
         mime
         title
         description
+        royalties
         supply
         is_signed
         token_signatures {
@@ -513,7 +506,8 @@ async function fetchDay(day, offset) {
         }
       }
     }
-  }`, 'dayTrades', {})
+  }
+`, 'dayTrades', {})
 
   if (errors) {
     console.log(errors)
@@ -543,6 +537,7 @@ async function fetchSales(offset) {
         description
         is_signed
         supply
+        royalties
         token_holders(where: {quantity: {_gt: "0"}}) {
           holder_id
           quantity
@@ -608,17 +603,21 @@ export async function fetchTag(tag, offset) {
   const { errors, data } = await fetchGraphQL(
     `query ObjktsByTag {
   hic_et_nunc_token(where: {supply: {_neq: "0"}, token_tags: {tag: {tag: {_in: ${tag}}}}}, offset: ${offset}, limit: 15, order_by: {id: desc}) {
-    id
     artifact_uri
     display_uri
-    mime
-    metadata
     creator_id
-    is_signed
+    id
+    mime
+    royalties
+    thumbnail_uri
+    timestamp
     title
     description
+    token_signatures {
+      holder_id
+    }
     supply
-    swaps(where: {contract_version: {_eq: "2"}}) {
+    swaps(where: {contract_version: {_eq: "2"}})   {
       is_valid
       id
       price
@@ -629,14 +628,6 @@ export async function fetchTag(tag, offset) {
       holder_id
       quantity
     }
-    token_tags {
-      tag {
-        tag
-      }
-    }
-    token_signatures {
-      holder_id
-    }
     creator {
       is_split
       address
@@ -644,8 +635,8 @@ export async function fetchTag(tag, offset) {
       metadata
     }
   }
-}`
-    , "ObjktsByTag", {});
+}
+`, "ObjktsByTag", {});
   if (errors) {
     console.error(errors);
   }
@@ -673,16 +664,18 @@ const query_hdao = `query hDAOFeed($offset: Int = 0) {
     artifact_uri
     display_uri
     creator_id
-    description
-    supply
     id
     mime
+    royalties
     thumbnail_uri
     timestamp
     title
-    hdao_balance
-    is_signed
-    swaps(where: {contract_version: {_eq: "2"}}) {
+    description
+    token_signatures {
+      holder_id
+    }
+    supply
+    swaps(where: {contract_version: {_eq: "2"}})   {
       is_valid
       id
       price
@@ -690,12 +683,8 @@ const query_hdao = `query hDAOFeed($offset: Int = 0) {
       contract_version
     }
     token_holders(where: {quantity: {_gt: "0"}}) {
-    {
       holder_id
       quantity
-    }
-    token_signatures {
-      holder_id
     }
     creator {
       is_split
@@ -704,7 +693,8 @@ const query_hdao = `query hDAOFeed($offset: Int = 0) {
       metadata
     }
   }
-}`
+}
+`
 
 async function fetchHdao(offset) {
   const { errors, data } = await fetchGraphQL(query_hdao, "hDAOFeed", { "offset": offset })
@@ -750,9 +740,9 @@ export class Search extends Component {
       { id: 7, value: '1D' },
       { id: 8, value: '1W' },
       { id: 9, value: '1M' },
-      { id: 10, value: 'ATH' },
-      { id: 11, value: '○ hDAO' },
-      { id: 12, value: 'Miami' },
+      // { id: 10, value: 'ATH' },
+      { id: 10, value: '○ hDAO' },
+      { id: 11, value: 'Miami' },
       
    
       
@@ -801,6 +791,7 @@ export class Search extends Component {
 
     this.setState({ select: e })
     if (reset) {
+      this.state.flag=false
       this.state.feed = []
       this.state.offset = 0
     }
@@ -837,9 +828,7 @@ export class Search extends Component {
       list = list.map(e => e.token)
       list = [...this.state.feed, ...(list)]
       list = list.filter(e => !arr.includes(e.creator.address))
-
       list = _.uniqBy(list, 'id')
-
       this.setState({
         feed: list
       })
@@ -850,7 +839,6 @@ export class Search extends Component {
       list = list.map(e => e.token)
       list = [...this.state.feed, ...(list)]
       list = _.uniqBy(list, 'id')
-      console.log('ath', list)
       this.setState({
         feed: list
       })
@@ -867,11 +855,13 @@ export class Search extends Component {
     if (e === '○ hDAO') {
       let res = await fetchHdao(this.state.offset)
       res = res.filter(e => !arr.includes(e.creator_id))
-      this.setState({ feed: _.uniqBy(_.uniqBy([...this.state.feed, ...(await fetchHdao(this.state.offset))], 'id'), 'creator_id'), hdao: true })
+      this.setState({ feed: _.uniqBy(_.uniqBy([...this.state.feed, ...(res)], 'id'), 'creator_id'), hdao: true })
     }
 
     if (e === 'music') {
-      this.setState({ feed: _.uniqBy([...this.state.feed, ...(await fetchMusic(this.state.offset))], 'creator_id') })
+      let res = await fetchMusic(this.state.offset)
+      res = res.filter(e => !arr.includes(e.creator_id))
+      this.setState({ feed: _.uniqBy([...this.state.feed, ...(res)], 'creator_id') })
     }
 
     if (e === 'video') {
@@ -881,7 +871,7 @@ export class Search extends Component {
     if (e === 'glb') {
       let res = await fetchGLB(this.state.offset)
       res = res.filter(e => !arr.includes(e.creator_id))
-      this.setState({ feed: _.uniqBy([...this.state.feed, ...(await fetchGLB(this.state.offset))], 'creator_id') })
+      this.setState({ feed: _.uniqBy([...this.state.feed, ...(res)], 'creator_id') })
     }
 
     if (e === 'html/svg') {
@@ -892,6 +882,7 @@ export class Search extends Component {
 
     if (e == 'random') {
       let res = await fetchRandomObjkts()
+      console.log(res)
       res = res.filter(e => !arr.includes(e.creator_id))
       this.setState({ feed: [...this.state.feed, ...(res)] })
     }
@@ -899,7 +890,7 @@ export class Search extends Component {
     if (e == 'gif') {
       let res = await fetchGifs(this.state.offset)
       res = res.filter(e => !arr.includes(e.creator_id))
-      this.setState({ feed: _.uniqBy([...this.state.feed, ...(await fetchGifs(this.state.offset))], 'creator_id') })
+      this.setState({ feed: _.uniqBy([...this.state.feed, ...(res)], 'creator_id') })
     }
 
     if (e == 'illustration') {
@@ -960,7 +951,7 @@ export class Search extends Component {
 
     // new listings
 
-    // this.setState({ reset: false })
+    this.setState({ reset: false })
 
   }
 
