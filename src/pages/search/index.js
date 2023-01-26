@@ -25,7 +25,7 @@ const isFloat = (n) => Number(n) === n && n % 1 !== 0
 async function fetchFeed(lastId) {
   const { errors, data } = await fetchGraphQL(`
 query LatestFeed {
-  hic_et_nunc_token(order_by: {id: desc}, limit: 15, where: {id: {_lt: ${lastId}}, supply: {_neq: "0"}, artifact_uri: {_neq: ""}}) {
+  hic_et_nunc_token(order_by: {id: desc}, limit: 21, where: {id: {_lt: ${lastId}}, supply: {_neq: "0"}, artifact_uri: {_neq: ""}}) {
     artifact_uri
     display_uri
     creator_id
@@ -56,6 +56,12 @@ query LatestFeed {
       address
       name
       metadata
+      shares {
+        shareholder {
+          holder_type
+          holder_id
+        }
+      }
     }
   }
 }`, "LatestFeed", {});
@@ -68,7 +74,7 @@ query LatestFeed {
 
 const query_creations = `
 query creatorGallery($address: String!) {
-  hic_et_nunc_token(where: {creator: {address: {_eq: $address}}, supply: {_gt: 0}}, order_by: {id: desc}, limit : 15, offset : $offset ) {
+  hic_et_nunc_token(where: {creator: {address: {_eq: $address}}, supply: {_gt: 0}}, order_by: {id: desc}, limit : 21, offset : $offset ) {
     id
     artifact_uri
     display_uri
@@ -89,7 +95,7 @@ query creatorGallery($address: String!) {
 
 const query_tag = `
 query ObjktsByTag {
-  hic_et_nunc_token(where: {supply : {_neq: "0"}, token_tags: {tag: {tag: {_eq: $tag}}}, id: {_lt: $lastId}}, limit : 15, order_by: {id: desc}) {
+  hic_et_nunc_token(where: {supply : {_neq: "0"}, token_tags: {tag: {tag: {_eq: $tag}}}, id: {_lt: $lastId}}, limit : 21, order_by: {id: desc}) {
     id
     artifact_uri
     display_uri
@@ -165,6 +171,12 @@ async function fetchObjkts(ids) {
           address
           name
           metadata
+          shares {
+            shareholder {
+              holder_type
+              holder_id
+            }
+          }
         }
       }
     }
@@ -192,7 +204,7 @@ function rnd(min, max) {
 async function fetchGLB(offset) {
   const { errors, data } = await fetchGraphQL(`
   query GLBObjkts {
-    hic_et_nunc_token(where : { mime : {_in : ["model/gltf-binary"] }, supply : {_neq: "0"}}, limit : 15, offset : ${offset}, order_by: {id: desc}) {
+    hic_et_nunc_token(where : { mime : {_in : ["model/gltf-binary"] }, supply : {_neq: "0"}}, limit : 21, offset : ${offset}, order_by: {id: desc}) {
       id
       artifact_uri
       display_uri
@@ -240,7 +252,7 @@ async function fetchInteractive(offset) {
 async function fetchGifs(offset) {
   const { errors, data } = await fetchGraphQL(`
     query Gifs ($offset: Int = 0) {
-      hic_et_nunc_token(where: { mime: {_in : [ "image/gif" ]}, supply : { _neq: "0"}}, order_by: {id: desc}, limit: 15, offset: ${offset}) {
+      hic_et_nunc_token(where: { mime: {_in : [ "image/gif" ]}, supply : { _neq: "0"}}, order_by: {id: desc}, limit: 21, offset: ${offset}) {
         id
         artifact_uri
         display_uri
@@ -264,7 +276,7 @@ async function fetchGifs(offset) {
 async function fetchMusic(offset) {
   const { errors, data } = await fetchGraphQL(`
   query AudioObjkts {
-    hic_et_nunc_token(where: {mime: {_in: ["audio/ogg", "audio/wav", "audio/mpeg"]}, supply : {_neq: "0"}}, limit : 15, offset : ${offset}, order_by: {id: desc}) {
+    hic_et_nunc_token(where: {mime: {_in: ["audio/ogg", "audio/wav", "audio/mpeg"]}, supply : {_neq: "0"}}, limit : 21, offset : ${offset}, order_by: {id: desc}) {
       artifact_uri
       display_uri
       creator_id
@@ -295,6 +307,12 @@ async function fetchMusic(offset) {
         address
         name
         metadata
+        shares {
+          shareholder {
+            holder_type
+            holder_id
+          }
+        }
       }
     }
   }
@@ -334,7 +352,7 @@ async function fetchTitle(title, offset) {
 async function fetchCreations(addr, offset) {
   const { errors, data } = await fetchGraphQL(`
 query creatorGallery {
-  hic_et_nunc_token(where: {creator: {address: {_eq: ${addr}}}, supply: {_gt: 0}}, order_by: {id: desc}, limit : 15, offset : ${offset} ) {
+  hic_et_nunc_token(where: {creator: {address: {_eq: ${addr}}}, supply: {_gt: 0}}, order_by: {id: desc}, limit : 21, offset : ${offset} ) {
     id
     artifact_uri
     display_uri
@@ -390,7 +408,7 @@ async function fetchRandomObjkts() {
   const lastId = await getLastId()
 
   const uniqueIds = new Set()
-  while (uniqueIds.size < 15) {
+  while (uniqueIds.size < 21) {
     uniqueIds.add(rnd(firstId, lastId))
   }
 
@@ -409,7 +427,7 @@ async function fetchRandomObjkts() {
 async function fetchSwaps(offset) {
   const { errors, data } = await fetchGraphQL(`
   query querySwaps {
-    hic_et_nunc_swap(where: {contract_version: {_eq: "2"}, token: {supply: {_neq: "0"}}}, order_by: {id: desc}, limit: 15,  offset : ${offset}) {
+    hic_et_nunc_swap(where: {contract_version: {_eq: "2"}, token: {supply: {_neq: "0"}}}, order_by: {id: desc}, limit: 21,  offset : ${offset}) {
       id
       royalties
       creator_id
@@ -446,6 +464,7 @@ async function fetchSwaps(offset) {
           shares {
             shareholder {
               holder_type
+              holder_id
             }
           }
         }
@@ -463,7 +482,7 @@ async function fetchSwaps(offset) {
 
 async function fetchDay(day, offset) {
   const { errors, data } = await fetchGraphQL(`query dayTrades {
-    hic_et_nunc_trade(where: {timestamp: {_gte: "${day}"}}, order_by: {swap: {price: desc}}, limit : 15, offset : ${offset}) {
+    hic_et_nunc_trade(where: {timestamp: {_gte: "${day}"}}, order_by: {swap: {price: desc}}, limit : 21, offset : ${offset}) {
       timestamp
       swap {
         price
@@ -526,7 +545,7 @@ async function fetchDay(day, offset) {
 async function fetchSales(offset) {
   const { errors, data } = await fetchGraphQL(`
   query sales {
-    hic_et_nunc_trade(order_by: {timestamp: desc}, limit : 15, offset : ${offset}, where: {swap: {price: {_gte: "500000"}}}) {
+    hic_et_nunc_trade(order_by: {timestamp: desc}, limit : 21, offset : ${offset}, where: {swap: {price: {_gte: "500000"}}}) {
       timestamp
       token {
         artifact_uri
@@ -553,6 +572,12 @@ async function fetchSales(offset) {
           name
           address
           metadata
+          shares {
+            shareholder {
+              holder_type
+              holder_id
+            }
+          }
         }
         token_signatures {
           holder_id
@@ -602,7 +627,7 @@ async function fetchSubjkts(subjkt) {
 export async function fetchTag(tag, offset) {
   const { errors, data } = await fetchGraphQL(
     `query ObjktsByTag {
-  hic_et_nunc_token(where: {supply: {_neq: "0"}, token_tags: {tag: {tag: {_in: ${tag}}}}}, offset: ${offset}, limit: 15, order_by: {id: desc}) {
+  hic_et_nunc_token(where: {supply: {_neq: "0"}, token_tags: {tag: {tag: {_in: ${tag}}}}}, offset: ${offset}, limit: 21, order_by: {id: desc}) {
     artifact_uri
     display_uri
     creator_id
@@ -633,6 +658,12 @@ export async function fetchTag(tag, offset) {
       address
       name
       metadata
+      shares {
+        shareholder {
+          holder_type
+          holder_id
+        }
+      }
     }
   }
 }
@@ -660,7 +691,7 @@ async function fetchGraphQL(operationsDoc, operationName, variables) {
 }
 
 const query_hdao = `query hDAOFeed($offset: Int = 0) {
-  hic_et_nunc_token(order_by: {hdao_balance: desc}, limit: 15, where: {supply: {_neq: "0"}, hdao_balance: {_gt: 100}}, offset: $offset) {
+  hic_et_nunc_token(order_by: {hdao_balance: desc}, limit: 21, where: {supply: {_neq: "0"}, hdao_balance: {_gt: 100}}, offset: $offset) {
     artifact_uri
     display_uri
     creator_id
@@ -691,6 +722,12 @@ const query_hdao = `query hDAOFeed($offset: Int = 0) {
       address
       name
       metadata
+      shares {
+        shareholder {
+          holder_type
+          holder_id
+        }
+      }
     }
   }
 }
@@ -985,7 +1022,7 @@ export class Search extends Component {
   select = (id) => this.setState({ select: [...this.state.select, id] })
 
   loadMore = () => {
-    this.setState({ offset: this.state.offset + 15 })
+    this.setState({ offset: this.state.offset + 21 })
     this.update(this.state.select, false)
   }
 
