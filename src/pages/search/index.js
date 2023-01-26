@@ -796,8 +796,7 @@ export class Search extends Component {
 
   componentWillMount = async () => {
     // let arr = await getRestrictedAddresses()
-    this.setState({ select: 'new OBJKTs' })
-    this.setState({ wallet: this.context.acc })
+    // this.setState({ select: 'new OBJKTs' })
     // let res1 = await fetchTag(( 'teztrash'), 9999999)
     // let res2 = await fetchTag(( 'tezflowers'), 9999999)
     // let resTotal = res1.concat(res2).sort((a,b) => b.id - a.id)
@@ -816,8 +815,7 @@ export class Search extends Component {
     // tokens = tokens.map(e => e.token)
     // tokens = tokens.filter(e => !arr.includes(e.creator_id))
     // this.setState({ feed: _.uniqBy(_.uniqBy([...this.state.feed, ...tokens], 'id'), 'creator_id') })
-    this.latest(999999)
-    
+    this.update(getItem('mainfeed') ||  'new OBJKTs', false)
   }
 
   handleChange = (e) => {
@@ -827,10 +825,11 @@ export class Search extends Component {
   }
 
   update = async (e, reset) => {
-
     let arr = await getRestrictedAddresses()
 
-    this.setState({ select: e })
+    this.setState({ select: e ? e : 'new OBJKTs' })
+    setItem('mainfeed', e)
+
     if (reset) {
       this.state.flag=false
       this.state.feed = []
