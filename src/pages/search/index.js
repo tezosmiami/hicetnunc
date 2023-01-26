@@ -35,6 +35,7 @@ query LatestFeed {
     thumbnail_uri
     timestamp
     title
+    description
     token_signatures {
       holder_id
     }
@@ -143,6 +144,7 @@ async function fetchObjkts(ids) {
         royalties
         timestamp
         title
+        description
         token_signatures {
           holder_id
         }
@@ -273,6 +275,8 @@ async function fetchMusic(offset) {
       display_uri
       mime
       creator_id
+      title
+      description
       token_signatures {
         holder_id
       }
@@ -477,6 +481,7 @@ async function fetchDay(day, offset) {
         display_uri
         id
         mime
+        title
         description
         supply
         is_signed
@@ -534,6 +539,7 @@ async function fetchSales(offset) {
         display_uri
         id
         mime
+        title
         description
         is_signed
         supply
@@ -609,6 +615,7 @@ export async function fetchTag(tag, offset) {
     metadata
     creator_id
     is_signed
+    title
     description
     supply
     swaps(where: {contract_version: {_eq: "2"}}) {
