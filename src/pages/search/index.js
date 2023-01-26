@@ -8,6 +8,8 @@ import { Loading } from '../../components/loading'
 import { Button, Primary } from '../../components/button'
 import { Input } from '../../components/input'
 import { FeedItem } from '../../components/feed-item'
+import { getItem, setItem } from '../../utils/storage'
+import { ObjktPost } from '../../components/objkt-post'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { renderMediaType } from '../../components/media-types'
 import './style.css'
@@ -32,9 +34,32 @@ query LatestFeed {
     thumbnail_uri
     timestamp
     title
+    token_signatures {
+      holder_id
+    }
+    supply
+    swaps(where: {contract_version: {_eq: "2"}})   {
+      is_valid
+      id
+      price
+      status
+      contract_version
+    }
+    token_holders(where: {quantity: {_gt: "0"}}) {
+    {
+      holder_id
+      quantity
+    }
     creator {
-      name
+      is_split
       address
+      name
+      metadata
+      shares {
+        shareholder {
+          holder_type
+        }
+      }
     }
   }
 }`, "LatestFeed", {});
@@ -68,7 +93,7 @@ query creatorGallery($address: String!) {
 
 const query_tag = `
 query ObjktsByTag {
-  hic_et_nunc_token(where: {supply : { _neq : 0 }, token_tags: {tag: {tag: {_eq: $tag}}}, id: {_lt: $lastId}}, limit : 15, order_by: {id: desc}) {
+  hic_et_nunc_token(where: {supply : {_neq: "0"}, token_tags: {tag: {tag: {_eq: $tag}}}, id: {_lt: $lastId}}, limit : 15, order_by: {id: desc}) {
     id
     artifact_uri
     display_uri
@@ -113,7 +138,7 @@ async function fetchID(id) {
 async function fetchObjkts(ids) {
   const { errors, data } = await fetchGraphQL(`
     query Objkts($ids: [bigint!] = "") {
-      hic_et_nunc_token(where: {id: {_in: $ids}, supply : { _neq : 0 }}) {
+      hic_et_nunc_token(where: {id: {_in: $ids}, supply : {_neq: "0"}}) {
         artifact_uri
         display_uri
         creator_id
@@ -122,9 +147,32 @@ async function fetchObjkts(ids) {
         thumbnail_uri
         timestamp
         title
+        token_signatures {
+          holder_id
+        }
+        supply
+        swaps(where: {contract_version: {_eq: "2"}})   {
+          is_valid
+          id
+          price
+          status
+          contract_version
+        }
+        token_holders(where: {quantity: {_gt: "0"}}) {
+        {
+          holder_id
+          quantity
+        }
         creator {
-          name
+          is_split
           address
+          name
+          metadata
+          shares {
+            shareholder {
+              holder_type
+            }
+          }
         }
       }
     }`, "Objkts", { "ids": ids });
@@ -151,7 +199,7 @@ function rnd(min, max) {
 async function fetchGLB(offset) {
   const { errors, data } = await fetchGraphQL(`
   query GLBObjkts {
-    hic_et_nunc_token(where : { mime : {_in : ["model/gltf-binary"] }, supply : { _neq : 0 }}, limit : 15, offset : ${offset}, order_by: {id: desc}) {
+    hic_et_nunc_token(where : { mime : {_in : ["model/gltf-binary"] }, supply : {_neq: "0"}}, limit : 15, offset : ${offset}, order_by: {id: desc}) {
       id
       artifact_uri
       display_uri
@@ -175,7 +223,7 @@ async function fetchGLB(offset) {
 async function fetchInteractive(offset) {
   const { errors, data } = await fetchGraphQL(`
     query InteractiveObjkts {
-      hic_et_nunc_token(where: { mime: {_in : [ "application/x-directory", "image/svg+xml" ]}, supply : { _neq : 0 } }, limit : 30, offset : ${offset}, order_by: {id: desc}) {
+      hic_et_nunc_token(where: { mime: {_in : [ "application/x-directory", "image/svg+xml" ]}, supply : {_neq: "0"}}, limit : 30, offset : ${offset}, order_by: {id: desc}) {
         id
         artifact_uri
         display_uri
@@ -199,7 +247,7 @@ async function fetchInteractive(offset) {
 async function fetchGifs(offset) {
   const { errors, data } = await fetchGraphQL(`
     query Gifs ($offset: Int = 0) {
-      hic_et_nunc_token(where: { mime: {_in : [ "image/gif" ]}, supply : { _neq : 0 }}, order_by: {id: desc}, limit: 15, offset: ${offset}) {
+      hic_et_nunc_token(where: { mime: {_in : [ "image/gif" ]}, supply : { _neq: "0"}}, order_by: {id: desc}, limit: 15, offset: ${offset}) {
         id
         artifact_uri
         display_uri
@@ -223,15 +271,38 @@ async function fetchGifs(offset) {
 async function fetchMusic(offset) {
   const { errors, data } = await fetchGraphQL(`
   query AudioObjkts {
-    hic_et_nunc_token(where: {mime: {_in: ["audio/ogg", "audio/wav", "audio/mpeg"]}, supply : { _neq : 0 }}, limit : 15, offset : ${offset}, order_by: {id: desc}) {
+    hic_et_nunc_token(where: {mime: {_in: ["audio/ogg", "audio/wav", "audio/mpeg"]}, supply : {_neq: "0"}}, limit : 15, offset : ${offset}, order_by: {id: desc}) {
       id
       artifact_uri
       display_uri
       mime
       creator_id
+      token_signatures {
+        holder_id
+      }
+      supply
+      swaps(where: {contract_version: {_eq: "2"}})   {
+        is_valid
+        id
+        price
+        status
+        contract_version
+      }
+      token_holders(where: {quantity: {_gt: "0"}}) {
+      {
+        holder_id
+        quantity
+      }
       creator {
+        is_split
         address
         name
+        metadata
+        shares {
+          shareholder {
+            holder_type
+          }
+        }
       }
     }
   }
@@ -346,17 +417,44 @@ async function fetchRandomObjkts() {
 async function fetchSwaps(offset) {
   const { errors, data } = await fetchGraphQL(`
   query querySwaps {
-    hic_et_nunc_swap(where: {contract_version: {_eq: "2"}}, order_by: {id: desc}, limit: 15,  offset : ${offset}) {
+    hic_et_nunc_swap(where: {contract_version: {_eq: "2"}, token: {supply: {_neq: "0"}}}, order_by: {id: desc}, limit: 15,  offset : ${offset}) {
       id
+      royalties
       creator_id
       token {
         id
+        title
         mime
+        metadata
         artifact_uri
         display_uri
+        description
+        is_signed
+        token_signatures {
+          holder_id
+        }
+        supply
+        swaps(where: {contract_version: {_eq: "2"}}) {
+          is_valid
+          id
+          price
+          status
+          contract_version
+        }
+        token_holders(where: {quantity: {_gt: "0"}}) {
+          holder_id
+          quantity
+        }
         creator {
+          is_split
           address
           name
+          metadata
+          shares {
+            shareholder {
+              holder_type
+            }
+          }
         }
       }
     } 
@@ -382,9 +480,34 @@ async function fetchDay(day, offset) {
         display_uri
         id
         mime
+        description
+        supply
+        is_signed
+        token_signatures {
+          holder_id
+        }
+        supply
+        swaps(where: {contract_version: {_eq: "2"}}) {
+          is_valid
+          id
+          price
+          status
+          contract_version
+        }
+        token_holders(where: {quantity: {_gt: "0"}}) {
+          holder_id
+          quantity
+        }
         creator {
-          name
+          is_split
           address
+          name
+          metadata
+          shares {
+            shareholder {
+              holder_type
+            }
+          }
         }
       }
     }
@@ -409,18 +532,32 @@ async function fetchSales(offset) {
   query sales {
     hic_et_nunc_trade(order_by: {timestamp: desc}, limit : 15, offset : ${offset}, where: {swap: {price: {_gte: "500000"}}}) {
       timestamp
-      swap {
-        price
-      }
       token {
         artifact_uri
         display_uri
         id
         mime
+        description
+        is_signed
+        supply
+        token_holders(where: {quantity: {_gt: "0"}}) {
+          holder_id
+          quantity
+        }
+        swaps {
+          price
+          status
+          is_valid
+          contract_version
+        }
         creator_id
         creator {
           name
           address
+          metadata
+        }
+        token_signatures {
+          holder_id
         }
       }
     }
@@ -443,7 +580,7 @@ async function fetchSales(offset) {
 async function fetchSubjkts(subjkt) {
   const { errors, data } = await fetchGraphQL(`
   query subjktsQuery {
-    hic_et_nunc_holder(where: { name: {_ilike: "%${subjkt}%"}}, order_by: {hdao_balance: desc}) {
+    hic_et_nunc_holder(where: {name: {_ilike: "%${subjkt}%"}}, order_by: {hdao_balance: desc}) {
       address
       name
       hdao_balance
@@ -467,20 +604,40 @@ async function fetchSubjkts(subjkt) {
 export async function fetchTag(tag, offset) {
   const { errors, data } = await fetchGraphQL(
     `query ObjktsByTag {
-  hic_et_nunc_token(where: {supply : { _neq : 0 }, token_tags: {tag: {tag: {_ilike: ${tag}}}}, id: {_lt: ${offset}}}, limit : 188, order_by: {id: desc}) {
+  hic_et_nunc_token(where: {supply: {_neq: "0"}, token_tags: {tag: {tag: {_in: ${tag}}}}}, offset: ${offset}, limit: 15, order_by: {id: desc}) {
     id
     artifact_uri
     display_uri
     mime
+    metadata
     creator_id
+    is_signed
+    description
+    supply
+    swaps(where: {contract_version: {_eq: "2"}}) {
+      is_valid
+      id
+      price
+      status
+      contract_version
+    }
+    token_holders(where: {quantity: {_gt: "0"}}) {
+      holder_id
+      quantity
+    }
     token_tags {
       tag {
         tag
       }
     }
+    token_signatures {
+      holder_id
+    }
     creator {
+      is_split
       address
       name
+      metadata
     }
   }
 }`
@@ -508,19 +665,39 @@ async function fetchGraphQL(operationsDoc, operationName, variables) {
 }
 
 const query_hdao = `query hDAOFeed($offset: Int = 0) {
-  hic_et_nunc_token(order_by: {hdao_balance: desc}, limit: 15, where: {hdao_balance: {_gt: 100}}, offset: $offset) {
+  hic_et_nunc_token(order_by: {hdao_balance: desc}, limit: 15, where: {supply: {_neq: "0"}, hdao_balance: {_gt: 100}}, offset: $offset) {
     artifact_uri
     display_uri
     creator_id
+    description
+    supply
     id
     mime
     thumbnail_uri
     timestamp
     title
     hdao_balance
+    is_signed
+    swaps(where: {contract_version: {_eq: "2"}}) {
+      is_valid
+      id
+      price
+      status
+      contract_version
+    }
+    token_holders(where: {quantity: {_gt: "0"}}) {
+    {
+      holder_id
+      quantity
+    }
+    token_signatures {
+      holder_id
+    }
     creator {
-      name
+      is_split
       address
+      name
+      metadata
     }
   }
 }`
@@ -548,6 +725,7 @@ export class Search extends Component {
     subjkt: [],
     items: [],
     feed: [],
+    feedstyle: getItem('feedstyle') ||  'original',
     search: '',
     select: '',
     prev: '',
@@ -588,7 +766,7 @@ export class Search extends Component {
     // let res2 = await fetchTag(( 'tezflowers'), 9999999)
     // let resTotal = res1.concat(res2).sort((a,b) => b.id - a.id)
     // resTotal = resTotal.filter(e => !arr.includes(e.creator_id))
-    let swaps = await fetchSwaps((this.state.offset), 9999999)
+    let swaps = await fetchSwaps((this.state.offset))
     swaps.forEach(e => { e.creator = e.token.creator; e.id = e.token.id});
     swaps = swaps.filter(e => !arr.includes(e.creator.address))
     this.setState({ feed: _.uniqBy([...this.state.feed, ...swaps], 'id') })
@@ -725,7 +903,7 @@ export class Search extends Component {
     // }
 
     if (e == 'photography') {
-      let res = await fetchTag('photography', 999999)
+      let res = await fetchTag('photography', this.state.offset)
       res = res.filter(e => !arr.includes(e.creator_id))
       this.setState({ feed: ([...this.state.feed, ...(res)]) })
     }
@@ -753,7 +931,7 @@ export class Search extends Component {
     }
 
     if (e == 'Miami') {
-      let res = await fetchTag('miami', 999999)
+      let res = await fetchTag('miami', this.state.offset)
       res = res.filter(e => !arr.includes(e.creator_id))
       res = res.filter(e => !arr.includes(e.creator_id))
       this.setState({ feed: ([...this.state.feed, ...(res)]) })
@@ -761,7 +939,7 @@ export class Search extends Component {
 
 
     if (e == '🗑️') {
-      let res = await fetchTag(`trashart`, 999999)
+      let res = await fetchTag(`trashart`, this.state.offset)
       res = res.filter(e => !arr.includes(e.creator_id))
       this.setState({ feed: ([...this.state.feed, ...(res)]) })
     }
@@ -813,12 +991,24 @@ export class Search extends Component {
   handleKey = (e) => {
     if (e.key == 'Enter') this.search(this.state.search)
   }
+  switchStyle = () => {
+    if (this.state.feedstyle === 'original') {
+      setItem('feedstyle', 'post')
+      this.setState({ feedstyle: 'post' })    
+    }
+    else {
+      setItem('feedstyle', 'original') 
+      this.setState({ feedstyle: 'original' })
+    }
+  }
+
   render() {
 
     return (
       <Page>
         <Container>
           <Padding>
+              <div style={{display: 'flex', flexDirection: 'row'}}>
                 <Input
                   type="text"
                   name="search"
@@ -827,6 +1017,17 @@ export class Search extends Component {
                   placeholder="search ↵"
                   onKeyPress={this.handleKey}
                 />
+                <div>
+                  <Button onClick={this.switchStyle}>
+                    <Primary>
+
+                      {this.state.feedstyle === 'post' ? <svg stroke="currentColor" fill="none" strokeWidth="0" viewBox="0 0 24 24" height="27px" width="27px" xmlns="http://www.w3.org/2000/svg"><path d="M3 21V3H5V21H3Z" fill="currentColor"></path><path fillRule="evenodd" clipRule="evenodd" d="M7 3H17V21H7V3ZM9 5V19H15V5H9Z" fill="currentColor"></path><path d="M19 3V21H21V3H19Z" fill="currentColor"></path></svg>
+                        : <svg stroke="currentColor" fill="none" strokeWidth="0" viewBox="0 0 24 24" height="27px" width="27px" xmlns="http://www.w3.org/2000/svg"><path d="M12.552 8C11.9997 8 11.552 8.44772 11.552 9C11.552 9.55228 11.9997 10 12.552 10H16.552C17.1043 10 17.552 9.55228 17.552 9C17.552 8.44772 17.1043 8 16.552 8H12.552Z" fill="currentColor" fillOpacity="0.5"></path><path d="M12.552 17C11.9997 17 11.552 17.4477 11.552 18C11.552 18.5523 11.9997 19 12.552 19H16.552C17.1043 19 17.552 18.5523 17.552 18C17.552 17.4477 17.1043 17 16.552 17H12.552Z" fill="currentColor" fillOpacity="0.5"></path><path d="M12.552 5C11.9997 5 11.552 5.44772 11.552 6C11.552 6.55228 11.9997 7 12.552 7H20.552C21.1043 7 21.552 6.55228 21.552 6C21.552 5.44772 21.1043 5 20.552 5H12.552Z" fill="currentColor" fillOpacity="0.8"></path><path d="M12.552 14C11.9997 14 11.552 14.4477 11.552 15C11.552 15.5523 11.9997 16 12.552 16H20.552C21.1043 16 21.552 15.5523 21.552 15C21.552 14.4477 21.1043 14 20.552 14H12.552Z" fill="currentColor" fillOpacity="0.8"></path><path d="M3.448 4.00208C2.89571 4.00208 2.448 4.44979 2.448 5.00208V10.0021C2.448 10.5544 2.89571 11.0021 3.448 11.0021H8.448C9.00028 11.0021 9.448 10.5544 9.448 10.0021V5.00208C9.448 4.44979 9.00028 4.00208 8.448 4.00208H3.448Z" fill="currentColor"></path><path d="M3.448 12.9979C2.89571 12.9979 2.448 13.4456 2.448 13.9979V18.9979C2.448 19.5502 2.89571 19.9979 3.448 19.9979H8.448C9.00028 19.9979 9.448 19.5502 9.448 18.9979V13.9979C9.448 13.4456 9.00028 12.9979 8.448 12.9979H3.448Z" fill="currentColor"></path></svg>
+                      }
+                    </Primary>
+                </Button>
+               </div>
+              </div>
             {
               <div style={{ marginTop: '15px' }}>
                 {this.state.tags.map((e,i) => <a key={i} className='tag' href='#' onClick={() => {
@@ -859,8 +1060,9 @@ export class Search extends Component {
                 <Container>
                   <Padding>
                     {this.state.feed.map((item, index) => (
-                      <FeedItem key={`${item.id}-${index}`} {...item} />
-                    ))}
+                       this.state.feedstyle === 'post' ? <ObjktPost key={`${item.id}-${index}`} {...item} />
+                        : <FeedItem key={`${item.id}-${index}`} {...item} />
+                       ))}
                   </Padding>
                 </Container>
               </InfiniteScroll>

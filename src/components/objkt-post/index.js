@@ -1,0 +1,85 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState} from 'react'
+import { Button } from '../button'
+import { PATH } from '../../constants'
+import { Container, Padding } from '../layout'
+import { Identicon } from '../identicons'
+import { renderMediaType } from '../media-types'
+import { ItemInfo } from '../item-info'
+
+import styles from './styles.module.scss'
+import './style.css'
+
+export const ObjktPost = (item) => {
+    const [objkt, setObjkt] = useState(JSON.parse(JSON.stringify(item.token ? item.token : item)))
+ 
+  return (
+    <> 
+      <br/>
+      <div
+        style={{
+          position: 'relative',
+          display: 'block',
+          width: '100%'
+        }}
+        className="objkt-display">
+          <Identicon address={objkt.creator.address} logo={objkt.creator.metadata?.identicon} feed={true}/><br/>
+        <div className={
+          objkt.mime == 'application/x-directory' || objkt.mime == 'image/svg+xml' ? 'objktview-zipembed objktview ' + styles.objktview :
+            [(
+              objkt.mime == 'video/mp4' ||
+                objkt.mime == 'video/ogv' ||
+                objkt.mime == 'video/quicktime' ||
+                objkt.mime == 'video/webm' ||
+                objkt.mime == 'application/pdf' ? 'no-fullscreen' : 'objktview ' + styles.objktview
+            )]
+        }>
+          <Button to={`${PATH.OBJKT}/${objkt.id}`}>
+            {renderMediaType({
+              mimeType: objkt.mime,
+              artifactUri: objkt.artifact_uri,
+              displayUri: objkt.display_uri,
+              creator: objkt.creator,
+              objkt: objkt.id,
+              interactive: true,
+              displayView: true
+            })}
+          </Button>
+        </div>
+        <div>
+          <Container>
+            <Padding>
+              <ItemInfo {...objkt} isDetailView post />
+            </Padding>
+          </Container>
+          <Container>
+            <Padding>
+              <div
+                style={{
+                  fontFamily: 'monospace',
+                  fontWeight: 'bold',
+                  fontSize: '20px',
+                }}
+              >
+                {objkt.title}
+              </div>
+            </Padding>
+          </Container>
+          <Container>
+            <Padding>
+              <div style={{ whiteSpace: 'pre-wrap' }}>{objkt.description}</div>
+            </Padding>
+          </Container>
+          <Container>
+            <Padding>{objkt.royalties/ 10}% royalties</Padding>
+            {/* <Padding>timestamp: {objkt.timestamp}</Padding> */}<br/>
+            <Padding>mimetype: {objkt.mime}</Padding>
+          </Container>
+        </div>
+        <Container>
+          <div style={{ borderBottom: '1px solid var(--text-color)'}}></div>
+        </Container>
+      </div>
+    </>
+  )
+}

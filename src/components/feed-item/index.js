@@ -9,6 +9,7 @@ import styles from './styles.module.scss'
 
 export const FeedItem = (props) => {
   return (
+    <div style={{overflowX: 'hidden'}}>
     <Padding>
       <Button to={`${PATH.OBJKT}/${props.id}`}>
         <VisuallyHidden>{`Go to OBJKT: ${props.title}`}</VisuallyHidden>
@@ -27,5 +28,6 @@ export const FeedItem = (props) => {
         <ItemInfo {...props} />
       </div>
     </Padding>
+    </div>
   )
 }

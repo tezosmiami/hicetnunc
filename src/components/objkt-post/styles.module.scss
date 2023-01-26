@@ -1,0 +1,21 @@
+@import '../../styles/layout.scss';
+@import '../../styles/variables.scss';
+
+.objktview {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @include respond-to('tablet') {
+    width : 60vh;
+    height: 60vh;
+    margin: 0 auto;
+  }
+}
+
+.history {
+  display: flex;
+  flex-wrap: wrap;
+}

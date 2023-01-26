@@ -288,13 +288,14 @@ const identicons = [
   ),
 ]
 
-export const Identicon = ({ address = '', logo }) => {
+export const Identicon = ({ address = '', logo, feed }) => {
   if (logo) {
     return (
-      <div className={styles.identicon}>
+      <div className={styles.identicon} >
         <img
           src={'https://ipfs.io/ipfs/' + logo.split('//')[1]}
           alt="identicon"
+          style={{width: feed ? '69px' : '127.5px', height: feed ? '69px' : '127.5px'}}
         />
       </div>
     )
@@ -303,5 +304,9 @@ export const Identicon = ({ address = '', logo }) => {
   const [path, xsa] = avatar(address)
   const identicon = identicons[xsa % identicons.length](path, address)
 
-  return <div className={styles.identicon}>{identicon}</div>
+  return <div className={styles.identicon}>
+            <svg style={{width: feed ? '63px' : '127.5px', height: feed ? '63px' : '127.5px'}} >
+              {identicon}
+            </svg>
+          </div>
 }

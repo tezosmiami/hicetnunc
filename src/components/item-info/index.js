@@ -24,8 +24,10 @@ export const ItemInfo = ({
   token_holders,
   supply,
   isDetailView,
-  restricted
+  restricted,
+  post,
 }) => {
+
   const { syncTaquito, collect, curate, claim_hDAO, acc } =
     useContext(HicetnuncContext)
 
@@ -169,7 +171,9 @@ export const ItemInfo = ({
         {isDetailView && !restricted && (
           <div className={styles.spread}>
             <div>
-              <p style={{ paddingBottom: '7.5px' }}>OBJKT#{id}</p>
+               <Button to={`${PATH.OBJKT}/${id}`} disabled={!post}>
+                <p style={{ paddingBottom: '7.5px' }}>OBJKT#{id}</p>
+              </Button>
               {isCollab && (
                 <div className={collabStyles.relative}>
                   <span>{verifiedSymbol}</span>
