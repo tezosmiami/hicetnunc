@@ -4,10 +4,11 @@ import classnames from 'classnames'
 import { VisuallyHidden } from '../../visually-hidden'
 import styles from './styles.module.scss'
 
-export const Page = ({ title = 'H=N', children = null, large }) => {
+export const Page = ({ title = 'H=N', children = null, large, feed}) => {
   const classes = classnames({
     [styles.container]: true,
     [styles.large]: large,
+    [styles.feed]: feed
   })
   return (
     <main className={classes}>
