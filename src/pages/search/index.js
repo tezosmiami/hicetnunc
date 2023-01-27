@@ -767,8 +767,8 @@ export class Search extends Component {
     lastId: undefined,
     tags: [
       { id: 0, value: 'new OBJKTs' },
-      { id: 1, value: 'h=n swaps' },
-      { id: 2, value: 'recent sales'},
+      { id: 1, value: 'recent sales'},
+      { id: 2, value: 'h=n swaps' },
       { id: 3, value: 'friends' }, 
       { id: 4, value: 'music' },
       { id: 5, value: 'photography' }, 
