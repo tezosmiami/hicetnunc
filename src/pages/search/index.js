@@ -758,7 +758,7 @@ export class Search extends Component {
     subjkt: [],
     items: [],
     feed: [],
-    feedstyle: getItem('feedstyle') ||  'original',
+    feedstyle: getItem('feedstyle') ||  'post',
     search: '',
     select: '',
     prev: '',

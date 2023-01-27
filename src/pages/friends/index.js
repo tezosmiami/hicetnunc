@@ -126,7 +126,7 @@ export class Friends extends Component {
 
   componentWillMount = async () => {
     this.setState({
-      feedstyle: getItem('feedstyle') || 'original'
+      feedstyle: getItem('feedstyle') || 'post'
     })
     const id = window.location.pathname.split('/')[1]
     if (id === 'friends') {
