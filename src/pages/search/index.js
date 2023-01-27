@@ -766,8 +766,8 @@ export class Search extends Component {
     flag: false,
     lastId: undefined,
     tags: [
-      { id: 0, value: 'h=n swaps' },
-      { id: 1, value: 'new OBJKTs' },
+      { id: 0, value: 'new OBJKTs' },
+      { id: 1, value: 'h=n swaps' },
       { id: 2, value: 'recent sales'},
       { id: 3, value: 'friends' }, 
       { id: 4, value: 'music' },
@@ -1074,7 +1074,7 @@ export class Search extends Component {
             {
               <div style={{ marginTop: '15px' }}>
                 {this.state.tags.map((e,i) => <div key={i} className='tag' href='#'
-                   style= {{textDecoration: e.value === this.state.select ? 'underline' : '', textUnderlinePosition: 'under'}} onClick={() => {
+                   style= {{textDecoration: e.value === this.state.select ? 'underline' : ''}} onClick={() => {
                   this.update(e.value, true)
                 }}>{e.value}</div>)}
               </div>
