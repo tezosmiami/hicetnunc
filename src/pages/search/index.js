@@ -1074,7 +1074,7 @@ export class Search extends Component {
             {
               <div style={{ marginTop: '15px' }}>
                 {this.state.tags.map((e,i) => <div key={i} className='tag' href='#'
-                   style= {{textDecoration: e.value === this.state.select ? 'underline' : '', tetextUnderlinePosition: 'under'}} onClick={() => {
+                   style= {{textDecoration: e.value === this.state.select ? 'underline' : '', textUnderlinePosition: 'under'}} onClick={() => {
                   this.update(e.value, true)
                 }}>{e.value}</div>)}
               </div>
