@@ -1073,7 +1073,8 @@ export class Search extends Component {
               </div>
             {
               <div style={{ marginTop: '15px' }}>
-                {this.state.tags.map((e,i) => <div key={i} className='tag' href='#' onClick={() => {
+                {this.state.tags.map((e,i) => <div key={i} className='tag' href='#'
+                   style= {{textDecoration: e.value === this.state.select ? 'underline' : '', tetextUnderlinePosition: 'under'}} onClick={() => {
                   this.update(e.value, true)
                 }}>{e.value}</div>)}
               </div>
@@ -1091,7 +1092,7 @@ export class Search extends Component {
           </Padding>
         </Container>
         {this.state.select === 'friends' ?
-          <Friends wallet={this.context.acc.address} />
+          <Friends feedstyle={this.state.feedstyle} wallet={this.context.acc.address} />
           :
         <Container xlarge>
           {this.state.feed.length > 0 ?

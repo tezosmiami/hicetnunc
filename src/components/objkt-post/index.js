@@ -91,7 +91,7 @@ export const ObjktPost = (item) => {
           </Container>
         </div>
         <Container>
-          <div style={{ borderBottom: '1px solid var(--text-color)'}}></div>
+          <div style={{ borderBottom: '1px solid var(--text-color)', opacity: '39%'}}></div>
         </Container>
       </div>
     </>
