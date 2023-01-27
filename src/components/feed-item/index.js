@@ -15,11 +15,11 @@ export const FeedItem = (props) => {
         <VisuallyHidden>{`Go to OBJKT: ${props.title}`}</VisuallyHidden>
         <div className={styles.container}>
           {renderMediaType({
-            mimeType: props.mime || props.token.mime,
-            artifactUri: props.artifact_uri || props.token.artifact_uri,
-            displayUri: props.display_uri || props.token.display_uri,
-            creator: props.creator_id || props.token.creator_id,
-            objkt: String(props.id),
+            mimeType: props.mime || props.token.mime || '',
+            artifactUri: props.artifact_uri || props.token.artifact_uri || '',
+            displayUri: props.display_uri || props.token.display_uri || '',
+            creator: props.creator_id || props.token.creator_id || '',
+            objkt: String(props.id) || '',
             displayView: true
           })}
         </div>

@@ -7,6 +7,7 @@ import { FeedItem } from '../../components/feed-item'
 import { ObjktPost } from '../../components/objkt-post'
 import { getItem, setItem } from '../../utils/storage'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import { get } from 'lodash'
 
 async function fetchGraphQL(operationsDoc, operationName, variables) {
   let result = await fetch(process.env.REACT_APP_GRAPHQL_API, {
@@ -95,7 +96,7 @@ export class Friends extends Component {
     lastId: 99999999,
     render: false,
     loading: true,
-    feedstyle: this.props.feedstyle || getItem('feedstyle') || 'original',
+    feedstyle: this.props.feedstyle || '',
     frens: [],
     creations: [],
   }
@@ -124,6 +125,9 @@ export class Friends extends Component {
 
 
   componentWillMount = async () => {
+    this.setState({
+      feedstyle: getItem('feedstyle') || 'original'
+    })
     const id = window.location.pathname.split('/')[1]
     if (id === 'friends') {
       const wallet = window.location.pathname.split('/')[2]
