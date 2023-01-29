@@ -7,7 +7,7 @@ import { FeedItem } from '../../components/feed-item'
 import { ObjktPost } from '../../components/objkt-post'
 import { getItem, setItem } from '../../utils/storage'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { get } from 'lodash'
+
 
 async function fetchGraphQL(operationsDoc, operationName, variables) {
   let result = await fetch(process.env.REACT_APP_GRAPHQL_API, {

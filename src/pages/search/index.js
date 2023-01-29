@@ -23,10 +23,10 @@ const _ = require('lodash')
 const isFloat = (n) => Number(n) === n && n % 1 !== 0
 
 
-async function fetchFeed(lastId) {
+async function fetchFeed(lastId, offset) {
   const { errors, data } = await fetchGraphQL(`
 query LatestFeed {
-  hic_et_nunc_token(order_by: {id: desc}, limit: 21, where: {id: {_lt: ${lastId}}, supply: {_neq: "0"}, artifact_uri: {_neq: ""}}) {
+  hic_et_nunc_token(order_by: {id: desc}, limit: 21,  offset: ${offset}, where: {id: {_lt: ${lastId}}, supply: {_neq: "0"}, artifact_uri: {_neq: ""}}) {
     artifact_uri
     display_uri
     creator_id
@@ -404,10 +404,8 @@ async function fetchDescription(description, offset) {
   }
 }
 
-async function fetchRandomObjkts() {
+async function fetchRandomObjkts(lastId) {
   const firstId = 196
-  const lastId = await getLastId()
-
   const uniqueIds = new Set()
   while (uniqueIds.size < 21) {
     uniqueIds.add(rnd(firstId, lastId))
@@ -815,7 +813,7 @@ export class Search extends Component {
     // tokens = tokens.map(e => e.token)
     // tokens = tokens.filter(e => !arr.includes(e.creator_id))
     // this.setState({ feed: _.uniqBy(_.uniqBy([...this.state.feed, ...tokens], 'id'), 'creator_id') })
-    this.update(getItem('mainfeed') ||  'new OBJKTs', false)
+    this.update(getItem('mainfeed') ||  'new OBJKTs', true)
   }
 
   handleChange = (e) => {
@@ -827,13 +825,14 @@ export class Search extends Component {
   update = async (e, reset) => {
     let arr = await getRestrictedAddresses()
 
-    this.setState({ select: e ? e : 'new OBJKTs' })
+    this.setState({ select: e })
     setItem('mainfeed', e)
 
     if (reset) {
       this.state.flag=false
       this.state.feed = []
       this.state.offset = 0
+      this.state.lastId = await getLastId()
     }
 
     if (e === '1D') {
@@ -921,7 +920,7 @@ export class Search extends Component {
     }
 
     if (e == 'random') {
-      let res = await fetchRandomObjkts()
+      let res = await fetchRandomObjkts(this.state.lastId)
       console.log(res)
       res = res.filter(e => !arr.includes(e.creator_id))
       this.setState({ feed: [...this.state.feed, ...(res)] })
@@ -988,29 +987,33 @@ export class Search extends Component {
     if (e == 'friends') {
       this.setState({ select: 'friends' }) 
     }
+
     if (this.state.select == 'new OBJKTs') {
-      this.latest()
+      let res = await fetchFeed(this.state.lastId, this.state.offset)
+      res = res.filter(e => !arr.includes(e.creator_id))
+      // this.setState({ feed: _.uniqBy([...this.state.feed, ...(res)], 'creator_id') })
+      this.setState({ feed: [...this.state.feed, ...(res)] })
+      
     }
 
-   
     // new listings
 
     this.setState({ reset: false })
 
   }
 
-  latest = async () => {
-    let result = []
-    if (this.state.flag) {
-      result = await fetchFeed(Math.min.apply(Math, this.state.feed.map(e => e.id)))
-    } else {
-      result = await fetchFeed(999999)
-    }
-    let restricted = await getRestrictedAddresses()
-    result = _.uniqBy([...this.state.feed, ...result], 'creator_id')
-    result = result.filter(e => !restricted.includes(e.creator_id))
-    this.setState({ feed: [...result], flag: true })
-  }
+  // latest = async () => {
+  //   let result = []
+  //   if (this.state.flag) {
+  //     result = await fetchFeed(Math.min.apply(Math, this.state.feed.map(e => e.id)), this.state.offset)
+  //   } else {
+  //     result = await fetchFeed(999999, this.state.offset)
+  //   }
+  //   let restricted = await getRestrictedAddresses()
+  //   result = _.uniqBy([...this.state.feed, ...result], 'creator_id')
+  //   result = result.filter(e => !restricted.includes(e.creator_id))
+  //   this.setState({ feed: [...result], flag: true })
+  // }
 
 
   search = async (e) => {
@@ -1046,7 +1049,6 @@ export class Search extends Component {
       this.setState({ feedstyle: 'original' })
     }
   }
-  
   render() {
     return (
       <Page>
