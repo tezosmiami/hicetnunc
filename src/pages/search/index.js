@@ -1039,6 +1039,7 @@ export class Search extends Component {
   handleKey = (e) => {
     if (e.key == 'Enter') this.search(this.state.search)
   }
+  
   switchStyle = () => {
     if (this.state.feedstyle === 'original') {
       setItem('feedstyle', 'post')

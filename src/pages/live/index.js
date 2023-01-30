@@ -438,7 +438,6 @@ const sendMessage = async (message) => {
   
 if((!acc || !meshed) && (dimension !== alias)) return(
   <Page title="be live">
-    <div>
       {` : `} 
       {!acc && <Button onClick={async () => {await syncTaquito(); setMeshed(true)}}><Primary>sync/mesh</Primary></Button>}
       {acc && !meshed && <Button onClick={()=> {setMeshed(true); setItem('syncmesh', true)}}>
@@ -447,8 +446,7 @@ if((!acc || !meshed) && (dimension !== alias)) return(
           </Primary>
         </Button>} 
       {` to join. . .`}
-    </div>
-   <Footer />
+       <Footer />
   </Page>
 )
 

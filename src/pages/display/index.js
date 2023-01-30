@@ -1045,14 +1045,12 @@ export default class Display extends Component {
                             })}
                           </div>
                         </Button>
-                        <div className={styles.cardContainer}>
+                        <Link to={`${PATH.OBJKT}/${nft.id}`} className={styles.cardContainer}>
                         <div className={`${styles.card} ${nft.mime=='audio/mpeg' && styles.audio}`}>
-                        <Link to={`${PATH.OBJKT}/${nft.id}`}>
                           <div className={styles.cardText}>
                             <div>OBJKT#{nft.id}</div>
                             <div className={styles.cardTitle}>{nft.title}</div>
                           </div>
-                        </Link>
                           <div className={styles.cardCollect}>
                             <Button onClick={() => nft.swaps[0]?.price && this.context.collect(nft.swaps[0].id, nft.swaps[0].price)}>
                               <Purchase>
@@ -1063,7 +1061,7 @@ export default class Display extends Component {
                             </Button>
                           </div>
                         </div>
-                      </div>
+                      </Link>
                       </div>
                     )
                   })}
