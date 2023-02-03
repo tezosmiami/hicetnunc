@@ -245,7 +245,7 @@ export class Config extends Component {
               <span>
                 <a href="https://tzprofiles.com" target="_blank" rel="noopener noreferrer">
                   <Button>
-                  <span style={{ fontWeight: 'bold' }}> Tezos Profiles</span>
+                  <span style={{ color: 'var(--text-color)', fontWeight: 'bold' }}> Tezos Profiles</span>
                   </Button>
                 </a>
               </span>

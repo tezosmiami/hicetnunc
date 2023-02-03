@@ -134,8 +134,7 @@ export const Header = () => {
 
       <AnimatePresence>
         {!context.collapsed && (
-          <motion.div className={styles.menu} {...fadeIn()}>
-           
+          <motion.div className={styles.menu} {...fadeIn()}>    
               <Padding>
                 <nav className={styles.content} >
                   <ul>
