@@ -222,8 +222,8 @@ export class Config extends Component {
             <Input
               name="subjkt"
               onChange={this.handleChange}
-              placeholder="Username"
-              label="Username"
+              placeholder="Alias"
+              label="Alias"
               value={this.context.subjktInfo ? this.context.subjktInfo.name : undefined}
               pattern="^[a-z0-9-._]*$"
             />

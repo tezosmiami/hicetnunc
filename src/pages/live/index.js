@@ -437,7 +437,7 @@ const sendMessage = async (message) => {
   }
 
 if (!meshed || (!meshed && dimension === alias)) return(
-  <Page title="be live">
+  <Page title='be live' fixed>
       {` : `} 
       {!acc && <Button onClick={async () => {await syncTaquito(); setMeshed(true)}}><Primary>sync/mesh</Primary></Button>}
       {acc && !meshed && <Button onClick={()=> {setMeshed(true); setItem('syncmesh', true)}}>
@@ -455,7 +455,7 @@ if ((!online.find(o => (o.alias === dimension && o.dimension === dimension)) && 
   audioStream && setAudioStream(false)   
   invitations.length > 0 && setInvitations([])
  return(
-  <Page title="be live">
+  <Page title='be live' fixed>
     {!online.find(o => (o.alias === dimension)) ? 
       <div> : <Button to={`/${dimension}`}>{dimension}</Button> is offline</div>
       : <div>: <Button to={`/${dimension}`}>{dimension}</Button> is not in session</div>}
@@ -464,7 +464,7 @@ if ((!online.find(o => (o.alias === dimension && o.dimension === dimension)) && 
 )}
 
 // if (peer.current?.disconnected) return (
-// <Page title="chat" >
+//<Page title='be live' fixed>
 //   <div style={{margin:'18px'}}> disconnected. . .</div>
 // </Page>
 // )

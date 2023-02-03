@@ -62,6 +62,7 @@ export const Header = () => {
     if (context.acc?.address && !context.collapsed) {
       // disconnect wallet
       context.disconnect()
+      mesh.meshed && handleMeshUnmesh()
     } else {
       // connect wallet
       context.syncTaquito()
@@ -71,7 +72,8 @@ export const Header = () => {
     !mesh.meshed ? setItem('syncmesh', true) : setItem('syncmesh', false)
     mesh.setMeshed(meshed => !meshed)
     mesh.meshed && mesh.peer.current.destroy()
-  }
+  } 
+
   return (
     <>
       <header className={styles.container}>
@@ -156,6 +158,14 @@ export const Header = () => {
                         </Primary>
                       </Button>
                     </li>
+                    {mesh.alias?.length > 0   && mesh.alias?.length < 36 &&
+                     <li>
+                      <Button onClick={() => handleRoute(`/${mesh.alias}/live`)}>
+                      <Primary>
+                          start session
+                        </Primary>
+                      </Button>
+                    </li>}
                     {/* <li>
                       <Button onClick={() => handleRoute('/collaborate')}>
                         <Primary>collaborate</Primary>
