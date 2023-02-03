@@ -435,8 +435,8 @@ const sendMessage = async (message) => {
       break
     }
   }
-  
-if((!acc || !meshed) && (dimension !== alias)) return(
+
+if (!meshed || (!meshed && dimension === alias)) return(
   <Page title="be live">
       {` : `} 
       {!acc && <Button onClick={async () => {await syncTaquito(); setMeshed(true)}}><Primary>sync/mesh</Primary></Button>}
@@ -445,7 +445,7 @@ if((!acc || !meshed) && (dimension !== alias)) return(
             {meshed ? 'unmesh ' : ' mesh '}
           </Primary>
         </Button>} 
-      {` to join. . .`}
+      {alias && (dimension === alias ? ` to start session. . .` :` to join. . .`)}
        <Footer />
   </Page>
 )
@@ -455,8 +455,11 @@ if ((!online.find(o => (o.alias === dimension && o.dimension === dimension)) && 
   audioStream && setAudioStream(false)   
   invitations.length > 0 && setInvitations([])
  return(
-  <Page title="be live" >
-    <div>: <Button to={`/${dimension}`}>{dimension}</Button> is offline</div>
+  <Page title="be live">
+    {!online.find(o => (o.alias === dimension)) ? 
+      <div> : <Button to={`/${dimension}`}>{dimension}</Button> is offline</div>
+      : <div>: <Button to={`/${dimension}`}>{dimension}</Button> is not in session</div>}
+    <Footer />
   </Page>
 )}
 
@@ -473,7 +476,7 @@ return (
         <div className={styles.online}>
           {online.length>=1 && [...new Map(online.filter((o) => dimension !== 'live' ? o.dimension === dimension : o ).map((m) => [m.alias, m])).values()].map((o,i) => (
             <div style={{paddingLeft: '9px', marginBottom:'9px'}} key={i}> 
-                {online.find(l => o.alias === l.dimension) || media.find(m => m.alias === o.alias) ? 
+                {online.find(l => o.alias === l.dimension && o.alias === l.alias) || media.find(m => m.alias === o.alias) ? 
                   <span>{`* `}</span>
                 : calls.find(c => (c.metadata.alias === o.alias)) || o.dimension ==='live' ? 
                   <svg stroke="currentColor" fill="var(--text-color)" strokeWidth="0" viewBox="0 0 24 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M12 5c-3.859 0-7 3.141-7 7s3.141 7 7 7 7-3.141 7-7-3.141-7-7-7zm0 12c-2.757 0-5-2.243-5-5s2.243-5 5-5 5 2.243 5 5-2.243 5-5 5z"></path><path d="M12 9c-1.627 0-3 1.373-3 3s1.373 3 3 3 3-1.373 3-3-1.373-3-3-3z"></path></svg> 
