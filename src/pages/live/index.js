@@ -437,7 +437,8 @@ const sendMessage = async (message) => {
   }
 
 if (!meshed || (!meshed && dimension === alias)) return(
-  <Page title='be live' fixed>
+  // <Page title='be live' fixed>
+  <div className={styles.fixed}>
       {` : `} 
       {!acc && <Button onClick={async () => {await syncTaquito(); setMeshed(true)}}><Primary>sync/mesh</Primary></Button>}
       {acc && !meshed && <Button onClick={()=> {setMeshed(true); setItem('syncmesh', true)}}>
@@ -447,7 +448,8 @@ if (!meshed || (!meshed && dimension === alias)) return(
         </Button>} 
       {alias && (dimension === alias ? ` to start session. . .` :` to join. . .`)}
        <Footer />
-  </Page>
+  </div>
+  // </Page>
 )
 
 if ((!online.find(o => (o.alias === dimension && o.dimension === dimension)) && dimension !== 'live')) {
@@ -455,12 +457,14 @@ if ((!online.find(o => (o.alias === dimension && o.dimension === dimension)) && 
   audioStream && setAudioStream(false)   
   invitations.length > 0 && setInvitations([])
  return(
-  <Page title='be live' fixed>
+  // <Page title='be live' fixed>
+  <div className={styles.fixed}>
     {!online.find(o => (o.alias === dimension)) ? 
       <div> : <Button to={`/${dimension}`}>{dimension}</Button> is offline</div>
       : <div>: <Button to={`/${dimension}`}>{dimension}</Button> is not in session</div>}
-    <Footer />
-  </Page>
+     <Footer />
+  </div>
+    // </Page>
 )}
 
 // if (peer.current?.disconnected) return (

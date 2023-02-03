@@ -256,3 +256,12 @@ span[data-tooltip][data-position='top']:after {
   bottom: 101%;
   margin-bottom: 4px;
 }
+
+.fixed {
+  position: fixed;
+  top: 90px;
+  left: 0;
+  overflow-y: hidden;
+  right: 0px;
+  bottom: 0;
+}
