@@ -181,7 +181,7 @@ const MeshContextProvider = ({ children }) => {
                         var conn = peer.current.connect(p, {
                             metadata: { 'alias': alias, 'address': acc.address, 'dimension': dimension }
                         })
-                        conn.on('open',  () => {
+                        conn && conn.on('open',  () => {
                             conn.on('data', async (data) => {
                             if (data.type === 'new') {setOnline(online => !online.find(o => o.id === data.id) ?
                                 [{alias:data.alias, id: conn.peer, dimension: data.dimension, conn:conn}, ...online]
