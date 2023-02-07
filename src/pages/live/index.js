@@ -62,6 +62,7 @@ const getCollection = async (address) => {
 const Audio = ({media, alias }) => {
   const visualiser = useRef();
   const [play, setPlay] = useState(true)
+
   useEffect(() => {
     if (media.alias === alias) {
       play ? media.stream.getAudioTracks()[0].enabled = true
@@ -80,7 +81,6 @@ const Audio = ({media, alias }) => {
 
   return (
     <div className={styles.audioStream}>
-       
         <div className={styles.icons} onClick={() => setPlay(!play)}>
           {play ? <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill="none" strokeLinecap="square" strokeMiterlimit="10" strokeWidth="32" d="M320 320c9.74-19.38 16-40.84 16-64 0-23.48-6-44.42-16-64m48 176c19.48-33.92 32-64.06 32-112s-12-77.74-32-112m48 272c30-46 48-91.43 48-160s-18-113-48-160"></path><path d="M125.65 176.1H32v159.8h93.65L256 440V72L125.65 176.1z"></path></svg>
             : <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill="none" strokeLinecap="square" strokeMiterlimit="10" strokeWidth="32" d="M416 432L64 80"></path><path d="M352 256c0-24.56-5.81-47.88-17.75-71.27L327 170.47 298.48 185l7.27 14.25C315.34 218.06 320 236.62 320 256a112.91 112.91 0 01-.63 11.74l27.32 27.32A148.8 148.8 0 00352 256zm64 0c0-51.19-13.08-83.89-34.18-120.06l-8.06-13.82-27.64 16.12 8.06 13.82C373.07 184.44 384 211.83 384 256c0 25.93-3.89 46.21-11 65.33l24.5 24.51C409.19 319.68 416 292.42 416 256z"></path><path d="M480 256c0-74.26-20.19-121.11-50.51-168.61l-8.61-13.49-27 17.22 8.61 13.49C429.82 147.38 448 189.5 448 256c0 48.76-9.4 84-24.82 115.55l23.7 23.7C470.16 351.39 480 309 480 256zM256 72l-73.6 58.78 73.6 73.59V72zM32 176.1v159.8h93.65L256 440V339.63L92.47 176.1H32z"></path></svg>
@@ -105,7 +105,6 @@ async function fetchObjkt(id) {
 export const Live = () => {
   const [message, setMessage] = useState();
   const [objkt, setObjkt] = useState(0)
-  const [conversation, setConversation] = useState([]);
   const [invitations, setInvitations] = useState([])
   const [collapsed, setCollapsed] = useState(true)
   const [audioStream, setAudioStream] = useState(false)
@@ -114,7 +113,7 @@ export const Live = () => {
   const scrollTarget = useRef(null)
   const history = useHistory()
 
-  const {peer, alias, dimension, setDimension, media, setMedia, online, setOnline, meshed, setMeshed, calls, setCalls, onClose, onStream} =  useMeshContext()
+  const {peer, alias, dimension, setDimension, media, setMedia, online, setOnline, meshed, setMeshed, lobby, setLobby, session, setSession, calls, setCalls, onClose, onStream} =  useMeshContext()
 
   const onAudio = (id) => {
       const call = peer.current.call(id, media.find(m=> m.alias===alias).stream, {metadata: {alias:alias, dimension: dimension, invites:invitations}})  
@@ -147,12 +146,12 @@ export const Live = () => {
     peer.current.off('call')
     peer.current.on('call', (call) => {
       dimension !== alias && setInvitations(call.metadata.invites)
-      if ((dimension === call.metadata.alias) || invitations.includes(call.metadata.alias)) {
+      if ((dimension === call.metadata.alias) || call.metadata.invites.includes(call.metadata.alias)) {
         call.answer();
         console.log('audio from', call.peer)
         call.peerConnection.oniceconnectionstatechange = () => {
           if(call.peerConnection.iceConnectionState == 'disconnected') {
-            setMedia(media => media.filter(m => m.alias !== call.metadata.alias))
+            setMedia(media => media.filter(m => m.stream.id !== call._remoteStream.id))
             setCalls(calls => calls.filter(c => c.peer !== call.peer))
           } 
         }
@@ -172,7 +171,7 @@ export const Live = () => {
           onAudio(conn.peer)
         }
         console.log('connected with', conn.peer)
-        conn.send({ type: 'new', alias: alias, dimension: dimension, id: peer.current.id, dimension: dimension })
+        conn.send({ type: 'new', alias: alias, dimension: dimension, id: peer.current.id, session: dimension === alias ? session : '', lobby: lobby})
         !online.find(o => o.id === conn.peer) && setOnline(online => [{alias: conn.metadata.alias, id: conn.peer, dimension: conn.metadata.dimension, conn: conn}, ...online])
         onData(conn)
         conn.on('error', (e) => {
@@ -191,11 +190,13 @@ export const Live = () => {
   }
 
 const onData = (conn) => {
-  conn.on('data', async (data) => {
+  conn && conn.on('data', async (data) => {
     if (data.objktId && data.objktId > 0) {data.metadata = await fetchObjkt(data.objktId)}
-    if (data.type === 'new') {setOnline(online => !online.find(o => o.id === data.id) ?
+    if (data.type === 'new') {
+      setOnline(online => !online.find(o => o.id === data.id) ?
       [{alias:data.alias, id: conn.peer, dimension: data.dimension, conn:conn}, ...online]
       : online)
+      setLobby(data.lobby)
       if (audioStream) {
         if (data.dimension === dimension && !calls.find(c=> c.peer === conn.peer)){
           const call = peer.current.call(data.id, media.find(m=> m.alias===alias).stream,
@@ -213,11 +214,14 @@ const onData = (conn) => {
           setMedia(media => media.filter(m => m.alias !== data.alias))
           setCalls(calls => calls.filter(c => c.peer !== conn.peer))
         }
-      }   
+      } 
+      if (data.session.length > 0) setSession(session)
     } 
+      if (data.type === 'session') setSession(data.session)
       if (data.type === 'dimension') {
         setOnline(online => online.map(o=> o.id === data.id ?
           {...o, dimension: data.dimension} : o))
+        if (alias === dimension && dimension === data.dimension) conn.send({ type: 'session', alias: alias, dimension: dimension, id: peer.current.id, dimension: dimension, session: session})
         if (audioStream) {
           if (data.dimension === dimension && !calls.find(c=> c.peer === conn.peer)){
             const call = peer.current.call(data.id, media.find(m=> m.alias===alias).stream, {metadata: {alias:alias, dimension: dimension, invites:invitations}})  
@@ -234,7 +238,7 @@ const onData = (conn) => {
             setMedia(media => media.filter(m => m.alias !== data.alias))
             setCalls(calls => calls.filter(c => c.peer !== conn.peer))
           }
-        }   
+        }
       }
     else {
       if (data.type === 'invite') {
@@ -244,8 +248,9 @@ const onData = (conn) => {
         if (alias === data.invite && audioStream) {setAudioStream(false)}
         onCall()  
       }
-    data.message && setConversation((messages) => [...messages, data])
-    if (data.alias !== acc.address && data.alias !== alias) {
+    data.message && (data.dimension === 'lobby' ? setLobby((messages) => [...messages, data])
+    : setSession((messages) => [...messages, data]))
+    if (data.invite || data.message && data.alias !== acc.address && data.alias !== alias) {
       const favicon = document.getElementById("favicon")
       favicon.href = '/message.ico'
       }
@@ -282,18 +287,18 @@ const onKeyPress = e => {
   
   useEffect(() => {
     const updateConn =  () => {
-    setDimension(channel || 'live')
+    setDimension(channel || 'lobby')
     if (meshed && peer.current) {
       onCall()
       onIncoming()
-      online.filter((o) => (o.dimension === dimension || o.dimension === 'live') && o.alias !== alias).map((s) =>  {
-            s.conn.off('data')
+      online.filter((o) => (o.dimension === dimension || o.dimension === 'lobby') && o.alias !== alias).map((s) =>  {
+            s.conn && s.conn.off('data')
             onData(s.conn)
          })
         }
      }
   updateConn()
-  }, [meshed,online,dimension,audioStream, media, calls]);
+  }, [meshed, online, dimension, channel, audioStream, media, calls]);
 
 useEffect(() => {
     if (audioStream) {
@@ -321,18 +326,14 @@ useEffect(() => {
     else if (!audioStream && media.length > 0 ) {
       (dimension === alias) && invitations?.forEach(i=>  onInvite('/invite '+i)) 
       calls?.map((c) => {
-        if (dimension === alias) {
-          c.close()
-          media.forEach(m => m.stream.getTracks()[0].stop())       
-        }
-        else if (c.metadata.alias === alias) {
-          c.close()
-          media.forEach(m => (m.alias === alias) && m.stream.getTracks()[0].stop())       
+        if (dimension === alias || c.metadata.alias === alias) {
+          c.close()     
         }
      })
+      media.forEach(m => (dimension === alias || m.alias === alias) && m.stream.getTracks()[0].stop())  
       setMedia(media => dimension === alias ? [] : media.filter(m => m.alias !== alias))
       setCalls(calls => dimension === alias ? [] : calls.filter(c => c.metadata.alias  !== alias))
-    onIncoming() 
+      onIncoming() 
   }
 }, [audioStream]);
 
@@ -344,15 +345,23 @@ useEffect(() => {
 }, [invitations])
 
 useEffect(() => {
-  if (dimension === 'live') {
+  if (dimension === 'lobby') {
     media?.forEach(m => m.stream.getTracks()[0].stop())
     setMedia([])
+    setSession([])
   }
 }, [dimension])
 
 useEffect(() => {
+  if (dimension !== 'lobby' && !online.find(o => (o.alias === dimension && o.dimension === dimension))) {
+   setSession([])
+  }
+}, [online])
+
+useEffect(() => {
   return () => {
     setDimension('hicetnunc')  
+    // setSession([])
     peer.current?.off('call')
   }
 }, [])
@@ -361,7 +370,7 @@ useEffect(() => {
   if (scrollTarget.current) {
     scrollTarget.current.scrollIntoView({ behavior: "smooth" });
   }
-}, [conversation.length]);
+}, [lobby, session]);
 
 const sendMessage = async (message) => { 
   if (!message) return
@@ -399,11 +408,12 @@ const sendMessage = async (message) => {
       break
 
     case message.slice(0,5).toUpperCase() === '/help'.toUpperCase():
-      const help = `p2p decentralized system\n---------------------------------------\n/objkt - select to show \n/random - show random collected\n/imagine - random words from collected\n/trash - show random #teztrash\n/tezos - current $ price of ꜩ\n${(dimension===alias) ? '/audio - stream audio\n/invite alias - invite to audiostream\n' : ''}${invitations.includes(alias) ? '/audio - stream audio\n' :''}${dimension==='live' && alias.length !==36 ? `/live - start session\n` : ''}---------------------------------------`
-      setConversation((messages) => [...messages, {alias: '', message: help}])
+      const help = `p2p decentralized system\n---------------------------------------\n/objkt - select to show \n/random - show random collected\n/imagine - random words from collected\n/trash - show random #teztrash\n/tezos - current $ price of ꜩ\n${(dimension===alias) ? '/audio - stream audio\n/invite alias - invite to audiostream\n' : ''}${invitations.includes(alias) ? '/audio - stream audio\n' :''}${dimension==='lobby' && alias.length !==36 ? `/session - start session\n` : ''}---------------------------------------`
+      dimension === 'lobby' ? setLobby((messages) => [...messages, {alias: '', message: help}])
+      : setSession((messages) => [...messages, {alias: '', message: help}])
       break  
     
-    case message.slice(0,5).toUpperCase() === '/live'.toUpperCase():
+    case message.slice(0,8).toUpperCase() === '/session'.toUpperCase():
       (alias.length !== 36) && history.push(`${alias}/live`)
       break
     
@@ -423,8 +433,9 @@ const sendMessage = async (message) => {
     case message.charAt(0) !== '/': 
       let metadata = ''
       if (objkt > 0 ) {metadata = await fetchObjkt(objkt)}
-      setConversation((messages) => [...messages, {alias: alias, message: message.toString(),  metadata: metadata}])
-      online.filter(o => o.dimension === dimension).map((s) => s.conn && s.conn.send(
+      dimension === 'lobby' ? setLobby((messages) => [...messages, {alias: alias, message: message.toString(),  metadata: metadata}])
+      : setSession((messages) => [...messages, {alias: alias, message: message.toString(),  metadata: metadata}])
+      online.filter(o => o.dimension === dimension || dimension === 'lobby').map((s) => s.conn && s.conn.send(
         {
           alias: alias,
           message: message,
@@ -452,8 +463,7 @@ if (!meshed || (!meshed && dimension === alias)) return(
   // </Page>
 )
 
-if ((!online.find(o => (o.alias === dimension && o.dimension === dimension)) && dimension !== 'live')) {
-  conversation.length > 0 && setConversation([])
+if ((!online.find(o => (o.alias === dimension && o.dimension === dimension)) && dimension !== 'lobby')) {
   audioStream && setAudioStream(false)   
   invitations.length > 0 && setInvitations([])
  return(
@@ -476,13 +486,14 @@ if ((!online.find(o => (o.alias === dimension && o.dimension === dimension)) && 
 return (
   <>
     {!collapsed ? <Select address={acc.address} setObjkt={setObjkt} setCollapsed={setCollapsed}/> :
-      <div style={{ padding: '63px 0 0 0', overflowX: 'hidden'}}>
+      <div style={{top: '63px', position: 'relative', zIndex: '111'}}>
+        <div style={{backgroundColor: 'var(--background-color)', width: '100%', position:'fixed', top: '60px', zIndex: '101', height:'12px'}} />
         <div className={styles.online}>
-          {online.length>=1 && [...new Map(online.filter((o) => dimension !== 'live' ? o.dimension === dimension : o ).map((m) => [m.alias, m])).values()].map((o,i) => (
+          {online.length>=1 && [...new Map(online.filter((o) => dimension !== 'lobby' ? o.dimension === dimension : o ).map((m) => [m.alias, m])).values()].map((o,i) => (
             <div style={{paddingLeft: '9px', marginBottom:'9px'}} key={i}> 
                 {online.find(l => o.alias === l.dimension && o.alias === l.alias) || media.find(m => m.alias === o.alias) ? 
                   <span>{`* `}</span>
-                : calls.find(c => (c.metadata.alias === o.alias)) || o.dimension ==='live' ? 
+                : calls.find(c => (c.metadata.alias === o.alias)) || online.find(l => l.alias === o.alias && l.dimension == 'lobby') ? 
                   <svg stroke="currentColor" fill="var(--text-color)" strokeWidth="0" viewBox="0 0 24 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M12 5c-3.859 0-7 3.141-7 7s3.141 7 7 7 7-3.141 7-7-3.141-7-7-7zm0 12c-2.757 0-5-2.243-5-5s2.243-5 5-5 5 2.243 5 5-2.243 5-5 5z"></path><path d="M12 9c-1.627 0-3 1.373-3 3s1.373 3 3 3 3-1.373 3-3-1.373-3-3-3z"></path></svg> 
                 : <svg stroke="currentColor" fill="var(--text-color)" strokeWidth="0" viewBox="0 0 24 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M5 12c0 3.859 3.14 7 7 7 3.859 0 7-3.141 7-7s-3.141-7-7-7c-3.86 0-7 3.141-7 7zm12 0c0 2.757-2.243 5-5 5s-5-2.243-5-5 2.243-5 5-5 5 2.243 5 5z"></path></svg>
                 }
@@ -503,7 +514,7 @@ return (
                   </span>
                   </Button>
                   : 
-                  dimension === 'live' && (alias.length !==36 && o.alias === alias || online.find(l => o.alias === l.dimension)) ?
+                  dimension === 'lobby' && (alias.length !==36 && o.alias === alias || online.find(l => o.alias === l.dimension)) ?
                   <Button onClick={() => {history.push(`${o.alias}/live`)
                   }}> 
                   <span
@@ -531,12 +542,13 @@ return (
             )) 
           }
         </div>
+        <div className={styles.media}>
         {((dimension && dimension===alias) || invitations.includes(alias)) && 
-          <div className={`${styles.icons} ${styles.stream}`}>
+          <div className={styles.icons}>
              <Button onClick={() => setAudioStream(audioStream => !audioStream)}>
              <span
-                    className={styles.left}
-                    data-position={'top'}
+                    className={styles.right}
+                    data-position={'right'}
                     data-tooltip={!audioStream ? 'stream audio' : 'close stream'}
                   >
               {!audioStream ? <svg stroke="currentColor" fill="currentColor" strokeWidth="0" role="img" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><title></title><path d="M.331 11.378s.5418-.089.765.1439c.2234.2332.077.7156-.2195.7237-.2965.01-.5705.063-.765-.1439-.1946-.2066-.1424-.6218.2195-.7237m5.881 3.2925c-.0522.01-.1075-.018-.164-.059-.3884-.5413-.5287-2.3923-.707-2.5025-.185-.1144-.8545 1.0255-2.1862.903-.5569-.051-1.1236-.4121-1.4573-.662.031-.4206.0364-1.4027.8659-1.0833.5038.1939 1.3667.7266 2.1245-.23.8378-1.0579 1.2999-.7506 1.577-.5206.2771.23.0925 1.4259.5058 1.0916.4133-.3343 2.082-2.4103 2.082-2.4103s1.292-1.303 1.4898.067c.1979 1.3698 1.0403 2.8877 1.2635 2.8445.2234-.043 2.8223-5.3253 3.1945-5.666.3722-.3409 1.6252-.2961 1.5657.5781-.0596.8742-.1871 6.308-.1871 6.308s-.147 1.5311.0924.7128c.0992-.3392.206-.6453.3392-1.0024.6414-2.0534 1.734-5.5613 2.2784-7.3688.1252-.4325.233-.8037.3166-1.0891l.0001-.0008a3.5925 3.5925 0 0 1 .0973-.3305c.0455-.1532.0763-.2546.0858-.2813.0243-.068.0925-.1192.1884-.157.0962-.061.1995-.064.3165-.067.3021-.027.6907.012 1.0401.1119.1018 0 .2125.037.3172.1118v.0001s.0063 0 .0151.01c.0023 0 .0048 0 .0073.01.0219.015.0573.045.0983.095.0012 0 .0025 0 .004.01.017.021.0341.045.0515.073.1952.2863.315.814.1948 1.7498-.2996 2.3354-.5316 7.1397-.5316 7.1397s-.0461.2298.4353-.782c.0167-.035.0383-.066.058-.098.026-.017.0552-.042.0913-.085.2974-.3546 1.0968-.5629 1.6512-.5586.2336.028.4293.087.5462.1609.2188.333.0897 1.562.0897 1.562-.4612.043-1.3403.2908-1.6519.3366-.3118.046-.7852 2.0699-1.4433 1.8629-.6581-.2069-2.1246-1.1268-2.1246-1.2533 0-.1102.1152-1.4546.1453-1.8016.0022-.024.004-.046.0058-.068a.152.152 0 0 1 .0014-.014l-.0002.0003c.0213-.2733.0023-.3927-.1239-.1199-.1086.2346-.581 1.7359-1.1078 3.3709-.0556.1429-1.0511 3.1558-1.1818 3.5231-.156.4261-.287.7523-.3776.921-.1378.1867-.3234.3036-.5826.2252-.6465-.1954-1.4654-1.0889-1.473-1.3106-.0155-1.2503.0608-7.973-.2423-7.4127-.311.5744-2.73 4.5608-2.73 4.5608-.0405.01-.0705.01-.1062.01-.1712-.019-.4366-.074-.51-.2384-.004-.01-.0094-.018-.0129-.028-.0035-.01-.0075-.022-.0135-.04-.0329-.1097-.0463-.2289-.0753-.3265-.1082-.3652-.2813-.8886-.463-1.421-.2784-.9079-.5654-1.8366-.6127-1.9391-.0923-.2007-.2268-.116-.3475-.0002-.54.458-1.6868 2.4793-2.7225 2.5898"></path></svg>
@@ -545,9 +557,10 @@ return (
               </span>
              </Button> 
           </div>}
-        {media?.map((m,i) => (<Audio key={i} media={m} dimension={dimension} alias={alias}/>))}
+          {media?.map((m) => (<Audio key={m.stream.id} media={m} alias={alias}/>))}
+        </div>
         <div className={styles.live}>
-          {conversation.map((m,i) => (   
+          {(dimension === 'lobby' && lobby?.length > 0 ? lobby : session).map((m,i) => (   
           <div style={{paddingLeft: `${m.alias?.length == 36 ? 
               walletPreview(m.alias).length+2 : m.alias?.length+2 }ch`, 
               textIndent:  `-${m.alias?.length == 36 ? 

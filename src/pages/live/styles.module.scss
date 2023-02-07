@@ -4,17 +4,25 @@
 @import '../../styles/variables.scss';
 
 .live {
-  margin: 27px;
-  height:63%;
+  margin-left: 27px;
+  width: 94%;
+  margin-left: 5%;
+  position: relative; 
   overflow: auto;
   display: flex;
   flex-direction: column;
   padding-bottom: 108px;
-
+  top: 27px;
 }
+
 .online {
-  margin: 21px;
-  padding : 18px;
+  position: -webkit-sticky;
+  position: sticky;
+  top:72px;
+  width: 94vw;
+  margin-left: 3%;
+  justify-items: center;
+  padding: 18px;
   text-align: flex-start;
   display: flex;
   justify-content: space-between;
@@ -23,6 +31,9 @@
   height: 108px;
   overflow: auto;
   border: 1px solid var(--text-color);
+  background-color: var(--background-color);
+  color: var(--text-color); 
+  z-index:108;
 }
 
 .objkt{
@@ -36,7 +47,7 @@
   border: 1px solid var(--text-color);
   height: 81px;
   left: 0;
-  width: 100%;
+  width: 99%;
   background-color: var(--background-color);
   color: var(--text-color); 
   transition: background-color #{$theme-duration} ease-out,
@@ -155,11 +166,10 @@
 
 .audioStream {
   display: flex;
-  margin-left: 27px;
-  height: 28px;
-  // justify-content: center;
-  // justify-items: center;
+  margin-left: 5%;
+  padding-bottom: 8px;
   align-items: flex-start;
+  background-color: var(--background-color);
 }
 
 .icons {  
@@ -176,31 +186,33 @@
   }
 }
 
-.stream{
-  width: 96%;
-}
 
 span[data-tooltip].top {
   &:before,
   &:after {
-    transform: translate(-50%, 10px);
+    transform: translate(-50%);
   }
 
   &:hover:after,
   &:hover:before {
-    transform: translate(-50%, 0px);
+    transform: translate(-50%);
   }
 }
 
-span[data-tooltip].left {
-  &:before,
+span[data-tooltip].right {
+  &:before{
+    transform: translate(-88px, 27px);
+  }
   &:after {
-    transform: translate(88px, 0px);
+    transform: translate(-99px);
+    transform: rotate(270deg);
   }
 
-  &:hover:after,
   &:hover:before {
-    transform: translate(-74%, -6px);
+    transform: translate(-88px, 27px);
+  }
+  &:hover:after{
+    transform: rotate(270deg);
   }
 }
 
@@ -247,14 +259,27 @@ span[data-tooltip] {
 
 span[data-tooltip][data-position='top']:before {
   bottom: 100%;
-  left: 50%;
+  left: 50%; 
 }
 
 span[data-tooltip][data-position='top']:after {
   border-top-color: var(--text-color);
   border-bottom: none;
-  bottom: 101%;
+  bottom: 101%; 
   margin-bottom: 4px;
+}
+
+span[data-tooltip][data-position='right']:before {
+  bottom: 30px;
+  left: -30px; 
+}
+
+span[data-tooltip][data-position='right']:after {
+  border-top-color: var(--text-color);
+  border-bottom: none;
+  left:  -11px;
+  bottom: 13px; 
+  // margin-bottom: 14px;
 }
 
 .fixed {
@@ -264,4 +289,17 @@ span[data-tooltip][data-position='top']:after {
   overflow-y: hidden;
   right: 0px;
   bottom: 0;
+}
+
+.media{
+  position: -webkit-sticky;
+  position:sticky;
+  top: 180px;
+  padding-top:18px;
+  padding-right:22px;
+  width: 98vw;
+  background-color: var(--background-color);
+  color: var(--text-color); 
+  overflow-x:hidden;
+  z-index: 111;
 }

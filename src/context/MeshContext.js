@@ -23,6 +23,8 @@ const MeshContextProvider = ({ children }) => {
     const [alias, setAlias] = useState();
     const [media, setMedia] = useState([])
     const [dimension, setDimension] = useState('hicetnunc')
+    const [lobby, setLobby] = useState([]);
+    const [session, setSession] = useState([])
     const [online, setOnline] = useState([])
     const [calls, setCalls] = useState([])
     const [tabFocus, setTabFocus] = useState(true);
@@ -59,12 +61,17 @@ const MeshContextProvider = ({ children }) => {
             conn.send({ type: 'new', alias: alias, dimension: dimension, id: peer.current.id, dimension: dimension })
             !online.find(o => o.id === conn.peer) && setOnline(online => [{alias: conn.metadata.alias, id: conn.peer, dimension: conn.metadata.dimension, conn: conn}, ...online])
             conn.on('data', async (data) => {
-                if (data.type === 'new') {setOnline(online => !online.find(o => o.id === data.id) ?
+                if (data.type === 'new') {
+                    setOnline(online => !online.find(o => o.id === data.id) ?
                     [{alias:data.alias, id: conn.peer, dimension: data.dimension, conn:conn}, ...online]
-                    : online)}
-                if (data.type === 'dimension') {setOnline(online => online.map(o=> o.id === data.id ? 
+                    : online)
+                    setLobby(data.lobby)
+                    }
+                if (data.type === 'dimension') {
+                    setOnline(online => online.map(o=> o.id === data.id ? 
                     {...o, dimension: data.dimension}
-                    : o))} 
+                    : o))
+                    if (alias === dimension && dimension === data.dimension && session.length > 0) conn.send({ type: 'session', alias: alias, dimension: dimension, id: peer.current.id, dimension: dimension, session: session})} 
                 if (data.invite || data.message) {
                     const favicon = document.getElementById("favicon")
                     favicon.href = '/message.ico'
@@ -109,7 +116,7 @@ const MeshContextProvider = ({ children }) => {
         setOnline(online => online.map(o=> (o.id === peer.current.id) ? {...o, dimension: dimension}
           : o
          ))
-        if (dimension === 'hicetnunc' || dimension === 'live') {
+        if (dimension === 'hicetnunc' || dimension === 'lobby') {
             media?.forEach(m => m.stream.getTracks()[0].stop())  
             setMedia([])
             calls.map(c => c.close())
@@ -183,12 +190,16 @@ const MeshContextProvider = ({ children }) => {
                         })
                         conn && conn.on('open',  () => {
                             conn.on('data', async (data) => {
-                            if (data.type === 'new') {setOnline(online => !online.find(o => o.id === data.id) ?
+                            if (data.type === 'new') {
+                                setOnline(online => !online.find(o => o.id === data.id) ?
                                 [{alias:data.alias, id: conn.peer, dimension: data.dimension, conn:conn}, ...online]
-                                : online)} 
+                                : online)
+                                setLobby(data.lobby)
+                            } 
                             if (data.type === 'dimension') {setOnline(online => online.map(o=> o.id === data.id ?
                                 {...o, dimension: data.dimension}
                                 : o))} 
+                            if (data.session) setSession(data.session)
                             if (data.invite || data.message) {
                                 const favicon = document.getElementById("favicon")
                                 favicon.href = '/message.ico'
@@ -219,7 +230,7 @@ const MeshContextProvider = ({ children }) => {
         syncMesh()
     }, [alias,meshed]);
 
-    const wrapped = {...mesh, peer, alias, meshed, setMeshed, media, setMedia, dimension, setDimension, online, setOnline, calls, setCalls, onIncoming, onClose, onStream}
+    const wrapped = {...mesh, peer, alias, meshed, setMeshed, media, setMedia, dimension, setDimension, lobby, setLobby, session, setSession, online, setOnline, calls, setCalls, onIncoming, onClose, onStream}
 
     return (
       <MeshContext.Provider value={wrapped}>
