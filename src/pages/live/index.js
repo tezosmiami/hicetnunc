@@ -559,9 +559,9 @@ return (
           </div>}
           {media?.map((m) => (<Audio key={m.stream.id} media={m} alias={alias}/>))}
         </div>
-        <div className={styles.live} ref={scrollTarget}>
+        <div className={styles.live}>
           {(dimension === 'lobby' && lobby?.length > 0 ? lobby : session).map((m,i) => (   
-          <div style={{paddingLeft: `${m.alias?.length == 36 ? 
+          <div  ref={scrollTarget} style={{paddingLeft: `${m.alias?.length == 36 ? 
               walletPreview(m.alias).length+2 : m.alias?.length+2 }ch`, 
               textIndent:  `-${m.alias?.length == 36 ? 
               walletPreview(m.alias).length+2 : m.alias?.length+2 }ch`,
