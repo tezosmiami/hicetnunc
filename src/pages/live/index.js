@@ -433,7 +433,7 @@ const sendMessage = async (message) => {
     case message.charAt(0) !== '/': 
       let metadata = ''
       if (objkt > 0 ) {metadata = await fetchObjkt(objkt)}
-      dimension === 'lobby' ? setLobby((messages) => [...messages, {alias: alias, message: message.toString(),  metadata: metadata}])
+      dimension === 'lobby' ? setLobby((messages) => [...messages, {alias: alias, message: message.toString(), metadata: metadata}])
       : setSession((messages) => [...messages, {alias: alias, message: message.toString(),  metadata: metadata}])
       online.filter(o => o.dimension === dimension || dimension === 'lobby').map((s) => s.conn && s.conn.send(
         {
@@ -559,13 +559,13 @@ return (
           </div>}
           {media?.map((m) => (<Audio key={m.stream.id} media={m} alias={alias}/>))}
         </div>
-        <div className={styles.live}>
+        <div className={styles.live} ref={scrollTarget}>
           {(dimension === 'lobby' && lobby?.length > 0 ? lobby : session).map((m,i) => (   
           <div style={{paddingLeft: `${m.alias?.length == 36 ? 
               walletPreview(m.alias).length+2 : m.alias?.length+2 }ch`, 
               textIndent:  `-${m.alias?.length == 36 ? 
               walletPreview(m.alias).length+2 : m.alias?.length+2 }ch`,
-              marginBottom:'9px'}} ref={scrollTarget} key={i}>
+              marginBottom:'9px'}} key={i}>
                   <Link target="_blank" rel="noopener noreferrer" 
                       to={m.alias.length == 36 ? `/tz/${m.alias}` : `/${m.alias}` }>
                       {m.alias.length == 36 ? walletPreview(m.alias) : m.alias}
