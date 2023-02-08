@@ -93,6 +93,11 @@ export const routes = [
   },
   {
     exact: false,
+    path: '/lobby',
+    component: Live,
+  },
+  {
+    exact: false,
     path: '/collaborate/:action?',
     component: Collaborate,
   },

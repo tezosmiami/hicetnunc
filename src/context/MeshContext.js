@@ -183,7 +183,7 @@ const MeshContextProvider = ({ children }) => {
             })
             onIncoming()
             setTimeout(async () => {
-                let peers = await axios.get('https://hen-chat.herokuapp.com/hicetnunc/peerjs/peers').then(res => res.data)
+                let peers = await axios.get(process.env.REACT_APP_MESH_SIGNAL).then(res => res.data)
                 peers.map((p) => {
                     setTimeout(() => {
                         var conn = peer.current.connect(p, {
