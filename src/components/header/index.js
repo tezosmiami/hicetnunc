@@ -26,7 +26,6 @@ export const Header = () => {
   const history = useHistory()
   const context = useContext(HicetnuncContext)
   const mesh = useMeshContext()
-
   // let root = document.documentElement
   // const color = root.style.getPropertyValue('--background-color')
   // console.log(color)
@@ -144,7 +143,7 @@ export const Header = () => {
                       </Button>
                     </li>
                     <li>
-                      <Button onClick={() => handleRoute('/live')}>
+                      <Button onClick={() => handleRoute(window.location.href.includes('.live') ? '/lobby' : '/live')}>
                       <Primary>
                           live<span style={{ fontSize: '18px' }}> (lobby)</span>
                         </Primary>
