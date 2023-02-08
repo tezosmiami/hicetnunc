@@ -171,7 +171,7 @@ export const Live = () => {
           onAudio(conn.peer)
         }
         console.log('connected with', conn.peer)
-        conn.send({ type: 'new', alias: alias, dimension: dimension, id: peer.current.id, session: dimension === alias ? session : '', lobby: lobby})
+        conn.send({ type: 'new', alias: alias, dimension: dimension, id: peer.current.id, lobby: lobby, session: alias === dimension ? session : '' })
         !online.find(o => o.id === conn.peer) && setOnline(online => [{alias: conn.metadata.alias, id: conn.peer, dimension: conn.metadata.dimension, conn: conn}, ...online])
         onData(conn)
         conn.on('error', (e) => {
@@ -196,7 +196,7 @@ const onData = (conn) => {
       setOnline(online => !online.find(o => o.id === data.id) ?
       [{alias:data.alias, id: conn.peer, dimension: data.dimension, conn:conn}, ...online]
       : online)
-      setLobby(data.lobby)
+      data.lobby && setLobby(data.lobby)
       if (audioStream) {
         if (data.dimension === dimension && !calls.find(c=> c.peer === conn.peer)){
           const call = peer.current.call(data.id, media.find(m=> m.alias===alias).stream,
@@ -215,13 +215,13 @@ const onData = (conn) => {
           setCalls(calls => calls.filter(c => c.peer !== conn.peer))
         }
       } 
-      if (data.session.length > 0) setSession(session)
+      if (data.session) setSession(session)
     } 
       if (data.type === 'session') setSession(data.session)
       if (data.type === 'dimension') {
         setOnline(online => online.map(o=> o.id === data.id ?
           {...o, dimension: data.dimension} : o))
-        if (alias === dimension && dimension === data.dimension) conn.send({ type: 'session', alias: alias, dimension: dimension, id: peer.current.id, dimension: dimension, session: session})
+      if (alias === dimension && dimension === data.dimension) conn.send({ type: 'session', alias: alias, dimension: dimension, id: peer.current.id, dimension: dimension, session: session})
         if (audioStream) {
           if (data.dimension === dimension && !calls.find(c=> c.peer === conn.peer)){
             const call = peer.current.call(data.id, media.find(m=> m.alias===alias).stream, {metadata: {alias:alias, dimension: dimension, invites:invitations}})  
@@ -434,7 +434,7 @@ const sendMessage = async (message) => {
     case message.charAt(0) !== '/': 
       let metadata = ''
       if (objkt > 0 ) {metadata = await fetchObjkt(objkt)}
-      dimension === 'lobby' ? setLobby((messages) => [...messages, {alias: alias, message: message.toString(), metadata: metadata}])
+      dimension === 'lobby' ? setLobby((lobby) => [...lobby, {alias: alias, message: message.toString(), metadata: metadata}])
       : setSession((messages) => [...messages, {alias: alias, message: message.toString(),  metadata: metadata}])
       online.filter(o => o.dimension === dimension || dimension === 'lobby').map((s) => s.conn && s.conn.send(
         {
@@ -562,7 +562,7 @@ return (
           {media?.map((m) => (<Audio key={m.stream.id} media={m} alias={alias}/>))}
         </div>
         <div className={styles.live}>
-          {(lobby?.length > 0 || session?.length > 0 && dimension === 'lobby' ? lobby : session).map((m,i) => (   
+          {((lobby?.length > 0 && dimension === 'lobby'|| dimension !== 'lobby' && session?.length > 0) && dimension === 'lobby' ? lobby : session).map((m,i) => (   
           <div ref={scrollTarget} style={{paddingLeft: `${m.alias?.length == 36 ? 
               walletPreview(m.alias).length+2 : m.alias?.length+2 }ch`, 
               textIndent:  `-${m.alias?.length == 36 ? 

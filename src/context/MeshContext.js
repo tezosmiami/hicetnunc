@@ -18,12 +18,12 @@ export const useMeshContext = () => {
   };
   
 const MeshContextProvider = ({ children }) => {
-    const [mesh, setMesh] = useState('');
+    const [mesh, setMesh] = useState('')
     const [meshed, setMeshed] = useState(getItem('syncmesh') || false)
-    const [alias, setAlias] = useState();
+    const [alias, setAlias] = useState()
     const [media, setMedia] = useState([])
     const [dimension, setDimension] = useState('hicetnunc')
-    const [lobby, setLobby] = useState([]);
+    const [lobby, setLobby] = useState([])
     const [session, setSession] = useState([])
     const [online, setOnline] = useState([])
     const [calls, setCalls] = useState([])
@@ -58,20 +58,21 @@ const MeshContextProvider = ({ children }) => {
         peer.current.on("connection", (conn) => {
             conn.on('open', () => {
             console.log('connected with', conn.peer)
-            conn.send({ type: 'new', alias: alias, dimension: dimension, id: peer.current.id, dimension: dimension })
+            conn.send({ type: 'new', alias: alias, dimension: dimension, id: peer.current.id, lobby: lobby, session: alias === dimension ? session : '' })
             !online.find(o => o.id === conn.peer) && setOnline(online => [{alias: conn.metadata.alias, id: conn.peer, dimension: conn.metadata.dimension, conn: conn}, ...online])
             conn.on('data', async (data) => {
                 if (data.type === 'new') {
                     setOnline(online => !online.find(o => o.id === data.id) ?
                     [{alias:data.alias, id: conn.peer, dimension: data.dimension, conn:conn}, ...online]
                     : online)
-                    setLobby(data.lobby)
+                    data.lobby && setLobby(data.lobby)
                     }
                 if (data.type === 'dimension') {
                     setOnline(online => online.map(o=> o.id === data.id ? 
                     {...o, dimension: data.dimension}
                     : o))
                     if (alias === dimension && dimension === data.dimension && session.length > 0) conn.send({ type: 'session', alias: alias, dimension: dimension, id: peer.current.id, dimension: dimension, session: session})} 
+                if (data.session) setSession(data.session)
                 if (data.invite || data.message) {
                     const favicon = document.getElementById("favicon")
                     favicon.href = '/message.ico'
@@ -194,7 +195,7 @@ const MeshContextProvider = ({ children }) => {
                                 setOnline(online => !online.find(o => o.id === data.id) ?
                                 [{alias:data.alias, id: conn.peer, dimension: data.dimension, conn:conn}, ...online]
                                 : online)
-                                setLobby(data.lobby)
+                                data.lobby && setLobby(data.lobby)
                             } 
                             if (data.type === 'dimension') {setOnline(online => online.map(o=> o.id === data.id ?
                                 {...o, dimension: data.dimension}
