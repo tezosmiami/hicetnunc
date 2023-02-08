@@ -368,7 +368,7 @@ useEffect(() => {
 
 useEffect(() => {
   if (scrollTarget.current) {
-    scrollTarget.current.scrollIntoView({ behavior: "smooth" });
+    scrollTarget.current.scrollIntoView(lobby.length > 15 || session.length > 15 ? true : false, {behavior: 'smooth'});
   }
 }, [lobby, session]);
 
@@ -485,8 +485,9 @@ if ((!online.find(o => (o.alias === dimension && o.dimension === dimension)) && 
 
 return (
   <>
+  {/* <Page> */}
     {!collapsed ? <Select address={acc.address} setObjkt={setObjkt} setCollapsed={setCollapsed}/> :
-      <div style={{top: '63px', position: 'relative', zIndex: '111'}}>
+      <div style={{top: '63px', position: 'absolute', zIndex: '111'}}>
         <div style={{backgroundColor: 'var(--background-color)', width: '100%', position:'fixed', top: '60px', zIndex: '101', height:'12px'}} />
         <div className={styles.online}>
           {online.length>=1 && [...new Map(online.filter((o) => dimension !== 'lobby' ? o.dimension === dimension : o ).map((m) => [m.alias, m])).values()].map((o,i) => (
@@ -560,8 +561,9 @@ return (
           {media?.map((m) => (<Audio key={m.stream.id} media={m} alias={alias}/>))}
         </div>
         <div className={styles.live}>
-          {(dimension === 'lobby' && lobby?.length > 0 ? lobby : session).map((m,i) => (   
-          <div  ref={scrollTarget} style={{paddingLeft: `${m.alias?.length == 36 ? 
+          {(dimension === 'lobby' && lobby?.length > 0 ? lobby
+           : dimension !=='lobby' && session?.length > 0 ? session : []).map((m,i) => (   
+          <div ref={scrollTarget} style={{paddingLeft: `${m.alias?.length == 36 ? 
               walletPreview(m.alias).length+2 : m.alias?.length+2 }ch`, 
               textIndent:  `-${m.alias?.length == 36 ? 
               walletPreview(m.alias).length+2 : m.alias?.length+2 }ch`,
@@ -670,6 +672,6 @@ return (
     </div>
   }  
   </>
-  // </Page>
+  // {/* </Page> */}
   )
 }
