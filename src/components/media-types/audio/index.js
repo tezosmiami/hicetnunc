@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef, useState } from 'react'
-import classnames from 'classnames'
+// import classnames from 'classnames'
 import { PauseIcon, PlayIcon } from './icons'
 import { Visualiser } from './visualiser'
 import styles from './styles.module.scss'
@@ -37,10 +37,10 @@ export const AudioComponent = ({
     }
   }, [play])
 
-  const classes = classnames({
-    [styles.container]: true,
-    [styles.userTouch]: userTouched,
-  })
+  // const classes = classnames({
+  //   [styles.container]: true,
+  //   [styles.userTouch]: userTouched,
+  // })
   /*   console.log(displayUri)
    */
 
@@ -48,7 +48,7 @@ export const AudioComponent = ({
     return (
       <div>
         <div>
-          <img style={{ height: '50vh', display : 'block', margin: '0 auto' }} src={displayUri} /><br />
+          <img alt='' style={{ height: '50vh', display : 'block', margin: '0 auto' }} src={displayUri} /><br />
           <audio style={{ display: 'block', margin: '0 auto' }} src={preview ? previewUri : artifactUri} controls />
         </div>
         {/*         {true && <audio src={preview ? previewUri : artifactUri} controls />}
@@ -66,7 +66,7 @@ export const AudioComponent = ({
       <>
         <div>
           <div>
-            <img  className={preview ? styles.preview : styles.audio } src={displayUri} /><br />
+            <img alt='' className={preview ? styles.preview : styles.audio } src={displayUri} /><br />
             <audio className={preview ? styles.preview : styles.audio } src={preview ? previewUri : artifactUri} controls />
           </div>
           {/*         {true && <audio src={preview ? previewUri : artifactUri} controls />}

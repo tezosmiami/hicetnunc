@@ -2,7 +2,7 @@
 /* eslint-disable */
 import React, { useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { BottomBanner } from '../../components/bottom-banner'
+// import { BottomBanner } from '../../components/bottom-banner'
 import { getWalletAllowList } from '../../constants'
 import {
   GetLatestFeed,

@@ -5,14 +5,14 @@ import styles from '../../collab/styles.module.scss';
 import { HicetnuncContext } from '../../../context/HicetnuncContext';
 import classNames from 'classnames';
 import { Button, Purchase } from '../../button';
-import { Upload } from '../../upload';
-import { ALLOWED_FILETYPES_LABEL } from '../../../constants';
-import { getMimeType } from '../../../utils/sanitise';
+// import { Upload } from '../../upload';
+// import { ALLOWED_FILETYPES_LABEL } from '../../../constants';
+// import { getMimeType } from '../../../utils/sanitise';
 
 export const Transfer = ({ id, creator, token_holders }) => {
 
-    const [file, setFile] = useState()
-    const [title, setTitle] = useState()
+    // const [file, setFile] = useState()
+    // const [title, setTitle] = useState()
     const { transfer, setProgress, acc, proxyAddress } = useContext(HicetnuncContext);
 
     // See if the creator of this token is also the admin
@@ -62,23 +62,23 @@ export const Transfer = ({ id, creator, token_holders }) => {
         setTxs(updatedTxs);
     }
 
-    const handleUpload = async (event) => {
-        const { files } = event.target
-        const file = files[0]
+    // const handleUpload = async (event) => {
+    //     const { files } = event.target
+    //     const file = files[0]
 
-        setTitle(file.name)
-        const mimeType = file.type !== '' ? file.type : await getMimeType(file)
-        const buffer = Buffer.from(await file.arrayBuffer())
+    //     setTitle(file.name)
+    //     const mimeType = file.type !== '' ? file.type : await getMimeType(file)
+    //     const buffer = Buffer.from(await file.arrayBuffer())
 
-        // set reader for preview
-        const reader = new FileReader()
-        reader.addEventListener('load', event => {
-            console.log(file, event.target.result, buffer, mimeType);
-            // onChange({ title, mimeType, file, buffer, reader: e.target.result })
-        })
+    //     // set reader for preview
+    //     const reader = new FileReader()
+    //     reader.addEventListener('load', event => {
+    //         console.log(file, event.target.result, buffer, mimeType);
+    //         // onChange({ title, mimeType, file, buffer, reader: e.target.result })
+    //     })
 
-        reader.readAsDataURL(file)
-    }
+    //     reader.readAsDataURL(file)
+    // }
 
     const onClick = () => {
         setProgress(true);

@@ -1,7 +1,6 @@
-import React, { useContext, useState, useEffect} from 'react'
+import React, { useState, useEffect} from 'react'
 import { Container, Padding } from '../../../components/layout'
 import { Primary } from '../../../components/button'
-import { HicetnuncContext } from '../../../context/HicetnuncContext'
 import { walletPreview } from '../../../utils/string'
 import styles from '../styles.module.scss'
 
@@ -32,7 +31,7 @@ query subjkt($from_address: [String!], $to_address: [String!]) {
 
 async function fetchGraphQL(operationsDoc, operationName, variables) {
     const result = await fetch(
-      operationName == 'transfers' ? process.env.REACT_APP_TEZTOK_API
+      operationName === 'transfers' ? process.env.REACT_APP_TEZTOK_API
        : process.env.REACT_APP_GRAPHQL_API,
       {
         method: "POST",
@@ -78,10 +77,10 @@ export const History = (token_info) => {
 
         data.events.forEach((e) => {
             let matched_from = subjkt.from.find(
-              (f) => f.address == e.from_address)
+              (f) => f.address === e.from_address)
             e.from_subjkt = matched_from?.name
             let matched_to = subjkt.to.find(
-              (g) => g.address == e.to_address)
+              (g) => g.address === e.to_address)
             e.to_subjkt = matched_to?.name
           })
 
@@ -107,32 +106,32 @@ export const History = (token_info) => {
             <Container>
                 <Padding>
                     {
-                        history.map(e => {
+                        history.map((e,i) => {
                             let timestamp = new Date(e.timestamp)
                             if (e.trade) {
                                 return (
-                                    <div className={styles.history}>
+                                    <div key={i} className={styles.history}>
                                         trade {timestamp.toLocaleString(navigator.languages[0], {timeZone: timezone, hour12: false})} { encodeURI(e.seller.name) ? <span><a href={`/tz/${encodeURI(e.seller.address)}`}> <Primary>&nbsp;{encodeURI(e.seller.name)}</Primary></a></span> : <span><a href={`/tz/${e.seller.address}`}><Primary>&nbsp;{walletPreview(e.seller.address)}</Primary></a></span>}&nbsp;{e.amount} ed. {parseFloat(e.swap.price / 1000000)} tez{e.buyer.name ? <span><a href={`/${encodeURI(e.buyer.name)}`}><Primary>&nbsp;{encodeURI(e.buyer.name)}</Primary></a></span> : <span><a href={`/tz/${e.buyer.address}`}><Primary>&nbsp;{walletPreview(e.buyer.address)}</Primary></a></span>}
                                     </div>
                                 )
                             }
-                            if (e.to_address == 'tz1burnburnburnburnburnburnburjAYjjX') {
+                            if (e.to_address === 'tz1burnburnburnburnburnburnburjAYjjX') {
                                 return(
-                                    <div className={styles.history}>
+                                    <div key={i} className={styles.history}>
                                     burn {timestamp.toLocaleString(navigator.languages[0], {timeZone: timezone, hour12: false})} { encodeURI(e.from_subjkt) ? <span><a href={`/tz/${encodeURI(e.from_address)}`}> <Primary>&nbsp;{encodeURI(e.from_subjkt)}</Primary></a></span> : <span><a href={`/tz/${e.from_address}`}><Primary>&nbsp;{walletPreview(e.from_address)}</Primary></a></span>}&nbsp;{e.amount} ed.
                                     </div>
                                 )
                             }
                             if (e.type) {
                                 return(
-                                    <div className={styles.history}>
+                                    <div key={i} className={styles.history}>
                                     transfer {timestamp.toLocaleString(navigator.languages[0], {timeZone: timezone, hour12: false})} { encodeURI(e.from_subjkt) ? <span><a href={`/tz/${encodeURI(e.from_address)}`}> <Primary>&nbsp;{encodeURI(e.from_subjkt)}</Primary></a></span> : <span><a href={`/tz/${e.from_address}`}><Primary>&nbsp;{walletPreview(e.from_address)}</Primary></a></span>}&nbsp;{e.amount} ed.{e.to_subjkt ? <span><a href={`/${encodeURI(e.to_subjkt)}`}><Primary>&nbsp;{encodeURI(e.to_subjkt)}</Primary></a></span> : <span><a href={`/tz/${e.to_address}`}><Primary>&nbsp;{walletPreview(e.to_address)}</Primary></a></span>}
                                     </div>
                                 )
                             }
                              else {
                                 return (
-                                    <div className={styles.history}>
+                                    <div key={i} className={styles.history}>
                                         swap {timestamp.toLocaleString(navigator.languages[0], {timeZone: timezone, hour12: false})} {e.creator.name ? <span><a href={`/tz/${e.creator.address}`}><Primary>&nbsp;{encodeURI(e.creator.name)}&nbsp;</Primary></a></span> : <span><a href={`/tz/${e.creator.address}`}><Primary>&nbsp;{walletPreview(e.creator.address)}</Primary></a></span>}&nbsp;{e.amount} ed. {parseFloat(e.price / 1000000)} tez
                                     </div>
                                 )

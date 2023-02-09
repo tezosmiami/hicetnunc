@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Primary, Secondary, Purchase } from '../../components/button'
+import { Button, Primary, Purchase } from '../../components/button'
 import { HicetnuncContext } from '../../context/HicetnuncContext'
 import { Page, Container, Padding } from '../../components/layout'
 import { Loading } from '../../components/loading'
@@ -10,14 +10,13 @@ import { ResponsiveMasonry } from '../../components/responsive-masonry'
 import InfiniteScroll from 'react-infinite-scroll-component'
 // import { CollabsTab } from '../collab/show/CollabsTab'
 import styles from './styles.module.scss'
-import { toggle } from 'screenfull'
 
 const axios = require('axios')
 const fetch = require('node-fetch')
 
-const sortByTokenId = (a, b) => {
-  return b.id - a.id
-}
+// const sortByTokenId = (a, b) => {
+//   return b.id - a.id
+// }
 
 export const getRestrictedAddresses = async () =>
   await axios
@@ -235,11 +234,11 @@ export default class Select extends Component {
     this.setState({ objkts: this.state.creations, loading: false, items: [] })
 
     if (forSaleType !== null) {
-      if (forSaleType == 0) {
+      if (forSaleType === 0) {
         this.setState({
           objkts: await this.filterCreationsForSalePrimary(this.state.objkts)
         })
-      } else if (forSaleType == 1) {
+      } else if (forSaleType === 1) {
         this.setState({
           objkts: await this.filterCreationsForSaleSecondary(this.state.objkts)
         })
@@ -254,7 +253,7 @@ export default class Select extends Component {
   filterCreationsForSalePrimary = async () => {
     let objkts = this.state.creations.filter(item => {
       const swaps = item.swaps.filter(swaps => {
-        return swaps.status == 0 && swaps.contract_version == 2 && swaps.creator_id == this.state.wallet
+        return swaps.status === 0 && swaps.contract_version === 2 && swaps.creator_id === this.state.wallet
       })
       return swaps && swaps.length > 0
     });
@@ -265,7 +264,7 @@ export default class Select extends Component {
   filterCreationsForSaleSecondary = async () => {
     let objkts = this.state.creations.filter(item => {
       const swaps = item.swaps.filter(swaps => {
-        return swaps.status == 0 && swaps.creator_id !== this.state.wallet
+        return swaps.status === 0 && swaps.creator_id !== this.state.wallet
       })
       return swaps && swaps.length > 0
     });
@@ -365,7 +364,7 @@ export default class Select extends Component {
     }
   }
   sortById = () =>{ 
-    if (this.state.sortId =='desc') {
+    if (this.state.sortId === 'desc') {
       this.setState({ objkts: this.state.objkts
         .sort((a, b) => parseFloat(this.state.collectionState ? a.token.id : a.id)
         - parseFloat(this.state.collectionState ? b.token.id : b.id)) }) 
@@ -411,7 +410,7 @@ export default class Select extends Component {
   }
 
   filterCollectionForSale = async () => {
-    let objktsForSale = this.state.collection.filter(item => item.creator_id == this.state.wallet)
+    let objktsForSale = this.state.collection.filter(item => item.creator_id === this.state.wallet)
     return objktsForSale
   }
 
@@ -587,7 +586,7 @@ export default class Select extends Component {
                           </div>
                         </div>
                         <div className={styles.cardContainer}>
-                        <div className={`${styles.card} ${nft.mime=='audio/mpeg' && styles.audio}`}>
+                        <div className={`${styles.card} ${nft.mime === 'audio/mpeg' && styles.audio}`}>
                        
                           <div className={styles.cardText}>
                             <div>OBJKT#{nft.id}</div>
@@ -679,7 +678,7 @@ export default class Select extends Component {
                       </div>
                     </div>
                     <div className={styles.cardContainer}>
-                    <div className={`${styles.card} ${nft.token.mime=='audio/mpeg' && styles.audio}`}>
+                    <div className={`${styles.card} ${nft.token.mime ==='audio/mpeg' && styles.audio}`}>
                    
                       <div className={styles.cardText}>
                         <div>OBJKT#{nft.token.id}</div>

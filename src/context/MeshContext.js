@@ -71,7 +71,7 @@ const MeshContextProvider = ({ children }) => {
                     setOnline(online => online.map(o=> o.id === data.id ? 
                     {...o, dimension: data.dimension}
                     : o))
-                    if (alias === dimension && dimension === data.dimension && session.length > 0) conn.send({ type: 'session', alias: alias, dimension: dimension, id: peer.current.id, dimension: dimension, session: session})} 
+                    if (alias === dimension && dimension === data.dimension && session.length > 0) conn.send({ type: 'session', alias: alias, id: peer.current.id, dimension: dimension, session: session})} 
                 if (data.session) setSession(data.session)
                 if (data.invite || data.message) {
                     const favicon = document.getElementById("favicon")
@@ -85,7 +85,7 @@ const MeshContextProvider = ({ children }) => {
                 onClose(conn)
             })
             conn.peerConnection.oniceconnectionstatechange = () => {
-                if (conn.peerConnection.iceConnectionState == 'disconnected') {
+                if (conn.peerConnection.iceConnectionState === 'disconnected') {
                 onClose(conn)
                 }
             }
@@ -213,7 +213,7 @@ const MeshContextProvider = ({ children }) => {
                             onClose(conn)
                             })
                             conn.peerConnection.oniceconnectionstatechange = () => {
-                            if(conn.peerConnection.iceConnectionState == 'disconnected') {
+                            if(conn.peerConnection.iceConnectionState === 'disconnected') {
                                 onClose(conn)
                             }
                         }

@@ -1,6 +1,5 @@
 import React from 'react'
 import { Container, Padding } from '../../../components/layout'
-import { Button, Primary, Purchase } from '../../../components/button'
 import { Tags } from '../../../components/tags'
 import '../style.css'
 

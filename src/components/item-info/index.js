@@ -28,13 +28,13 @@ export const ItemInfo = ({
   post,
 }) => {
 
-  const { syncTaquito, collect, curate, claim_hDAO, acc } =
+  const { syncTaquito, collect, curate, acc } =
     useContext(HicetnuncContext)
 
   const [showSignStatus, setShowSignStatus] = useState(false)
 
-  const reducer = (accumulator, currentValue) =>
-    parseInt(accumulator) + parseInt(currentValue)
+  // const reducer = (accumulator, currentValue) =>
+  //   parseInt(accumulator) + parseInt(currentValue)
 
   if (isDetailView) {
     // subtract burned pieces from total
@@ -51,7 +51,7 @@ export const ItemInfo = ({
         : 'X'
     swaps = swaps.filter(e => parseInt(e.contract_version) === 2 && parseInt(e.status) === 0 && e.is_valid)
     let s = _.minBy(swaps, (o) => Number(o.price))
-    let maxPrice = _.maxBy(swaps, (o) => Number(o.price))
+    // let maxPrice = _.maxBy(swaps, (o) => Number(o.price))
 
     var message = ''
 
@@ -72,30 +72,30 @@ export const ItemInfo = ({
       }
     }
 
-    const curateOrClaim = (id, balance = 0) => {
-      // if user is creator and there's hDAO balance
-      if (acc && acc.address === creator.address && balance > 0) {
-        claim_hDAO(balance, id)
-      } else {
-        curate(id)
-      }
-    }
+    // const curateOrClaim = (id, balance = 0) => {
+    //   // if user is creator and there's hDAO balance
+    //   if (acc && acc.address === creator.address && balance > 0) {
+    //     claim_hDAO(balance, id)
+    //   } else {
+    //     curate(id)
+    //   }
+    // }
 
-    const renderHDAObutton = (id, balance) => {
-      return (
-        <Button onClick={() => curate(id)}>
-          <Primary>
-            <span
-              className={styles.top}
-              data-position={'top'}
-              data-tooltip={'curate'}
-            >
-              〇
-            </span>
-          </Primary>
-        </Button>
-      )
-    }
+    // const renderHDAObutton = (id, balance) => {
+    //   return (
+    //     <Button onClick={() => curate(id)}>
+    //       <Primary>
+    //         <span
+    //           className={styles.top}
+    //           data-position={'top'}
+    //           data-tooltip={'curate'}
+    //         >
+    //           〇
+    //         </span>
+    //       </Primary>
+    //     </Button>
+    //   )
+    // }
 
     // Check collab status
     const isCollab = creator.is_split

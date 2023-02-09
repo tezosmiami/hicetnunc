@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Primary, Purchase } from '../button'
+import { Button, Primary } from '../button'
 import { BURN_ADDRESS } from '../../constants'
 
 import { walletPreview } from '../../utils/string'

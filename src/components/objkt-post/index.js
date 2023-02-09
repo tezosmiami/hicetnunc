@@ -35,17 +35,17 @@ export const ObjktPost = (item) => {
           width: '100%'
         }}
         className="objkt-display">
-          <Button to={`${PATH.OBJKT}/${objkt.id}`}>
+          <Button to={objkt.creator.name ? `/${objkt.creator.name}` : `${PATH.ISSUER}/${objkt.creator.address}`}>
             <Identicon address={objkt.creator.address} logo={logo} feed={true}/><br/>
           </Button>
         <div className={
-          objkt.mime == 'application/x-directory' || objkt.mime == 'image/svg+xml' ? 'objktview-zipembed objktview ' + styles.objktview :
+          objkt.mime === 'application/x-directory' || objkt.mime === 'image/svg+xml' ? 'objktview-zipembed objktview ' + styles.objktview :
             [(
-              objkt.mime == 'video/mp4' ||
-                objkt.mime == 'video/ogv' ||
-                objkt.mime == 'video/quicktime' ||
-                objkt.mime == 'video/webm' ||
-                objkt.mime == 'application/pdf' ? 'no-fullscreen' : 'objktview ' + styles.objktview
+              objkt.mime === 'video/mp4' ||
+                objkt.mime === 'video/ogv' ||
+                objkt.mime === 'video/quicktime' ||
+                objkt.mime === 'video/webm' ||
+                objkt.mime === 'application/pdf' ? 'no-fullscreen' : 'objktview ' + styles.objktview
             )]
         }>
           <Button to={`${PATH.OBJKT}/${objkt.id}`}>

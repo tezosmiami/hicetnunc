@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useRef, useCallback } from 'react'
+import React, { useContext, useEffect, useState, useRef } from 'react'
 import { HicetnuncContext } from '../../context/HicetnuncContext'
 import { useMeshContext } from '../../context/MeshContext'
 import { fetchGraphQL } from '../../data/hicdex'
@@ -6,7 +6,7 @@ import { useHistory } from 'react-router'
 import { fetchTag } from '../search'
 import { renderMediaType } from '../../components/media-types'
 import { setItem } from '../../utils/storage'
-import { Page } from '../../components/layout'
+// import { Page } from '../../components/layout'
 import { Button, Primary } from '../../components/button'
 import { Textarea } from '../../components/input'
 import { walletPreview } from '../../utils/string'
@@ -21,7 +21,7 @@ import Select  from '../../components/objkt-select'
 
 const pattern = new RegExp('^(https?://)?'+ // protocol
 '((([a-z\\d]([a-z\\d-]*[a-z\\d])?)\\.)+[a-z]{2,}|'+ // domain name
-'((\\d{1,3}\.){3}\\d{1,3}))'+ // OR ip (v4) address
+'((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
 '(:\\d+)?(/[-a-z\\d%_.~+]*)*'+ // port and path
 '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
 '(#[-a-z\\d_]*)?$','i'); // fragment locater
@@ -116,9 +116,9 @@ export const Live = () => {
   const {peer, alias, dimension, setDimension, media, setMedia, online, setOnline, meshed, setMeshed, lobby, setLobby, session, setSession, calls, setCalls, onClose, onStream} =  useMeshContext()
 
   const onAudio = (id) => {
-      const call = peer.current.call(id, media.find(m=> m.alias===alias).stream, {metadata: {alias:alias, dimension: dimension, invites:invitations}})  
+      const call = peer.current.call(id, media.find(m=> m.alias === alias).stream, {metadata: {alias:alias, dimension: dimension, invites:invitations}})  
       call.peerConnection.oniceconnectionstatechange = () => {
-        if(call.peerConnection.iceConnectionState == 'disconnected') {
+        if(call.peerConnection.iceConnectionState === 'disconnected') {
           setCalls(c => c.filter(i => i !== call))
         } 
       }
@@ -150,7 +150,7 @@ export const Live = () => {
         call.answer();
         console.log('audio from', call.peer)
         call.peerConnection.oniceconnectionstatechange = () => {
-          if(call.peerConnection.iceConnectionState == 'disconnected') {
+          if(call.peerConnection.iceConnectionState === 'disconnected') {
             setMedia(media => media.filter(m => m.stream.id !== call._remoteStream.id))
             setCalls(calls => calls.filter(c => c.peer !== call.peer))
           } 
@@ -181,7 +181,7 @@ export const Live = () => {
           onClose(conn)
         })
         conn.peerConnection.oniceconnectionstatechange = () => {
-          if(conn.peerConnection.iceConnectionState == 'disconnected') {
+          if(conn.peerConnection.iceConnectionState === 'disconnected') {
            onClose(conn)
          }
         }
@@ -199,10 +199,10 @@ const onData = (conn) => {
       data.lobby && setLobby(data.lobby)
       if (audioStream) {
         if (data.dimension === dimension && !calls.find(c=> c.peer === conn.peer)){
-          const call = peer.current.call(data.id, media.find(m=> m.alias===alias).stream,
+          const call = peer.current.call(data.id, media.find(m=> m.alias === alias).stream,
             {metadata: {alias:alias, dimension: dimension, invites:invitations}})  
           call.peerConnection.oniceconnectionstatechange = () => {
-            if(call.peerConnection.iceConnectionState == 'disconnected') {
+            if(call.peerConnection.iceConnectionState === 'disconnected') {
                 setCalls(calls => calls.filter(c => c.peer !== call.peer))
               } 
             }
@@ -221,12 +221,12 @@ const onData = (conn) => {
       if (data.type === 'dimension') {
         setOnline(online => online.map(o=> o.id === data.id ?
           {...o, dimension: data.dimension} : o))
-      if (alias === dimension && dimension === data.dimension) conn.send({ type: 'session', alias: alias, dimension: dimension, id: peer.current.id, dimension: dimension, session: session})
+      if (alias === dimension && dimension === data.dimension) conn.send({ type: 'session', alias: alias, dimension: dimension, id: peer.current.id, session: session})
         if (audioStream) {
           if (data.dimension === dimension && !calls.find(c=> c.peer === conn.peer)){
             const call = peer.current.call(data.id, media.find(m=> m.alias===alias).stream, {metadata: {alias:alias, dimension: dimension, invites:invitations}})  
             call.peerConnection.oniceconnectionstatechange = () => {
-              if(call.peerConnection.iceConnectionState == 'disconnected') {
+              if(call.peerConnection.iceConnectionState === 'disconnected') {
                   setCalls(calls => calls.filter(c=> c.peer !== call.peer))
                 } 
               }
@@ -250,7 +250,7 @@ const onData = (conn) => {
       }
     data.message && (data.dimension === 'lobby' ? setLobby((messages) => [...messages, data])
     : setSession((messages) => [...messages, data]))
-    if (data.invite || data.message && data.alias !== acc.address && data.alias !== alias) {
+    if ((data.invite || data.message) && data.alias !== acc.address && data.alias !== alias) {
       const favicon = document.getElementById("favicon")
       favicon.href = '/message.ico'
       }
@@ -266,7 +266,7 @@ const onSubmit = e => {
 }
 
 const onKeyPress = e => {
-  if (e.key == 'Enter' && !e.shiftKey) {
+  if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault()
     sendMessage(e.target.value)
     setMessage('')
@@ -445,6 +445,8 @@ const sendMessage = async (message) => {
         })
       )
       break
+      default:
+      break
     }
   }
 
@@ -495,7 +497,7 @@ return (
             <div style={{paddingLeft: '9px', marginBottom:'9px'}} key={i}> 
                 {online.find(l => o.alias === l.dimension && o.alias === l.alias) || media.find(m => m.alias === o.alias) ? 
                   <span>{`* `}</span>
-                : calls.find(c => (c.metadata.alias === o.alias)) || online.find(l => l.alias === o.alias && l.dimension == 'lobby') ? 
+                : calls.find(c => (c.metadata.alias === o.alias)) || online.find(l => l.alias === o.alias && l.dimension === 'lobby') ? 
                   <svg stroke="currentColor" fill="var(--text-color)" strokeWidth="0" viewBox="0 0 24 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M12 5c-3.859 0-7 3.141-7 7s3.141 7 7 7 7-3.141 7-7-3.141-7-7-7zm0 12c-2.757 0-5-2.243-5-5s2.243-5 5-5 5 2.243 5 5-2.243 5-5 5z"></path><path d="M12 9c-1.627 0-3 1.373-3 3s1.373 3 3 3 3-1.373 3-3-1.373-3-3-3z"></path></svg> 
                 : <svg stroke="currentColor" fill="var(--text-color)" strokeWidth="0" viewBox="0 0 24 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M5 12c0 3.859 3.14 7 7 7 3.859 0 7-3.141 7-7s-3.141-7-7-7c-3.86 0-7 3.141-7 7zm12 0c0 2.757-2.243 5-5 5s-5-2.243-5-5 2.243-5 5-5 5 2.243 5 5z"></path></svg>
                 }
@@ -512,11 +514,11 @@ return (
                       !invitations.includes(o.alias) ? 'invite'
                       : 'uninvite'
                       }>
-                    {o?.alias?.length == 36 ? walletPreview(o.alias) : o.alias}
+                    {o?.alias?.length === 36 ? walletPreview(o.alias) : o.alias}
                   </span>
                   </Button>
                   : 
-                  dimension === 'lobby' && (alias.length !==36 && o.alias === alias || online.find(l => o.alias === l.dimension)) ?
+                  dimension === 'lobby' && ((alias.length !==36 && o.alias === alias) || online.find(l => o.alias === l.dimension)) ?
                   <Button onClick={() => {history.push(`${o.alias}/live`)
                   }}> 
                   <span
@@ -529,8 +531,8 @@ return (
                   :
                   o.alias !== o.dimension ?
                     <Button 
-                      href={o?.alias?.length == 36 ? `/tz/${o.alias}` :`/${o.alias}` }>
-                      {o?.alias?.length == 36 ? walletPreview(o.alias) : o.alias}
+                      href={o?.alias?.length === 36 ? `/tz/${o.alias}` :`/${o.alias}` }>
+                      {o?.alias?.length === 36 ? walletPreview(o.alias) : o.alias}
                     </Button>
                   :  
                   o.alias !== alias ?
@@ -562,15 +564,15 @@ return (
           {media?.map((m) => (<Audio key={m.stream.id} media={m} alias={alias}/>))}
         </div>
         <div className={styles.live}>
-          {((lobby?.length > 0 && dimension === 'lobby'|| dimension !== 'lobby' && session?.length > 0) && dimension === 'lobby' ? lobby : session).map((m,i) => (   
-          <div ref={scrollTarget} style={{paddingLeft: `${m.alias?.length == 36 ? 
+          {(((lobby?.length > 0 && dimension === 'lobby') || (dimension !== 'lobby' && session?.length > 0)) && dimension === 'lobby' ? lobby : session).map((m,i) => (   
+          <div ref={scrollTarget} style={{paddingLeft: `${m.alias?.length === 36 ? 
               walletPreview(m.alias).length+2 : m.alias?.length+2 }ch`, 
-              textIndent:  `-${m.alias?.length == 36 ? 
+              textIndent:  `-${m.alias?.length === 36 ? 
               walletPreview(m.alias).length+2 : m.alias?.length+2 }ch`,
               marginBottom:'9px'}} key={i}>
                   <Link target="_blank" rel="noopener noreferrer" 
-                      to={m.alias.length == 36 ? `/tz/${m.alias}` : `/${m.alias}` }>
-                      {m.alias.length == 36 ? walletPreview(m.alias) : m.alias}
+                      to={m.alias.length === 36 ? `/tz/${m.alias}` : `/${m.alias}` }>
+                      {m.alias.length === 36 ? walletPreview(m.alias) : m.alias}
                   </Link>
               {`: `} 
               {m.message && RegExp(pattern, "i").test(m.message) ? 
@@ -581,7 +583,7 @@ return (
                     </a> :    
                         m.metadata ? 
                         <div style={{marginLeft: m.metadata.mime.includes('video') ? 
-                          `${m.alias?.length == 36 ? walletPreview(m.alias).length+2
+                          `${m.alias?.length === 36 ? walletPreview(m.alias).length+2
                             : m.alias?.length+2 }ch` : '0'}} className={styles.objkt}
                           >
                           <div className={styles.cardContainer} >
@@ -601,9 +603,9 @@ return (
                                   </div>
                               </Button>
                           <div style={{marginLeft: m.metadata.mime.includes('video') ? 
-                            `-${m.alias?.length == 36 ? walletPreview(m.alias).length+2
+                            `-${m.alias?.length === 36 ? walletPreview(m.alias).length+2
                             : m.alias?.length+2 }ch` : '0'}} className={`${styles.card} ${styles.collection}
-                            ${m.metadata.mime=='audio/mpeg' && styles.audio}`}
+                            ${m.metadata.mime ==='audio/mpeg' && styles.audio}`}
                             >
                               <Button
                               href={`${PATH.OBJKT}/${m.metadata.id}`}
