@@ -50,61 +50,92 @@ export class About extends Component {
 
         <Container>
           <Padding>
-            <div className={styles.buttons}>
-              <p>Join or contact hic et nunc on</p>
-              &nbsp;
-              <Button href="https://hicetnunc2000.medium.com">
-                <Primary>
-                  <strong>medium</strong>
-                </Primary>
-              </Button>
-              <p>,</p>&nbsp;
-              <Button href="mailto:tezosmiami@gmail.com">
-                <Primary>
-                  <strong>email</strong>
-                </Primary>
-              </Button>
-              <p>,</p>&nbsp;
-              <Button href="https://discord.gg/W8vQ7REym7">
-                <Primary>
-                  <strong>discord</strong>
-                </Primary>
-              </Button>
-              <p>,</p>&nbsp;
-              <Button href="https://reddit.com/r/hicetnunc">
-                <Primary>
-                  <strong>reddit</strong>
-                </Primary>
-              </Button>
-              <p>,</p>&nbsp;
-              <Button href="https://t.me/hicetnunc2000">
-                <Primary>
-                  <strong>telegram</strong>
-                </Primary>
-              </Button>
-              &nbsp;or through our
-              <Button href="https://community.hicetnunc.xyz">
-                <Primary>
-                  <strong>&nbsp;community forum</strong>
-                </Primary>
-              </Button>.
-            </div>
+            <p>{this.language.about.paragraphs[3]}</p>
+          </Padding>
+        </Container>
+
+         <Container>
+          <Padding>
+            <p>{this.language.about.paragraphs[4]}</p>
           </Padding>
         </Container>
 
         <Container>
           <Padding>
             <div className={styles.buttons}>
-              <p>WIKI is available on</p>&nbsp;
-              <Button href="https://github.com/hicetnunc2000/hicetnunc/wiki">
+              <p>original hicetnunc </p>&nbsp;
+              <Button href="https://discord.gg/ZBxbrUD6PF">
                 <Primary>
-                  <strong>github</strong>
+                  <strong>discord</strong>
+                </Primary>
+              </Button>
+              ,&nbsp;
+              <Button href="https://hicetnunc2000.medium.com">
+                <Primary>
+                  <strong>medium</strong>
+                </Primary>
+              </Button>
+              ,&nbsp;
+              <Button href="https://reddit.com/r/hicetnunc">
+                <Primary>
+                  <strong>reddit</strong>
+                </Primary>
+              </Button>
+              ,&nbsp;
+              <Button href="https://t.me/hicetnunc2000">
+                <Primary>
+                  <strong>telegram</strong>
+                </Primary>
+              </Button>
+              ,&nbsp;
+              <Button href="https://community.hicetnunc.xyz">
+                <Primary>
+                  <strong>forum</strong>
+                </Primary>
+              </Button>
+              ,&nbsp;
+              <Button href="https://github.com/hicetnunc2000/hicetnunc/wiki/Tools-made-by-the-community">
+              <Primary>
+                <strong>tools</strong>
+              </Primary>
+              </Button>
+              &nbsp;and&nbsp;
+              <Button href="https://github.com/hicetnunc2000/hicetnunc/wiki">
+                  <Primary>
+                    <strong>wiki</strong>
+                  </Primary>
+              </Button>
+            </div>
+          </Padding>
+        </Container>
+        
+        <Container>
+          <Padding>
+            <div className={styles.buttons}>
+              <p>contact magicCity on</p>
+              &nbsp;
+              <Button href="https://twitter.com/tezosmiami">
+                <Primary>
+                  <strong>twitter</strong>
+                </Primary>
+              </Button>
+              <p>,</p>&nbsp;
+               <Button href="https://discord.gg/ZBxbrUD6PF">
+                <Primary>
+                  <strong>discord</strong>
+                </Primary>
+              </Button>
+              &nbsp;<p> or</p>&nbsp;
+              <Button href="mailto:tezosmiami@gmail.com">
+                <Primary>
+                  <strong>email</strong>
                 </Primary>
               </Button>
             </div>
           </Padding>
         </Container>
-        <Container>
+
+        {/* <Container>
           <Padding>
             <Button href="https://github.com/hicetnunc2000/hicetnunc/wiki/Tools-made-by-the-community">
               <Primary>
@@ -119,15 +150,15 @@ export class About extends Component {
               </Button>
             )}
           </Padding>
-        </Container>
+        </Container> */}
 
         <Container>
           <Padding>
             <div className={styles.buttons}>
-              <p>Report</p>&nbsp;
-              <Button href="https://github.com/tezosmiami/hicetnunc/issues">
+              <p>source on </p>&nbsp;
+              <Button href="https://github.com/tezosmiami/hicetnunc">
                 <Primary>
-                  <strong>issues</strong>
+                  <strong>github</strong>
                 </Primary>
               </Button>
             </div>
