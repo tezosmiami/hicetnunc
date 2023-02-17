@@ -107,6 +107,7 @@ console.log(feed)
                           mimeType: nft.mime,
                           artifactUri: nft.artifact_uri,
                           displayUri: nft.display_uri,
+                          displayView: true
                         })}
                       </div>
                     </Button>
