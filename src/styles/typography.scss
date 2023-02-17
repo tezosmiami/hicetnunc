@@ -2,10 +2,36 @@
 // @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&display=swap');
 
+
 @font-face {
-    font-family: 'Julia Mono';
-    font-display: swap;
-    font-weight: normal;
-    font-style: normal;
-    src: url('fonts/JuliaMono-Regular.woff2') format('woff2');
-  }
+  font-family: 'Julia Mono';
+  font-display: swap;
+  font-weight: 400;
+  font-style: normal;
+  src: url('fonts/JuliaMono-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Julia Mono';
+  font-display: swap;
+  font-weight: 400;
+  font-style: italic;
+  src: url('fonts/JuliaMono-RegularItalic.woff2') format('woff2');
+}  
+  
+
+@font-face {
+  font-family: 'Julia Mono';
+  font-display: swap;
+  font-weight: 600;
+  font-style: normal;
+  src: url('fonts/JuliaMono-SemiBold.woff2') format('woff2');
+}  
+
+@font-face {
+  font-family: 'Julia Mono';
+  font-display: swap;
+  font-weight: 700;
+  font-style: normal;
+  src: url('fonts/JuliaMono-Bold.woff2') format('woff2');
+}  

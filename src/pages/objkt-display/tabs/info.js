@@ -21,7 +21,6 @@ export const Info = (token_info) => {
         <Padding>
           <div
             style={{
-              fontFamily: 'monospace',
               fontWeight: 'bold',
               fontSize: '20px',
             }}
