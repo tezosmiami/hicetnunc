@@ -82,7 +82,7 @@ const wallet = new PatchedBeaconWallet({
 }) */
 
 const wallet = new BeaconWallet({
-  name: 'hicetnunc.miami',
+  name: window.location.href.includes('.miami') ? 'hicetnunc.miami' : 'hicetnunc.live',
   preferredNetwork: 'mainnet',
 })
 
