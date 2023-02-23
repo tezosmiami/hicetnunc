@@ -518,7 +518,7 @@ return (
                   </span>
                   </Button>
                   : 
-                  dimension === 'lobby' && ((alias.length !==36 && o.alias === alias) || online.find(l => o.alias === l.dimension)) ?
+                  dimension === 'lobby' && ((alias?.length !==36 && o.alias === alias) || online.find(l => o.alias === l.dimension)) ?
                   <Button onClick={() => {history.push(`${o.alias}/live`)
                   }}> 
                   <span
@@ -571,8 +571,8 @@ return (
               walletPreview(m.alias).length+2 : m.alias?.length+2 }ch`,
               marginBottom:'9px'}} key={i}>
                   <Link target="_blank" rel="noopener noreferrer" 
-                      to={m.alias.length === 36 ? `/tz/${m.alias}` : `/${m.alias}` }>
-                      {m.alias.length === 36 ? walletPreview(m.alias) : m.alias}
+                      to={m.alias?.length === 36 ? `/tz/${m.alias}` : `/${m.alias}` }>
+                      {m.alias?.length === 36 ? walletPreview(m.alias) : m.alias}
                   </Link>
               {`: `} 
               {m.message && RegExp(pattern, "i").test(m.message) ? 
