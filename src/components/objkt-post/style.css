@@ -8,6 +8,9 @@
   width: 100vw;
   height: 100vw;
 }
+.objktview {
+  height:100%;
+}
 
 .message {
   position: absolute;
