@@ -32,8 +32,10 @@ export const ObjktPost = (item) => {
         style={{
           position: 'relative',
           display: 'block',
-          width: '100%'
-        }}
+          width: '100%',
+          boxShadow: '0 0 9px #fff, 0 0 6px var(--text-color)',
+          padding: '12px'
+               }}
         className="objkt-display">
           <Button to={objkt.creator.name ? `/${objkt.creator.name}` : `${PATH.ISSUER}/${objkt.creator.address}`}>
             <Identicon address={objkt.creator.address} logo={logo} feed={true}/><br/>
@@ -56,7 +58,8 @@ export const ObjktPost = (item) => {
               creator: objkt.creator,
               objkt: objkt.id,
               interactive: false,
-              displayView: true
+              displayView: true,
+              inView: true
             })}
           </Button>
         </div>
@@ -90,7 +93,7 @@ export const ObjktPost = (item) => {
           </Container>
         </div>
         <Container>
-          <div style={{ borderBottom: '1px solid var(--text-color)', opacity: '39%'}}></div>
+          {/* <div style={{ borderBottom: '1px solid var(--text-color)', opacity: '39%'}}></div> */}
         </Container>
       </div>
     </>

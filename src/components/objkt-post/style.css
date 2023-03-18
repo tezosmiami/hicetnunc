@@ -9,6 +9,8 @@
   height: 100vw;
 }
 .objktview {
+  padding:6px;
+  box-shadow: 0 0 6px #fff, 0 0 6px var(--text-color);
   height:100%;
 }
 

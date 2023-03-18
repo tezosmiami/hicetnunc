@@ -81,10 +81,15 @@ export const Header = () => {
             <div className={styles.logo}>
               {/* HIC LOGO */}
               {true && (
-                <svg viewBox="0 0 196.87 53.23" fill={'var(--text-color)'}>
+                <svg viewBox="0 0 196.87 53.23"
+                boxShadow="
+                0 0 6px #fff,
+                0 0 6px var(--text-color);"
+                fill='var(--text-color)'>
                   <path
                     d="M228.9,79.31H211.51a2.26,2.26,0,0,1-.35-.34.75.75,0,0,1-.16-.42c0-11.42,0-22.85,0-34.43H193.24v35H175.41V26.27H228.9Z"
                     transform="translate(-32.03 -26.27)"
+                    
                   />
                   <path
                     d="M67.74,43.78V26.42H85.41V79.19H67.91V62.38a4.24,4.24,0,0,0-.52-.57.77.77,0,0,0-.42-.17H50V79.08H32V26.48H49.78v17.3Z"

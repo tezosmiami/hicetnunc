@@ -1,6 +1,12 @@
 @import '../../styles/variables.scss';
 @import '../../styles/layout.scss';
 
+header{
+  box-shadow:
+  0 0 6px #fff,
+  0 0 6px var(--text-color);
+}
+
 .container {
   position: fixed;
   width: 100%;
@@ -35,7 +41,9 @@
 
       svg {
         height: 33px;
+        padding:6px;
         // fill: var(--text-color);
+        box-shadow: 0 0 6px #fff, 0 0 6px var(--text-color);
         transition: fill #{$theme-duration} ease-out;
       }
 

@@ -2,5 +2,8 @@
 @import '../../styles/layout.scss';
 
 .container {
+margin: 12px;
+padding:6px;
+box-shadow: 0 0 6px #fff, 0 0 6px var(--text-color);
   position: relative;
 }

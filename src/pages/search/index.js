@@ -1059,7 +1059,7 @@ export class Search extends Component {
                   placeholder="search ↵"
                   onKeyPress={this.handleKey}
                 />
-                <div style={{marginRight: '18px'}}>
+                <div style={{ marginRight: '18px'}}>
                   <Button onClick={this.switchStyle}>
                     <Primary>
                       {this.state.feedstyle === 'post' ? <svg stroke="currentColor" fill="none" strokeWidth="0" viewBox="0 0 24 24" height="27px" width="27px" xmlns="http://www.w3.org/2000/svg"><path d="M3 21V3H5V21H3Z" fill="currentColor"></path><path fillRule="evenodd" clipRule="evenodd" d="M7 3H17V21H7V3ZM9 5V19H15V5H9Z" fill="currentColor"></path><path d="M19 3V21H21V3H19Z" fill="currentColor"></path></svg>
@@ -1072,7 +1072,8 @@ export class Search extends Component {
             {
               <div style={{ marginTop: '15px' }}>
                 {this.state.tags.map((e,i) => <div key={i} className='tag' href='#'
-                   style= {{textDecoration: e.value === this.state.select ? 'underline' : ''}} onClick={() => {
+                   style= {{boxShadow: "0 0 9px #fff, 0 0 6px var(--text-color)",
+                    textDecoration: e.value === this.state.select ? 'underline' : ''}} onClick={() => {
                   this.update(e.value, true)
                 }}>{e.value}</div>)}
               </div>

@@ -1,6 +1,7 @@
 @import '../../styles/variables.scss';
 
 .container {
+  box-shadow: 0 0 6px #fff, 0 0 6px var(--text-color);
   display: flex;
   width: 16px;
   height: 16px;
