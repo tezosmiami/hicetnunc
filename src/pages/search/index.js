@@ -1044,7 +1044,7 @@ export class Search extends Component {
           '--text-shadow', '0 0 9px #fff, 0 0 9px var(--text-color)')
         document.documentElement.style.setProperty(
           '--box-shadow', '0 0 6px #fff, 0 0 6px var(--text-color)')
-        document.documentElement.style.setProperty('--drop-shadow', '0 0 6px #fff')
+        document.documentElement.style.setProperty('--drop-shadow', '0 0 3px #fff')
         this.setState({ neonstyle: true }) 
       } else {
           setItem('neonstyle', false) 
