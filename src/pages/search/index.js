@@ -1044,12 +1044,14 @@ export class Search extends Component {
           '--text-shadow', '0 0 9px #fff, 0 0 9px var(--text-color)')
         document.documentElement.style.setProperty(
           '--box-shadow', '0 0 6px #fff, 0 0 6px var(--text-color)')
+        document.documentElement.style.setProperty('--drop-shadow', '0 0 6px #fff')
         this.setState({ neonstyle: true }) 
       } else {
           setItem('neonstyle', false) 
           this.setState({ neonstyle: false })
           document.documentElement.style.setProperty('--text-shadow', 'none')
           document.documentElement.style.setProperty('--box-shadow', 'none')
+          document.documentElement.style.setProperty('--drop-shadow', 'none')
         }
     } else {
         if (this.state.feedstyle === 'original') {
@@ -1097,8 +1099,8 @@ export class Search extends Component {
             {
               <div style={{ marginTop: '15px' }}>
                 {this.state.tags.map((e,i) => <div key={i} className='tag' href='#'
-                   style= {{boxShadow: 'var(--box-shadow)',
-                    textDecoration: e.value === this.state.select ? 'underline' : ''}} onClick={() => {
+                   style= {{boxShadow: e.value === this.state.select && 'var(--box-shadow)', 
+                    textDecoration: e.value === this.state.select && !this.state.neonstyle? 'underline' : ''}} onClick={() => {
                   this.update(e.value, true)
                 }}>{e.value}</div>)}
               </div>

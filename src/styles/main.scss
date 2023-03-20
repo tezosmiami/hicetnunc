@@ -23,9 +23,9 @@ body {
 
 }
 
-// svg{
-//   filter: drop-shadow(var(--box-shadow));
-// }
+svg{
+  filter: drop-shadow(var(--drop-shadow));
+}
 * {
   text-shadow: var(--text-shadow);
  -webkit-box-sizing: border-box;

@@ -39,8 +39,7 @@ header{
 
       svg {
         height: 33px;
-        padding:6px;
-        // fill: var(--text-color);
+        padding:3px;
         box-shadow: var(--box-shadow);
         transition: fill #{$theme-duration} ease-out;
       }
