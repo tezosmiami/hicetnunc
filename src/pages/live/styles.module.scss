@@ -18,7 +18,7 @@
 }
 
 .online {
-  box-shadow: 0 0 6px #fff, 0 0 6px var(--text-color);
+  box-shadow: var(--box-shadow);
   position: -webkit-sticky;
   position: sticky;
   top:72px;
@@ -45,7 +45,7 @@
 }
 
 .footer {
-  box-shadow: 0 0 6px #fff, 0 0 6px var(--text-color);
+  box-shadow: var(--box-shadow);
   position: fixed;
   bottom: 0px;
   border: 1px solid var(--text-color);
@@ -308,7 +308,3 @@ span[data-tooltip][data-position='right']:after {
   overflow-x:hidden;
   z-index: 108;
 }
-
-// svg{
-//   box-shadow: none;
-// }

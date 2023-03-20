@@ -32,6 +32,17 @@ export const Header = () => {
   useEffect(() => {
     context.setAccount()
     context.setTheme(getItem('theme') || context.theme)
+    if (getItem('neonstyle') === true || getItem('neonstyle') === null) {
+    document.documentElement.style.setProperty(
+      '--text-shadow', '0 0 9px #fff, 0 0 9px var(--text-color)')
+    document.documentElement.style.setProperty(
+      '--box-shadow', '0 0 6px #fff, 0 0 6px var(--text-color)')
+    } else {
+      document.documentElement.style.setProperty(
+        '--text-shadow','none')
+      document.documentElement.style.setProperty(
+        '--box-shadow', 'none') 
+    }
   }, [])
 
   // we assume user isn't connected
@@ -105,7 +116,7 @@ export const Header = () => {
               {false && <img src="/hen-pride.gif" alt="pride 2021" />}
             </div>
           </Button>
-
+          
           <div className={styles.right}>
             {!context.collapsed && context.proxyAddress && (
               <div className={styles.mr}>

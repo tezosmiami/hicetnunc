@@ -33,7 +33,7 @@ export const ObjktPost = (item) => {
           position: 'relative',
           display: 'block',
           width: '100%',
-          boxShadow: '0 0 9px #fff, 0 0 6px var(--text-color)',
+          boxShadow: 'var(--box-shadow)',
           padding: '12px'
                }}
         className="objkt-display">

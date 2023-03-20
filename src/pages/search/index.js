@@ -753,6 +753,7 @@ export class Search extends Component {
     items: [],
     feed: [],
     feedstyle: getItem('feedstyle') ||  'post',
+    neonstyle: getItem('neonstyle' || true),
     search: '',
     select: '',
     prev: '',
@@ -1035,16 +1036,32 @@ export class Search extends Component {
     if (e.key === 'Enter') this.search(this.state.search)
   }
   
-  switchStyle = () => {
-    if (this.state.feedstyle === 'original') {
-      setItem('feedstyle', 'post')
-      this.setState({ feedstyle: 'post' })    
+  switchStyle = (type) => {
+    if (type === 'neon') {
+      if (this.state.neonstyle === false) {
+        setItem('neonstyle', true)
+        document.documentElement.style.setProperty(
+          '--text-shadow', '0 0 9px #fff, 0 0 9px var(--text-color)')
+        document.documentElement.style.setProperty(
+          '--box-shadow', '0 0 6px #fff, 0 0 6px var(--text-color)')
+        this.setState({ neonstyle: true }) 
+      } else {
+          setItem('neonstyle', false) 
+          this.setState({ neonstyle: false })
+          document.documentElement.style.setProperty('--text-shadow', 'none')
+          document.documentElement.style.setProperty('--box-shadow', 'none')
+        }
+    } else {
+        if (this.state.feedstyle === 'original') {
+          setItem('feedstyle', 'post')
+          this.setState({ feedstyle: 'post' })    
+        } else {
+          setItem('feedstyle', 'original') 
+          this.setState({ feedstyle: 'original' })
+        }
+      }
     }
-    else {
-      setItem('feedstyle', 'original') 
-      this.setState({ feedstyle: 'original' })
-    }
-  }
+
   render() {
     return (
       <Page>
@@ -1059,20 +1076,28 @@ export class Search extends Component {
                   placeholder="search ↵"
                   onKeyPress={this.handleKey}
                 />
-                <div style={{ marginRight: '18px'}}>
-                  <Button onClick={this.switchStyle}>
-                    <Primary>
-                      {this.state.feedstyle === 'post' ? <svg stroke="currentColor" fill="none" strokeWidth="0" viewBox="0 0 24 24" height="27px" width="27px" xmlns="http://www.w3.org/2000/svg"><path d="M3 21V3H5V21H3Z" fill="currentColor"></path><path fillRule="evenodd" clipRule="evenodd" d="M7 3H17V21H7V3ZM9 5V19H15V5H9Z" fill="currentColor"></path><path d="M19 3V21H21V3H19Z" fill="currentColor"></path></svg>
-                        : <svg stroke="currentColor" fill="none" strokeWidth="0" viewBox="0 0 24 24" height="27px" width="27px" xmlns="http://www.w3.org/2000/svg"><path d="M12.552 8C11.9997 8 11.552 8.44772 11.552 9C11.552 9.55228 11.9997 10 12.552 10H16.552C17.1043 10 17.552 9.55228 17.552 9C17.552 8.44772 17.1043 8 16.552 8H12.552Z" fill="currentColor" fillOpacity="0.5"></path><path d="M12.552 17C11.9997 17 11.552 17.4477 11.552 18C11.552 18.5523 11.9997 19 12.552 19H16.552C17.1043 19 17.552 18.5523 17.552 18C17.552 17.4477 17.1043 17 16.552 17H12.552Z" fill="currentColor" fillOpacity="0.5"></path><path d="M12.552 5C11.9997 5 11.552 5.44772 11.552 6C11.552 6.55228 11.9997 7 12.552 7H20.552C21.1043 7 21.552 6.55228 21.552 6C21.552 5.44772 21.1043 5 20.552 5H12.552Z" fill="currentColor" fillOpacity="0.8"></path><path d="M12.552 14C11.9997 14 11.552 14.4477 11.552 15C11.552 15.5523 11.9997 16 12.552 16H20.552C21.1043 16 21.552 15.5523 21.552 15C21.552 14.4477 21.1043 14 20.552 14H12.552Z" fill="currentColor" fillOpacity="0.8"></path><path d="M3.448 4.00208C2.89571 4.00208 2.448 4.44979 2.448 5.00208V10.0021C2.448 10.5544 2.89571 11.0021 3.448 11.0021H8.448C9.00028 11.0021 9.448 10.5544 9.448 10.0021V5.00208C9.448 4.44979 9.00028 4.00208 8.448 4.00208H3.448Z" fill="currentColor"></path><path d="M3.448 12.9979C2.89571 12.9979 2.448 13.4456 2.448 13.9979V18.9979C2.448 19.5502 2.89571 19.9979 3.448 19.9979H8.448C9.00028 19.9979 9.448 19.5502 9.448 18.9979V13.9979C9.448 13.4456 9.00028 12.9979 8.448 12.9979H3.448Z" fill="currentColor"></path></svg>
+                <div style={{ display: 'flex', flexDirection: 'row', marginRight: '18px'}}>
+                  <Button onClick={() => this.switchStyle('neon')}>
+                      <Primary>
+                      { this.state.neonstyle === true || this.state.neonstyle === null ? <svg style={{borderRadius:'30px'}} stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1.5em" width="1.5em" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M3 3l18 18"></path><path d="M16 12a4 4 0 0 0 -4 -4m-2.834 1.177a4 4 0 0 0 5.66 5.654"></path><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7"></path></svg>
+                      : <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1.5em" width="1.5em" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7"></path></svg>
                       }
-                    </Primary>
-                </Button>
-               </div>
+                      </Primary>
+                  </Button>&nbsp;
+                  <Button onClick={this.switchStyle}>
+                      <Primary>
+                        {this.state.feedstyle === 'post' ? <svg stroke="currentColor" fill="none" strokeWidth="0" viewBox="0 0 24 24" height="27px" width="27px" xmlns="http://www.w3.org/2000/svg"><path d="M3 21V3H5V21H3Z" fill="currentColor"></path><path fillRule="evenodd" clipRule="evenodd" d="M7 3H17V21H7V3ZM9 5V19H15V5H9Z" fill="currentColor"></path><path d="M19 3V21H21V3H19Z" fill="currentColor"></path></svg>
+                          : <svg stroke="currentColor" fill="none" strokeWidth="0" viewBox="0 0 24 24" height="27px" width="27px" xmlns="http://www.w3.org/2000/svg"><path d="M12.552 8C11.9997 8 11.552 8.44772 11.552 9C11.552 9.55228 11.9997 10 12.552 10H16.552C17.1043 10 17.552 9.55228 17.552 9C17.552 8.44772 17.1043 8 16.552 8H12.552Z" fill="currentColor" fillOpacity="0.5"></path><path d="M12.552 17C11.9997 17 11.552 17.4477 11.552 18C11.552 18.5523 11.9997 19 12.552 19H16.552C17.1043 19 17.552 18.5523 17.552 18C17.552 17.4477 17.1043 17 16.552 17H12.552Z" fill="currentColor" fillOpacity="0.5"></path><path d="M12.552 5C11.9997 5 11.552 5.44772 11.552 6C11.552 6.55228 11.9997 7 12.552 7H20.552C21.1043 7 21.552 6.55228 21.552 6C21.552 5.44772 21.1043 5 20.552 5H12.552Z" fill="currentColor" fillOpacity="0.8"></path><path d="M12.552 14C11.9997 14 11.552 14.4477 11.552 15C11.552 15.5523 11.9997 16 12.552 16H20.552C21.1043 16 21.552 15.5523 21.552 15C21.552 14.4477 21.1043 14 20.552 14H12.552Z" fill="currentColor" fillOpacity="0.8"></path><path d="M3.448 4.00208C2.89571 4.00208 2.448 4.44979 2.448 5.00208V10.0021C2.448 10.5544 2.89571 11.0021 3.448 11.0021H8.448C9.00028 11.0021 9.448 10.5544 9.448 10.0021V5.00208C9.448 4.44979 9.00028 4.00208 8.448 4.00208H3.448Z" fill="currentColor"></path><path d="M3.448 12.9979C2.89571 12.9979 2.448 13.4456 2.448 13.9979V18.9979C2.448 19.5502 2.89571 19.9979 3.448 19.9979H8.448C9.00028 19.9979 9.448 19.5502 9.448 18.9979V13.9979C9.448 13.4456 9.00028 12.9979 8.448 12.9979H3.448Z" fill="currentColor"></path></svg>
+                        }
+                      </Primary>
+                  </Button>
+                </div>
               </div>
+     
             {
               <div style={{ marginTop: '15px' }}>
                 {this.state.tags.map((e,i) => <div key={i} className='tag' href='#'
-                   style= {{boxShadow: "0 0 9px #fff, 0 0 6px var(--text-color)",
+                   style= {{boxShadow: 'var(--box-shadow)',
                     textDecoration: e.value === this.state.select ? 'underline' : ''}} onClick={() => {
                   this.update(e.value, true)
                 }}>{e.value}</div>)}
