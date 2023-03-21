@@ -36,9 +36,9 @@ const MeshContextProvider = ({ children }) => {
         console.log('closed connection with', conn.peer)
       }
     
-    const onStream = ({s,a}) => {
-        setMedia(media => a !== alias ? [...media, {stream: s,alias: a}]
-            : [{stream: s,alias: a}, ...media])
+    const onStream = ({s,a,t}) => {
+        setMedia(media => a !== alias ? [...media, {stream: s,alias: a, type: t}]
+            : [{stream: s,alias: a, type: t}, ...media])
       }
 
     const onIncoming = () => {

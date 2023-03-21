@@ -209,7 +209,7 @@ span[data-tooltip].right {
     transform: translate(-88px, 27px);
   }
   &:after {
-    transform: translate(-99px);
+    // transform: translate(-99px);
     transform: rotate(270deg);
   }
 
@@ -274,15 +274,28 @@ span[data-tooltip][data-position='top']:after {
   margin-bottom: 4px;
 }
 
-span[data-tooltip][data-position='right']:before {
+span[data-tooltip][data-position='audio']:before {
   bottom: 30px;
   left: -30px; 
 }
 
-span[data-tooltip][data-position='right']:after {
+span[data-tooltip][data-position='audio']:after {
   border-top-color: var(--text-color);
   border-bottom: none;
   left:  -11px;
+  bottom: 13px; 
+  // margin-bottom: 14px;
+}
+
+span[data-tooltip][data-position='screen']:before {
+  bottom: 30px;
+  left: -39px; 
+}
+
+span[data-tooltip][data-position='screen']:after {
+  border-top-color: var(--text-color);
+  border-bottom: none;
+  left:  -12px;
   bottom: 13px; 
   // margin-bottom: 14px;
 }
