@@ -20,6 +20,8 @@ import ReactPlayer from 'react-player'
 import styles from './styles.module.scss'
 import Select  from '../../components/objkt-select'
 
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
 const pattern = new RegExp('^(https?://)?'+ // protocol
 '((([a-z\\d]([a-z\\d-]*[a-z\\d])?)\\.)+[a-z]{2,}|'+ // domain name
 '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
@@ -604,7 +606,7 @@ return (
         <div className={styles.media}>
         {((dimension && dimension===alias) || invitations.includes(alias)) && 
           <div className={styles.icons}>
-             {!audioStream && <Button onClick={() => setScreenStream(screenStream => !screenStream)}>
+             {!audioStream && !isMobile && <Button onClick={() => setScreenStream(screenStream => !screenStream)}>
              <span
                     className={styles.right}
                     data-position={'screen'}
