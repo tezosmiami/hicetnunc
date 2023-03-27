@@ -9,10 +9,12 @@ import { TezosToolkit, OpKind, MichelCodecPacker } from '@taquito/taquito'
 import { MichelsonMap } from '@taquito/taquito'
 import { packData } from '../components/collab/functions'
 import { setItem } from '../utils/storage'
-import { KeyStoreUtils } from 'conseiljs-softsigner'
-import { PermissionScope } from '@airgap/beacon-sdk'
-import { UnitValue } from '@taquito/michelson-encoder'
-import { contentType } from 'mime-types';
+// import { Parser, Expr } from "@taquito/michel-codec";
+// import { Schema } from "@taquito/michelson-encoder";
+// import { KeyStoreUtils } from 'conseiljs-softsigner'
+// import { PermissionScope } from '@airgap/beacon-sdk'
+// import { UnitValue } from '@taquito/michelson-encoder'
+// import { contentType } from 'mime-types';
 import { BURN_ADDRESS } from '../constants'
 
 
@@ -20,13 +22,6 @@ const { NetworkType } = require('@airgap/beacon-sdk')
 var ls = require('local-storage')
 const axios = require('axios')
 const eztz = require('eztz-lib')
-
-// import { Parser, Expr } from "@taquito/michel-codec";
-// import { Schema } from "@taquito/michelson-encoder";
-// import { KeyStoreUtils } from 'conseiljs-softsigner'
-// import { PermissionScope } from '@airgap/beacon-sdk'
-// import { UnitValue } from '@taquito/michelson-encoder'
-// import { contentType } from 'mime-types';
 
 export const HicetnuncContext = createContext()
 
@@ -268,9 +263,9 @@ class HicetnuncContextProviderClass extends Component {
           theme === 'green' ? colors.orange :
           theme === 'orange' ? colors. charcol :
           theme === 'charcol' ? colors.black :
-          theme === 'black' ? colors.pink :
-          theme === 'pink' ? colors.white :
-          theme === 'white' ? colors.blue :
+          theme === 'black' ? colors.white :
+          theme === 'pink' ? colors.blue :
+          theme === 'white' ? colors.pink :
           'green'
         )
   

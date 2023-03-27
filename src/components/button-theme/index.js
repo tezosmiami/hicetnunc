@@ -14,9 +14,9 @@ export const ButtonTheme = () => {
                          context.theme === 'green' ? 'orange' : 
                          context.theme === 'orange' ? 'charcol' :
                          context.theme === 'charcol' ? 'black' :
-                         context.theme === 'black' ? 'pink' : 
-                         context.theme === 'pink' ? 'white' :
-                         context.theme === 'white' ? 'blue' :
+                         context.theme === 'black' ? 'white' : 
+                         context.theme === 'white' ? 'pink' :
+                         context.theme === 'pink' ? 'blue' :
                          context.theme, true )
       }}
     />
