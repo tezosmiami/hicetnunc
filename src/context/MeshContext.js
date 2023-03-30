@@ -48,6 +48,7 @@ const MeshContextProvider = ({ children }) => {
                     if (data.type === 'new') {setOnline(online => !online.find(o => o.id === data.id) ? [{alias:data.alias, id: o.conn.peer, dimension: data.dimension, conn:o.conn}, ...online] : online)}
                     if (data.type === 'dimension') {setOnline(online => online.map(o=> o.id === data.id ? {...o, dimension: data.dimension} : o))} 
                     if (data.invite || data.message) {
+                        data.dimension === 'lobby' && setLobby((messages) => [...messages, data])
                         const favicon = document.getElementById("favicon")
                         favicon.href = '/message.ico'
                         }
@@ -74,6 +75,7 @@ const MeshContextProvider = ({ children }) => {
                     if (alias === dimension && dimension === data.dimension && session.length > 0) conn.send({ type: 'session', alias: alias, id: peer.current.id, dimension: dimension, session: session})} 
                 if (data.session) setSession(data.session)
                 if (data.invite || data.message) {
+                    data.dimension === 'lobby' && setLobby((messages) => [...messages, data])
                     const favicon = document.getElementById("favicon")
                     favicon.href = '/message.ico'
                 }

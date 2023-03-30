@@ -354,7 +354,7 @@ useEffect(() => {
         }
      }
   updateConn()
-  }, [meshed, online, dimension, channel, audioStream, screenStream, media, calls]);
+  }, [meshed, online, dimension, alias === dimension && session, channel, audioStream, screenStream, media, calls]);
 
 useEffect(() => {
     if (audioStream) {
