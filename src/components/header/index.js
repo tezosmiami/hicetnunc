@@ -203,9 +203,14 @@ export const Header = () => {
                         <Primary>galleries</Primary>
                       </Button>
                     </li>
-                    <li>
+                    {/* <li>
                       <Button onClick={() => handleRoute('/sync', 'friends')}>
-                        <Primary>friends</Primary>
+                        <Primary>gaming</Primary>
+                      </Button>
+                    </li> */}
+                    <li>
+                      <Button onClick={() => handleRoute('/gaming')}>
+                        <Primary>gaming</Primary>
                       </Button>
                     </li>
                     <li href="henradio.xyz">

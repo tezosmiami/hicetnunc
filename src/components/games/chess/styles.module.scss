@@ -1,0 +1,17 @@
+@import '../../../styles/variables.scss';
+@import '../../../styles/layout.scss';
+
+.board {
+    width: 70vw;
+    max-width: 70vh;
+    margin: 3rem auto;
+}
+
+.button{
+  margin-top: 27px;
+  height: 33px;
+  font-size: 18px; 
+  box-shadow: var(--box-shadow);
+  color: var(--text-color);
+  background-color: var(--background-color);
+}

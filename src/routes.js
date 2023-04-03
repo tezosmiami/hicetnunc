@@ -13,6 +13,7 @@ import { Config } from './pages/config'
 import { Search } from './pages/search'
 import { Tags } from './pages/tags'
 import { Friends } from './pages/friends'
+import { Gaming } from './pages/gaming'
 
 
 export const routes = [
@@ -36,10 +37,15 @@ export const routes = [
     path: '/latest',
     component: Latest,
   },
+  // {
+  //   exact: false,
+  //   path: '/friends/:id',
+  //   component: Friends,
+  // },
   {
     exact: false,
-    path: '/friends/:id',
-    component: Friends,
+    path: '/gaming',
+    component: Gaming,
   },
   {
     exact: false,
