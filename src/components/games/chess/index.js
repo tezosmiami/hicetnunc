@@ -13,7 +13,7 @@ export const Ch3ss = () => {
     const [black, setBlack] = useState()
     const [white, setWhite] = useState()
     const [turn, setTurn] = useState('white')
-    const [neon, setNeon] = useState(getItem('neonstyle'))
+    const [neon, setNeon] = useState(getItem('neonstyle') || null)
 
     const onDrop = async (source, target) => { 
         const move = chess.move({
@@ -55,9 +55,9 @@ export const Ch3ss = () => {
     }, [black])
 
     useEffect(() => {
-        window.addEventListener("neon", setNeon(getItem('neonstyle')))
+        window.addEventListener("neon", () => setNeon(getItem('neonstyle')))
         return () => {
-            window.removeEventListener("neon", setNeon(getItem('neonstyle')))
+            window.removeEventListener("neon", () => setNeon(getItem('neonstyle')))
         }
     }, [])
     
@@ -77,7 +77,6 @@ export const Ch3ss = () => {
     //     console.log(chess)
     //     setTurn(chess.turn() === 'b' ? 'black' : 'white')
     // }
-
     return (
         // <div style={{whiteSpace: 'pre-wrap',}}> {chess.ascii()}</div></>
         <>

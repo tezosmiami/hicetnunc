@@ -39,7 +39,7 @@ const HashToURL = (hash, type) => {
       return undefined
     }
     case 'DWEB':
-      return hash.replace('ipfs://', 'http://dweb.link/ipfs/')
+      return hash.replace('ipfs://', 'https://dweb.link/ipfs/')
     default:
       console.error('please specify type')
       return hash
