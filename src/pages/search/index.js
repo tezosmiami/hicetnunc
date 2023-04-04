@@ -8,6 +8,7 @@ import { Input } from '../../components/input'
 import { FeedItem } from '../../components/feed-item'
 import { getItem, setItem } from '../../utils/storage'
 import { ObjktPost } from '../../components/objkt-post'
+import { NeonSwitch } from '../../components/neon-switch'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import './style.css'
 
@@ -752,8 +753,8 @@ export class Search extends Component {
     subjkt: [],
     items: [],
     feed: [],
-    feedstyle: getItem('feedstyle') ||  'post',
-    neonstyle: getItem('neonstyle' || true),
+    feedstyle: getItem('feedstyle') || 'post',
+    neonstyle: getItem('neonstyle') || null,
     search: '',
     select: '',
     prev: '',
@@ -789,6 +790,7 @@ export class Search extends Component {
   }
 
   componentWillMount = async () => {
+    window.addEventListener('neon', () => this.setState({neonstyle: getItem('neonstyle')}))
     // let arr = await getRestrictedAddresses()
     // this.setState({ select: 'new OBJKTs' })
     // let res1 = await fetchTag(( 'teztrash'), 9999999)
@@ -810,6 +812,10 @@ export class Search extends Component {
     // tokens = tokens.filter(e => !arr.includes(e.creator_id))
     // this.setState({ feed: _.uniqBy(_.uniqBy([...this.state.feed, ...tokens], 'id'), 'creator_id') })
     this.update(getItem('mainfeed') ||  'new OBJKTs', true)
+  }
+
+  componentWillUnmount = () => {
+    window.removeEventListener('neon', () => this.setState({neonstyle: getItem('neonstyle')}))
   }
 
   handleChange = (e) => {
@@ -1011,7 +1017,6 @@ export class Search extends Component {
   //   this.setState({ feed: [...result], flag: true })
   // }
 
-
   search = async (e) => {
     this.setState({ items: [], feed: [], search: e })
     this.setState({ subjkt: await fetchSubjkts(this.state.search) })
@@ -1036,31 +1041,13 @@ export class Search extends Component {
     if (e.key === 'Enter') this.search(this.state.search)
   }
   
-  switchStyle = (type) => {
-    if (type === 'neon') {
-      if (this.state.neonstyle === false) {
-        setItem('neonstyle', true)
-        document.documentElement.style.setProperty(
-          '--text-shadow', '0 0 9px #fff, 0 0 9px var(--text-color)')
-        document.documentElement.style.setProperty(
-          '--box-shadow', '0 0 6px #fff, 0 0 6px var(--text-color)')
-        document.documentElement.style.setProperty('--drop-shadow', '0 0 3px #fff')
-        this.setState({ neonstyle: true }) 
+  switchStyle = () => {
+      if (this.state.feedstyle === 'original') {
+        setItem('feedstyle', 'post')
+        this.setState({ feedstyle: 'post' })    
       } else {
-          setItem('neonstyle', false) 
-          this.setState({ neonstyle: false })
-          document.documentElement.style.setProperty('--text-shadow', 'none')
-          document.documentElement.style.setProperty('--box-shadow', 'none')
-          document.documentElement.style.setProperty('--drop-shadow', 'none')
-        }
-    } else {
-        if (this.state.feedstyle === 'original') {
-          setItem('feedstyle', 'post')
-          this.setState({ feedstyle: 'post' })    
-        } else {
-          setItem('feedstyle', 'original') 
-          this.setState({ feedstyle: 'original' })
-        }
+        setItem('feedstyle', 'original') 
+        this.setState({ feedstyle: 'original' })
       }
     }
 
@@ -1079,13 +1066,7 @@ export class Search extends Component {
                   onKeyPress={this.handleKey}
                 />
                 <div style={{ display: 'flex', flexDirection: 'row', marginRight: '18px'}}>
-                  <Button onClick={() => this.switchStyle('neon')}>
-                      <Primary>
-                      { this.state.neonstyle === true || this.state.neonstyle === null ? <svg style={{borderRadius:'30px'}} stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1.5em" width="1.5em" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M3 3l18 18"></path><path d="M16 12a4 4 0 0 0 -4 -4m-2.834 1.177a4 4 0 0 0 5.66 5.654"></path><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7"></path></svg>
-                      : <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1.5em" width="1.5em" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7"></path></svg>
-                      }
-                      </Primary>
-                  </Button>&nbsp;
+                  <NeonSwitch /> &nbsp;
                   <Button onClick={this.switchStyle}>
                       <Primary>
                         {this.state.feedstyle === 'post' ? <svg stroke="currentColor" fill="none" strokeWidth="0" viewBox="0 0 24 24" height="27px" width="27px" xmlns="http://www.w3.org/2000/svg"><path d="M3 21V3H5V21H3Z" fill="currentColor"></path><path fillRule="evenodd" clipRule="evenodd" d="M7 3H17V21H7V3ZM9 5V19H15V5H9Z" fill="currentColor"></path><path d="M19 3V21H21V3H19Z" fill="currentColor"></path></svg>
@@ -1100,7 +1081,7 @@ export class Search extends Component {
               <div style={{ marginTop: '15px' }}>
                 {this.state.tags.map((e,i) => <div key={i} className='tag' href='#'
                    style= {{boxShadow: e.value === this.state.select && 'var(--box-shadow)', 
-                    textDecoration: e.value === this.state.select && !this.state.neonstyle? 'underline' : ''}} onClick={() => {
+                    textDecoration: e.value === this.state.select && (this.state.neonstyle === false || this.state.neonstyle === null) ? 'underline' : ''}} onClick={() => {
                   this.update(e.value, true)
                 }}>{e.value}</div>)}
               </div>

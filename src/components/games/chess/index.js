@@ -55,13 +55,10 @@ export const Ch3ss = () => {
     }, [black])
 
     useEffect(() => {
-        const update = (e) => {
-            setNeon(getItem('neonstyle'))
-        }
-        window.addEventListener("neon", update);
+        window.addEventListener("neon", setNeon(getItem('neonstyle')))
         return () => {
-            window.removeEventListener("neon", update);
-        };
+            window.removeEventListener("neon", setNeon(getItem('neonstyle')))
+        }
     }, [])
     
     
@@ -92,7 +89,7 @@ export const Ch3ss = () => {
                 customDarkSquareStyle={{ backgroundColor: "var(--text-color)" }}
                 customLightSquareStyle={{ backgroundColor: "var(--background-color)" }}
                 customBoardStyle={{
-                    boxShadow: '0 0 1px var(--text-color)',
+                    boxShadow: '0 0 2px var(--text-color)',
                   }}
             />
             <div style={{display: 'flex', width: '100%', justifyContent: 'center'}}>

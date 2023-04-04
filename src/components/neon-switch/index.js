@@ -4,7 +4,6 @@ import { getItem, setItem } from '../../utils/storage'
 
 
 export const NeonSwitch = () => {
-
     const [neon, setNeon] = useState(getItem('neonstyle'))
     const switchNeon = () => {
       if (neon === false) {
