@@ -1,17 +1,9 @@
 @import '../../styles/variables.scss';
 @import '../../styles/layout.scss';
 
-.board {
-    width: 70vw;
-    max-width: 70vh;
-    margin: 3rem auto;
-}
-
-.chessbutton{
-  margin-top: 27px;
-  height: 33px;
-  font-size: 18px; 
-  box-shadow: var(--box-shadow);
-  color: var(--text-color);
-  background-color: var(--background-color);
+.neon {
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 27px;
+  height: 0px;
 }

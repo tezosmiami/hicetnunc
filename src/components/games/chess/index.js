@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import { Chess } from 'chess.js'
 import { Chessboard } from 'react-chessboard'
 import styles from './styles.module.scss'
+import { getItem } from '../../../utils/storage'
 
 
 const sf = new Worker('/stockfish/stockfish.js'); 
@@ -12,16 +13,15 @@ export const Ch3ss = () => {
     const [black, setBlack] = useState()
     const [white, setWhite] = useState()
     const [turn, setTurn] = useState('white')
-
+    const [neon, setNeon] = useState(getItem('neonstyle'))
 
     const onDrop = async (source, target) => { 
-        const move = await chess.move({
+        const move = chess.move({
             from: source,
             to: target,
             promotion: "q", 
         });
-        console.log('hi',move)
-        if (move === null) return console.log('false')
+        if (move === null) return false
         setTurn('black')
         return true;
     }
@@ -54,6 +54,17 @@ export const Ch3ss = () => {
         }
     }, [black])
 
+    useEffect(() => {
+        const update = (e) => {
+            setNeon(getItem('neonstyle'))
+        }
+        window.addEventListener("neon", update);
+        return () => {
+            window.removeEventListener("neon", update);
+        };
+    }, [])
+    
+    
     const ai = (fen) => {
         sf.postMessage(`position fen ${fen}`)
         sf.postMessage(`go depth ${level}`)
@@ -73,16 +84,19 @@ export const Ch3ss = () => {
     return (
         // <div style={{whiteSpace: 'pre-wrap',}}> {chess.ascii()}</div></>
         <>
-        <div className={styles.board}>
+        <div className={neon ? styles.board : `${styles.board} ${styles.border}`}>
             <Chessboard
                 id="hicetnunc"
                 position={chess.fen()}
                 onPieceDrop={onDrop}
                 customDarkSquareStyle={{ backgroundColor: "var(--text-color)" }}
                 customLightSquareStyle={{ backgroundColor: "var(--background-color)" }}
+                customBoardStyle={{
+                    boxShadow: '0 0 1px var(--text-color)',
+                  }}
             />
             <div style={{display: 'flex', width: '100%', justifyContent: 'center'}}>
-                <button className={styles.button} onClick={reset} >Reset</button>
+                <button className={styles.button} onClick={reset}>reset</button>
             {/* <button className={styles.chessbutton} onClick={undo} >Undo</button> */}
             </div>
         </div>

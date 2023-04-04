@@ -2,9 +2,15 @@
 @import '../../../styles/layout.scss';
 
 .board {
-    width: 70vw;
-    max-width: 70vh;
+    width: 72vw;
+    max-width: 72vh;
     margin: 3rem auto;
+}
+
+.border{
+  svg{
+    filter: drop-shadow(0 0 .5px #fff);
+  }
 }
 
 .button{
@@ -15,3 +21,4 @@
   color: var(--text-color);
   background-color: var(--background-color);
 }
+
