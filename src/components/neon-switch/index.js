@@ -16,10 +16,10 @@ export const NeonSwitch = () => {
         setNeon(true) 
       } else {
           setItem('neonstyle', false) 
-          setNeon(false)
           document.documentElement.style.setProperty('--text-shadow', 'none')
           document.documentElement.style.setProperty('--box-shadow', 'none')
           document.documentElement.style.setProperty('--drop-shadow', 'none')
+          setNeon(false)
       }
       window.dispatchEvent(new Event("neon"))
     } 

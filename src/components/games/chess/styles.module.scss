@@ -9,7 +9,9 @@
 
 .border{
   svg{
-    filter: drop-shadow(0 0 .5px #fff);
+    -webkit-filter: drop-shadow(0 0 1px #fff);
+    filter: drop-shadow(0 0 1px #fff);
+    transform: translateZ(0);
   }
 }
 
