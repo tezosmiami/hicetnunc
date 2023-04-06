@@ -7,3 +7,52 @@
   margin-right: 27px;
   height: auto;
 }
+
+.online{
+    width: 100vw;
+    height: 38px;
+    display: flex;
+    margin-top: -30px;
+    justify-content: space-between;
+    padding-right: 100px;
+    border-bottom: 1px solid var(--text-color);
+    margin-bottom: 18px;
+    overflow-x: auto;
+    overflow-y: visible;
+    box-shadow: var(--box-shadow);
+    -ms-overflow-style: none; 
+    scrollbar-width: none; 
+} 
+
+.online::-webkit-scrollbar {
+  display: none;
+}
+
+
+span[data-tooltip][data-position='invite']:before {
+ right: 5px;
+ position:relative;
+}
+
+span[data-tooltip][data-position='invite']:after {
+  border-top-color: var(--text-color);
+  border-bottom: none;
+  left: 52px;
+  top: 8px;
+}
+
+span[data-tooltip].invite {
+  margin-left: 12px;
+  &:after {
+    transform: rotate(270deg);
+  }
+
+  &:hover:before{
+   
+    transform: translate(-52px, 3px);
+  }
+  &:hover:after{
+    transform: rotate(270deg);
+  
+  }
+}
