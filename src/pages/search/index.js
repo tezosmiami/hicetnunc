@@ -1050,10 +1050,16 @@ export class Search extends Component {
         this.setState({ feedstyle: 'original' })
       }
     }
-
+   
   render() {
     return (
       <Page>
+         {this.state.feed.length < 1  
+          && <div className='info'>
+              indexer down -&nbsp;
+              <Button  to='/gaming'>play chess? </Button> 
+            </div>
+          }
         <Container>
           <Padding>
               <div style={{display: 'flex', flexDirection: 'row'}}>
