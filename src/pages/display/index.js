@@ -695,6 +695,11 @@ export default class Display extends Component {
   render() {
     return (
       <Page title={this.state.alias}>
+          {<div className='info'>
+              indexer down -&nbsp;
+              <Button to='/gaming'>play chess? </Button> 
+            </div>
+          }
         <Container>
           <Padding>
             <div className={styles.profile}>

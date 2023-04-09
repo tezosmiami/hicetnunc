@@ -391,6 +391,12 @@ export const Mint = () => {
 
   return (
     <Page title="mint" large>
+        {this.state.feed.length < 1  
+          && <div className='info'>
+              indexer down -&nbsp;
+              <Button to='/gaming'>play chess? </Button> 
+            </div>
+          }
       {step === 0 && (
         <>
 
