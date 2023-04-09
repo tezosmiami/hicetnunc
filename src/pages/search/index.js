@@ -1057,7 +1057,7 @@ export class Search extends Component {
          {this.state.feed.length < 1  
           && <div className='info'>
               indexer down -&nbsp;
-              <Button  to='/gaming'>play chess? </Button> 
+              <Button to='/gaming'>play chess? </Button> 
             </div>
           }
         <Container>

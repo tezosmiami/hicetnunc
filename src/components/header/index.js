@@ -67,6 +67,7 @@ export const Header = () => {
   const handleRoute = (path, data) => {
     context.setMenu(true)
     history.push(path, data)
+    history.go(0)
   }
 
 
@@ -209,7 +210,7 @@ export const Header = () => {
                       </Button>
                     </li> */}
                     <li>
-                      <Button onClick={() => {handleRoute('/gaming'); window.location.reload()}}>
+                      <Button onClick={() => {handleRoute('/gaming')}}>
                         <Primary>gaming</Primary>
                       </Button>
                     </li>
