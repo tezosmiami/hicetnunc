@@ -185,7 +185,8 @@ export const Header = () => {
                       </Button>
                     </li> */}
                     <li>
-                      <Button onClick={() => handleRoute('/sync', 'tz')}>
+                      {/* <Button onClick={() => handleRoute('/sync', 'tz')}> */}
+                      <Button onClick={() => handleRoute('tz')}>
                         <Primary>manage assets</Primary>
                       </Button>
                     </li>
