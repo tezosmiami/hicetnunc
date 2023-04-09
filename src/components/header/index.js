@@ -209,7 +209,7 @@ export const Header = () => {
                       </Button>
                     </li> */}
                     <li>
-                      <Button onClick={() => handleRoute('/gaming')}>
+                      <Button onClick={() => {handleRoute('/gaming'); window.location.reload()}}>
                         <Primary>gaming</Primary>
                       </Button>
                     </li>
