@@ -390,7 +390,8 @@ export const Mint = () => {
   const flexBetween = classNames(collabStyles.flex, collabStyles.flexBetween)
 
   return (
-    <Page title="mint" large>
+    // <Page title="mint" large>
+      <Page title="mint">
         {<div className='info'>
               indexer down -&nbsp;
               <Button to='/gaming'>play chess? </Button> 
