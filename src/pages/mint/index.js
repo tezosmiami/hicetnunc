@@ -391,11 +391,6 @@ export const Mint = () => {
 
   return (
     <Page title="mint" large>
-        {<div className='info'>
-              indexer down -&nbsp;
-              <Button to='/gaming'>play chess? </Button> 
-            </div>
-          }
       {step === 0 && (
         <>
 

@@ -205,11 +205,6 @@ export const ObjktDisplay = () => {
   const Tab = TABS[tabIndex].component
   return (
     <Page title={nft?.title}>
-        {<div className='info'>
-              indexer down -&nbsp;
-              <Button to='/gaming'>play chess? </Button> 
-            </div>
-          }
       {loading && (
         <Container>
           <Padding>

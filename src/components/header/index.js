@@ -67,7 +67,6 @@ export const Header = () => {
   const handleRoute = (path, data) => {
     context.setMenu(true)
     history.push(path, data)
-    history.go(0)
   }
 
 
@@ -210,12 +209,12 @@ export const Header = () => {
                       </Button>
                     </li> */}
                     <li>
-                      <Button onClick={() => {handleRoute('/gaming')}}>
+                      <Button onClick={() => handleRoute('/gaming')}>
                         <Primary>gaming</Primary>
                       </Button>
                     </li>
                     <li href="henradio.xyz">
-                      <Button onClick={() => window.open('https://henradio.xyz', '_self', 'noopener,noreferrer')}>
+                      <Button onClick={() => window.open('https://henradio.xyz', '_blank', 'noopener,noreferrer')}>
                         <Primary>radio</Primary>
                       </Button>
                     </li>
