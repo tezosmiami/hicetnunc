@@ -117,7 +117,7 @@ export const Live = () => {
   const scrollTarget = useRef(null)
   const history = useHistory()
 
-  const {peer, alias, dimension, setDimension, media, setMedia, online, setOnline, meshed, setMeshed, lobby, setLobby, session, setSession, calls, setCalls, onClose, onStream} =  useMeshContext()
+  const {peer, alias, dimension, setDimension, media, setMedia, online, setOnline, meshed, setMeshed, lobby, setLobby, session, setSession, calls, setCalls, onClose, onStream, onDimension} =  useMeshContext()
 
   const onMedia = (id) => {
       const call = peer.current.call(id, media.find(m=> m.alias === alias).stream, {metadata: {alias:alias, dimension: dimension, invites:invitations, mediaType:screenStream ? 'screenstream' : 'audiostream'}})  
@@ -169,14 +169,24 @@ export const Live = () => {
   const onIncoming = () => {
     peer.current.off('connection')
     peer.current.on('connection', (conn) => {
-     
       conn.on('open', () => {
         if ((audioStream || screenStream) && conn.metadata.dimension === dimension) {
           onMedia(conn.peer)
         }
         console.log('connected with', conn.peer)
-        conn.send({ type: 'new', alias: alias, dimension: dimension, id: peer.current.id, lobby: lobby, session: alias === dimension ? session : '' })
-        !online.find(o => o.id === conn.peer) && setOnline(online => [{alias: conn.metadata.alias, id: conn.peer, dimension: conn.metadata.dimension, conn: conn}, ...online])
+        conn.send({ type: 'new',
+                    alias: alias,
+                    dimension: dimension,
+                    id: peer.current.id,
+                    lobby: lobby,
+                    session: alias === dimension
+                     ? session : '' })
+        !online.find(o => o.id === conn.peer)
+         && setOnline(online => [{
+          alias: conn.metadata.alias,
+          id: conn.peer,
+          dimension: conn.metadata.dimension,
+          conn: conn}, ...online ])
         onData(conn)
         conn.on('error', (e) => {
           console.log('error: ', e)
@@ -198,13 +208,22 @@ const onData = (conn) => {
     if (data.objktId && data.objktId > 0) {data.metadata = await fetchObjkt(data.objktId)}
     if (data.type === 'new') {
       setOnline(online => !online.find(o => o.id === data.id) ?
-      [{alias:data.alias, id: conn.peer, dimension: data.dimension, conn:conn}, ...online]
+      [{alias:data.alias,
+        id: conn.peer,
+        dimension: data.dimension,
+        conn:conn} , 
+         ...online]
       : online)
       data.lobby && setLobby(data.lobby)
       if (audioStream || screenStream) {
         if (data.dimension === dimension && !calls.find(c=> c.peer === conn.peer)){
           const call = peer.current.call(data.id, media.find(m=> m.alias === alias).stream,
-            {metadata: {alias:alias, dimension: dimension, invites:invitations, mediaType: screenStream ? 'screenstream' : 'audiostream'}})  
+            {metadata: {
+              alias:alias,
+              dimension: dimension,
+              invites:invitations,
+              mediaType: screenStream
+              ? 'screenstream' : 'audiostream'}})  
           call.peerConnection.oniceconnectionstatechange = () => {
             if(call.peerConnection.iceConnectionState === 'disconnected') {
                 setCalls(calls => calls.filter(c => c.peer !== call.peer))
@@ -223,12 +242,24 @@ const onData = (conn) => {
     } 
       if (data.type === 'session') setSession(data.session)
       if (data.type === 'dimension') {
-        setOnline(online => online.map(o=> o.id === data.id ?
-          {...o, dimension: data.dimension} : o))
-      if (alias === dimension && dimension === data.dimension) conn.send({ type: 'session', alias: alias, dimension: dimension, id: peer.current.id, session: session})
+        onDimension(data.id, data.dimension)
+        if (alias === dimension && dimension === data.dimension)
+          conn.send({
+              type: 'session',
+              alias: alias,
+              dimension: dimension,
+              id: peer.current.id,
+              session: session})
         if (audioStream || screenStream) {
           if (data.dimension === dimension && !calls.find(c=> c.peer === conn.peer)){
-            const call = peer.current.call(data.id, media.find(m=> m.alias===alias).stream, {metadata: {alias:alias, dimension: dimension, invites:invitations, mediaType: screenStream ? 'screenstream' : 'audiostream'}})  
+            const call = peer.current.call(data.id,
+               media.find(m=> m.alias===alias).stream,
+                {metadata: {
+                  alias:alias,
+                  dimension: dimension,
+                  invites:invitations,
+                  mediaType: screenStream 
+                  ? 'screenstream' : 'audiostream' }})  
             call.peerConnection.oniceconnectionstatechange = () => {
               if(call.peerConnection.iceConnectionState === 'disconnected') {
                   setCalls(calls => calls.filter(c=> c.peer !== call.peer))
@@ -287,21 +318,6 @@ const onKeyPress = e => {
     }
     sendObjkt()
   }, [objkt])
-
-  useEffect(() => {
-    const updateConn =  () => {
-    setDimension(channel || 'lobby')
-    if (meshed && peer.current) {
-      onCall()
-      onIncoming()
-      online.filter((o) => (o.dimension === dimension || o.dimension === 'lobby') && o.alias !== alias).map((s) =>  {
-            s.conn && s.conn.off('data')
-            onData(s.conn)
-         })
-        }
-     }
-  updateConn()
-  }, [meshed, online, dimension, channel, audioStream, screenStream, media, calls]);
 
 useEffect(() => {
     if (screenStream) {
@@ -556,6 +572,7 @@ return (
                   <span>{`* `}</span>
                 : calls.find(c => (c.metadata.alias === o.alias)) || online.find(l => l.alias === o.alias && l.dimension === 'lobby') ? 
                   <svg style={{boxShadow:'none'}} stroke="currentColor" fill="var(--text-color)" strokeWidth="0" viewBox="0 0 24 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M12 5c-3.859 0-7 3.141-7 7s3.141 7 7 7 7-3.141 7-7-3.141-7-7-7zm0 12c-2.757 0-5-2.243-5-5s2.243-5 5-5 5 2.243 5 5-2.243 5-5 5z"></path><path d="M12 9c-1.627 0-3 1.373-3 3s1.373 3 3 3 3-1.373 3-3-1.373-3-3-3z"></path></svg> 
+                : o.dimension === 'chess' ? <span style={{fontSize: '21px', verticalAlign: 'middle'}}>{'♟ '}</span>
                 : <svg style={{boxShadow:'none'}} stroke="currentColor" fill="var(--text-color)" strokeWidth="0" viewBox="0 0 24 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M5 12c0 3.859 3.14 7 7 7 3.859 0 7-3.141 7-7s-3.141-7-7-7c-3.86 0-7 3.141-7 7zm12 0c0 2.757-2.243 5-5 5s-5-2.243-5-5 2.243-5 5-5 5 2.243 5 5z"></path></svg>
                 }
                 {audioStream && (dimension === alias && o.alias !== alias) ?

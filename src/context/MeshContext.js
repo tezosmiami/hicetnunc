@@ -31,6 +31,14 @@ const MeshContextProvider = ({ children }) => {
     const { acc } = useContext(HicetnuncContext)
     const peer = useRef(null);
 
+    
+    const onDimension = (id, _dimension) => {
+        console.log(dimension)
+          setOnline(online => online.map(o=> o.id === id ?
+          {...o, dimension: _dimension}
+          : o))
+        }
+      
     const onClose = (conn) => {
         setOnline(online => online.filter(i => i.id !== conn.peer))
         console.log('closed connection with', conn.peer)
@@ -45,7 +53,15 @@ const MeshContextProvider = ({ children }) => {
         online.filter(i=>i.alias !== alias).map((o) => {
                 o.conn.off('data')
                 o.conn.on('data', async (data) => {
-                    if (data.type === 'new') {setOnline(online => !online.find(o => o.id === data.id) ? [{alias:data.alias, id: o.conn.peer, dimension: data.dimension, conn:o.conn}, ...online] : online)}
+                    if (data.type === 'new') {setOnline(online => !online.find(o => o.id === data.id) 
+                        ? [{
+                            alias:data.alias,
+                            id: o.conn.peer,
+                            dimension: data.dimension,
+                            conn:o.conn},
+                             ...online
+                        ]
+                        : online)}
                     if (data.type === 'dimension') {setOnline(online => online.map(o=> o.id === data.id ? {...o, dimension: data.dimension} : o))} 
                     if (data.invite || data.message) {
                         data.dimension === 'lobby' && setLobby((messages) => [...messages, data])
@@ -59,20 +75,41 @@ const MeshContextProvider = ({ children }) => {
         peer.current.on("connection", (conn) => {
             conn.on('open', () => {
             console.log('connected with', conn.peer)
-            conn.send({ type: 'new', alias: alias, dimension: dimension, id: peer.current.id, lobby: lobby, session: alias === dimension ? session : '' })
-            !online.find(o => o.id === conn.peer) && setOnline(online => [{alias: conn.metadata.alias, id: conn.peer, dimension: conn.metadata.dimension, conn: conn}, ...online])
+            conn.send({
+                type: 'new',
+                alias: alias,
+                dimension: dimension,
+                id: peer.current.id,
+                lobby: lobby, 
+                session: alias === dimension ? session : '' })
+            !online.find(o => o.id === conn.peer)
+                && setOnline(online => [{
+                    alias: conn.metadata.alias,
+                    id: conn.peer,
+                    dimension: conn.metadata.dimension,
+                    conn: conn}, ...online ])
+
             conn.on('data', async (data) => {
                 if (data.type === 'new') {
-                    setOnline(online => !online.find(o => o.id === data.id) ?
-                    [{alias:data.alias, id: conn.peer, dimension: data.dimension, conn:conn}, ...online]
+                    setOnline(online => !online.find(o => o.id === data.id)
+                    ? [{
+                        alias:data.alias, 
+                        id: conn.peer, 
+                        dimension: data.dimension, 
+                        conn:conn},
+                         ...online
+                    ]
                     : online)
                     data.lobby && setLobby(data.lobby)
                     }
-                if (data.type === 'dimension') {
-                    setOnline(online => online.map(o=> o.id === data.id ? 
-                    {...o, dimension: data.dimension}
-                    : o))
-                    if (alias === dimension && dimension === data.dimension && session.length > 0) conn.send({ type: 'session', alias: alias, id: peer.current.id, dimension: dimension, session: session})} 
+                if (data.type === 'dimension') onDimension(data.id, data.dimension)
+                    // if (alias === dimension && dimension === data.dimension && session.length > 0)
+                    //  conn.send({
+                    //      type: 'session',
+                    //     alias: alias,
+                    //     id: peer.current.id,
+                    //     dimension: dimension,
+                    //     session: session})} 
                 if (data.session) setSession(data.session)
                 if (data.invite || data.message) {
                     data.dimension === 'lobby' && setLobby((messages) => [...messages, data])
@@ -84,10 +121,12 @@ const MeshContextProvider = ({ children }) => {
                 console.log('error: ', e)
             })
             conn.on('close', () => {
+                console.log('closing')
                 onClose(conn)
             })
             conn.peerConnection.oniceconnectionstatechange = () => {
                 if (conn.peerConnection.iceConnectionState === 'disconnected') {
+                    console.log('closing')
                 onClose(conn)
                 }
             }
@@ -213,10 +252,12 @@ const MeshContextProvider = ({ children }) => {
                             })
                             conn.on('close', () => {
                             onClose(conn)
+                            console.log('closing')
                             })
                             conn.peerConnection.oniceconnectionstatechange = () => {
                             if(conn.peerConnection.iceConnectionState === 'disconnected') {
                                 onClose(conn)
+                                console.log('closing')
                             }
                         }
                     }, 1000)
@@ -233,7 +274,7 @@ const MeshContextProvider = ({ children }) => {
         syncMesh()
     }, [alias,meshed]);
 
-    const wrapped = {...mesh, peer, alias, meshed, setMeshed, media, setMedia, dimension, setDimension, lobby, setLobby, session, setSession, online, setOnline, calls, setCalls, onIncoming, onClose, onStream}
+    const wrapped = {...mesh, peer, alias, meshed, setMeshed, media, setMedia, dimension, setDimension, lobby, setLobby, session, setSession, online, setOnline, calls, setCalls, onIncoming, onClose, onStream, onDimension}
 
     return (
       <MeshContext.Provider value={wrapped}>
