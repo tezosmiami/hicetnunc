@@ -103,13 +103,13 @@ const MeshContextProvider = ({ children }) => {
                     data.lobby && setLobby(data.lobby)
                     }
                 if (data.type === 'dimension') onDimension(data.id, data.dimension)
-                    // if (alias === dimension && dimension === data.dimension && session.length > 0)
-                    //  conn.send({
-                    //      type: 'session',
-                    //     alias: alias,
-                    //     id: peer.current.id,
-                    //     dimension: dimension,
-                    //     session: session})} 
+                    if (alias === dimension && dimension === data.dimension && session.length > 0)
+                     conn.send({
+                         type: 'session',
+                        alias: alias,
+                        id: peer.current.id,
+                        dimension: dimension,
+                        session: session})
                 if (data.session) setSession(data.session)
                 if (data.invite || data.message) {
                     data.dimension === 'lobby' && setLobby((messages) => [...messages, data])

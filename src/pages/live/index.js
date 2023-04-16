@@ -37,7 +37,6 @@ const query_objkt = `
       display_uri
       description
       artifact_uri
-      thumbnail_uri
       title
       swaps(order_by: {price: asc}, limit: 1, where: {amount_left: {_gte: "1"}, contract_version: {_eq: "2"}, status: {_eq: "0"}}) {
         price
