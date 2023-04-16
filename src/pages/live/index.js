@@ -238,7 +238,7 @@ const onData = (conn) => {
           setCalls(calls => calls.filter(c => c.peer !== conn.peer))
         }
       } 
-      if (data.session) setSession(session)
+      if (data.session) setSession(data.session)
     } 
       if (data.type === 'session') setSession(data.session)
       if (data.type === 'dimension') {
