@@ -110,7 +110,7 @@ const MeshContextProvider = ({ children }) => {
                         id: peer.current.id,
                         dimension: dimension,
                         session: session})
-                if (data.session) setSession(data.session)
+                if (data.session && data.dimension === dimension) setSession(data.session)
                 if (data.invite || data.message) {
                     data.dimension === 'lobby' && setLobby((messages) => [...messages, data])
                     const favicon = document.getElementById("favicon")
@@ -241,7 +241,7 @@ const MeshContextProvider = ({ children }) => {
                             if (data.type === 'dimension') {setOnline(online => online.map(o=> o.id === data.id ?
                                 {...o, dimension: data.dimension}
                                 : o))} 
-                            if (data.session) setSession(data.session)
+                            if (data.session && data.dimension === dimension) setSession(data.session)
                             if (data.invite || data.message) {
                                 const favicon = document.getElementById("favicon")
                                 favicon.href = '/message.ico'
