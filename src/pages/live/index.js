@@ -453,7 +453,8 @@ const sendMessage = async (message) => {
       break
     case message.slice(0,7).toUpperCase() === '/random'.toUpperCase():
       let collection = await getCollection(acc.address); 
-      setObjkt(collection[Math.floor(Math.random() * collection.length)].token.id)
+      let random = collection[Math.floor(Math.random() * collection.length)].token.id
+      setObjkt(random)
       break
       
     case message.slice(0,6).toUpperCase() === '/tezos'.toUpperCase():
@@ -710,15 +711,15 @@ return (
                                 </div>
                               </Button>
 
-                          <div className={styles.cardText}>   
+                          {m.creator?.address && <div className={styles.cardText}>   
                             <Link
                               className={styles.text}
                               target="_blank" rel="noopener noreferrer"
-                              to={`${PATH.ISSUER}/${m.metadata.creator.address}`}>
+                              to={`${PATH.ISSUER}/${m.metadata.creator?.address}`}>
                               {m.metadata.creator.name || walletPreview(m.metadata.creator.address)}
                             </Link>
-                          </div>
-                            <div className={styles.cardCollect}>
+                          </div>}
+                            {m.metadata?.swaps && <div className={styles.cardCollect}>
                               <Button onClick={() => m.metadata.swaps[0]?.price && collect(m.metadata.swaps[0]?.id, m.metadata.swaps[0]?.price)}>
                                 <Purchase>
                                   <div className={styles.cardCollectPrice}>
@@ -726,7 +727,7 @@ return (
                                   </div>
                                 </Purchase>
                               </Button>
-                            </div>
+                            </div>}
                           </div>
                         </div>
                       </div>
