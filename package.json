@@ -9,7 +9,7 @@
     "@taquito/michelson-encoder": "^16.0.1",
     "@taquito/taquito": "^16.1.2",
     "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^11.2.7",
+    "@testing-library/react": "^12.1.5",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^0.26.1",
     "base-x": "^3.0.9",
