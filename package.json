@@ -15,7 +15,7 @@
     "base-x": "^3.0.9",
     "big-integer": "^1.6.51",
     "buffer": "^6.0.3",
-    "chess.js": "^1.0.0-beta.4",
+    "chess.js": "^1.0.0-beta.5",
     "classnames": "^2.3.2",
     "compressorjs": "^1.2.1",
     "conseiljs-softsigner": "^5.0.4-1",
