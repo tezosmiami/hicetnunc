@@ -211,7 +211,7 @@ class HicetnuncContextProviderClass extends Component {
           },
           {
             kind: OpKind.TRANSACTION,
-            ...marketplace.methods.swap(creator, parseFloat(objkt_amount), parseFloat(objkt_id), parseFloat(royalties), parseFloat(xtz_per_objkt)).toTransferParams({ amount: 0, mutez: true, storageLimit: 300 })
+            ...marketplace.methods.swap(creator, parseFloat(objkt_amount), parseFloat(objkt_id), parseFloat(royalties), parseFloat(Math.trunc(xtz_per_objkt))).toTransferParams({ amount: 0, mutez: true, storageLimit: 300 })
           },
           {
             kind: OpKind.TRANSACTION,
