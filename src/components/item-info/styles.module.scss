@@ -55,6 +55,7 @@
 }
 
 span[data-tooltip].top {
+  margin-top: 6px;
   &:before,
   &:after {
     transform: translate(-18%, 10px);
@@ -118,3 +119,12 @@ span[data-tooltip][data-position='top']:after {
   bottom: 101%;
   margin-bottom: 4px;
 }
+
+.icons {
+  margin-top:12px;
+  display: flex;
+  font-size: 15px;  
+  height:27px;
+}
+
+

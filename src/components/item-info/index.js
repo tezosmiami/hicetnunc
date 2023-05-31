@@ -10,6 +10,7 @@ import { SigningSummary } from '../collab/show/SigningSummary'
 import { CollabIssuerInfo } from '../collab/show/CollabIssuerInfo'
 import { CollaboratorType } from '../collab/constants'
 import classNames from 'classnames'
+import { LightningButton } from '../button-lightning'
 
 const _ = require('lodash')
 
@@ -32,7 +33,7 @@ export const ItemInfo = ({
     useContext(HicetnuncContext)
 
   const [showSignStatus, setShowSignStatus] = useState(false)
-
+  const [tooltip, setTooltip] = useState(true)
   // const reducer = (accumulator, currentValue) =>
   //   parseInt(accumulator) + parseInt(currentValue)
 
@@ -206,18 +207,27 @@ export const ItemInfo = ({
           </div>
         )}
         <div className={styles.spread}>
-          <Button onClick={() => curate(id)}>
-            <Primary>
-              <span
-                className={styles.top}
-                data-position={'top'}
-                data-tooltip={'curate'}
-              >
-                〇
-              </span>
-            </Primary>
-          </Button>
-        </div>
+          <div className={styles.icons}>
+            <Button onClick={() => curate(id)}>
+                <Primary>
+                  <span
+                    className={styles.top}
+                    data-position={'top'}
+                    data-tooltip={'curate'}
+                  >
+                    〇
+                  </span>
+                </Primary>
+              </Button>&nbsp;
+                <span
+                      className={styles.top}
+                      data-position={tooltip ? 'top' : ''}
+                      data-tooltip={tooltip ? 'zap' : null}
+                    >
+                    <LightningButton setTooltip={setTooltip} recepient={creator.address} />
+                </span>
+              </div>
+          </div>   
       </>
     )
   } else {
@@ -237,21 +247,24 @@ export const ItemInfo = ({
               )}
             </Button>
           </div>
+          <div className={styles.icons}>
+            <LightningButton sender={acc?.address} recepient={creator?.address}/>
+          </div>
           <div className={styles.objktContainer}>
             <Button to={`${PATH.OBJKT}/${id}`}>
               <Primary>OBJKT#{id}</Primary>
             </Button>
-            <Button onClick={() => curate(id)}>
-              <Primary>
-                <span
-                  // className={styles.top}
-                  data-position={'top'}
-                  data-tooltip={'curate'}
-                >
-                  〇
-                </span>
-              </Primary>
-            </Button>
+              {/* <Button onClick={() => curate(id)}>
+                <Primary>
+                  <span
+                    // className={styles.top}
+                    data-position={'top'}
+                    data-tooltip={'curate'}
+                  >
+                    〇
+                  </span>
+                </Primary>
+              </Button> */}
           </div>
         </div>
       </div>

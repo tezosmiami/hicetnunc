@@ -7,6 +7,7 @@ export const Button = ({
   to = null,
   href = null,
   onClick = () => null,
+  onMouseDown = () => null,
   children,
   disabled,
   fit,
@@ -38,7 +39,7 @@ export const Button = ({
     )
   }
   return (
-    <button onClick={onClick} className={classes}>
+    <button onMouseDown={onMouseDown} onClick={onClick} className={classes}>
       {children}
     </button>
   )

@@ -11,6 +11,8 @@ import { Identicon } from '../../components/identicons'
 // import { SigningType } from '@airgap/beacon-sdk'
 import { char2Bytes } from '@taquito/utils'
 import styles from './styles.module.scss'
+import { fetchLightning  } from '../../context/LightningContext'
+import { utils } from 'lnurl-pay/'
 import axios from 'axios'
 const { create } = require('ipfs-http-client')
 
@@ -79,6 +81,7 @@ export class Config extends Component {
     subjktUri: '', // uploads image
     cid: undefined,
     selectedFile: undefined,
+    lightning: '',
     toogled: false
   }
 
@@ -106,6 +109,8 @@ export class Config extends Component {
       if (this.context.subjktInfo.name) this.setState({ subjkt: this.context.subjktInfo.name })
 
     }
+
+    this.setState({ lightning: await fetchLightning(address)})
     //console.log(this.context.subjktInfo)
     this.setState({ loading: false })
   }
@@ -166,6 +171,16 @@ export class Config extends Component {
     ls.set('hDAO_config', this.state.vote)
   }
 
+  lightning_config = async() => {
+    if((this.state.lightning.length === 70 && utils.isLnurl(this.state.lightning))
+       || utils.isLightningAddress(this.state.lightning)) {  
+      try {
+        let result = await this.context.register_lightning(char2Bytes(this.state.lightning))
+        result && setTimeout(() => {this.props.history.push('/tz/'+this.context.address)}, 3000)  
+      } catch (err) {console.log(err)}    
+    }
+  }
+
   toggle = () => this.setState({ toogled: !this.state.toogled })
   /*     
 
@@ -210,11 +225,8 @@ export class Config extends Component {
   render() {
     return (
       <Page>
-
         <Container>
-
           <Identicon address={this.state.address} logo={this.state.identicon} />
-
           <div style={{ height: '20px' }}></div>
           <input type="file" onChange={this.onFileChange} />
           <div style={{ height: '20px' }}></div>
@@ -252,12 +264,28 @@ export class Config extends Component {
             </p>
           </div>
         </Container>
+        <p>&nbsp;</p>
+        <Container>
+          <Padding>
+            <Input
+              name="lightning"
+              onChange={this.handleChange}
+              placeholder="lightning URL"
+              label="lightning URL"
+              value={this.state.lightning}
+            />
 
+            <Button onClick={this.lightning_config}>
+              <Purchase>Save      <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 16 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641l2.5-8.5z"></path></svg></Purchase>
+            </Button>
+            <p style={{ marginTop : '7.5px' }}>link your lightning (URL or address) to activate zaps</p>
+          </Padding>
+        </Container>   
         <Container>
           <Padding>
             <div onClick={this.toggle}>
               <Primary>
-                + advanced
+                + legacy
               </Primary>
             </div>
           </Padding>
@@ -277,7 +305,6 @@ export class Config extends Component {
                 <Button onClick={this.hDAO_config}>
                   <Purchase>Save ○</Purchase>
                 </Button>
-
                 <p style={{ marginTop : '7.5px' }}>hic et nunc DAO ○ curation parameter</p>
               </Padding>
             </Container>

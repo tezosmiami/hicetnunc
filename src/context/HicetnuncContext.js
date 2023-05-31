@@ -211,7 +211,7 @@ class HicetnuncContextProviderClass extends Component {
           },
           {
             kind: OpKind.TRANSACTION,
-            ...marketplace.methods.swap(creator, parseFloat(objkt_amount), parseFloat(objkt_id), parseFloat(royalties), parseFloat(xtz_per_objkt)).toTransferParams({ amount: 0, mutez: true, storageLimit: 300 })
+            ...marketplace.methods.swap(creator, parseFloat(objkt_amount), parseFloat(objkt_id), parseFloat(royalties), parseFloat(Math.trunc(xtz_per_objkt))).toTransferParams({ amount: 0, mutez: true, storageLimit: 300 })
           },
           {
             kind: OpKind.TRANSACTION,
@@ -997,6 +997,24 @@ class HicetnuncContextProviderClass extends Component {
             })
           })
       },
+      register_lightning: async(lnUrlOrAddress) => {
+        console.log(`Registering lnUrlOrAddress...`)
+        Tezos.wallet
+        .at('KT1GK9jwRTGqnBB7fuzectnjvj3d42KBnTBh')
+        .then((c) => {
+          c.methods.default(lnUrlOrAddress).send({
+          amount: 0,
+          mutez: true,
+          storageLimit: 310
+      })
+        .then(op => {
+            console.log(`Waiting for ${op.opHash} to be confirmed...`);
+            return op.confirmation(2).then(() => result.opHash);
+        })
+        .catch(err => {console.log(`Error: ${err.description}`);
+          return null});
+        })
+      }
     }
   }
 

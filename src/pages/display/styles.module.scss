@@ -16,6 +16,19 @@
   }
 }
 
+.livebutton {
+  display:flex;
+  justify-content: flex-end;
+  width: 93%;
+
+}
+
+.icons { 
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
 .menu {
   padding: 6px 0 6px 3px;
   border-bottom: 1px solid var(--border-color);

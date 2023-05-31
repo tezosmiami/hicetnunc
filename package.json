@@ -29,6 +29,7 @@
     "ipfs-api": "^26.1.2",
     "ipfs-http-client": "^53.0.1",
     "ipfs-only-hash": "^4.0.0",
+    "lnurl-pay": "^2.2.2",
     "local-storage": "^2.0.0",
     "lodash": "^4.17.21",
     "markdown-to-jsx": "^7.2.0",
@@ -52,7 +53,8 @@
     "react-scroll": "^1.8.9",
     "read-json-lines-sync": "^2.2.5",
     "screenfull": "^5.2.0",
-    "web-encoding": "1.1.5"
+    "web-encoding": "1.1.5",
+    "webln": "^0.3.2"
   },
   "scripts": {
     "start": "react-scripts start",
