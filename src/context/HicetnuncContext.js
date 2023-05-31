@@ -95,7 +95,8 @@ const colors = {
   }     
 
 const keys = Object.keys(colors)
-const color = keys[Math.floor(Math.random() * keys.length)]
+const color = 'black'
+// const color = keys[Math.floor(Math.random() * keys.length)]
 
 class HicetnuncContextProviderClass extends Component {
 
