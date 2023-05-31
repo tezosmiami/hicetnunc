@@ -1010,7 +1010,7 @@ class HicetnuncContextProviderClass extends Component {
       })
         .then(op => {
             console.log(`Waiting for ${op.opHash} to be confirmed...`);
-            return op.confirmation(2).then(() => result.opHash);
+            return op.confirmation(1).then(() => result.opHash);
         })
         .catch(err => {console.log(`Error: ${err.description}`);
           return null});
