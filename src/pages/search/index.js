@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { Page, Container, Padding } from '../../components/layout'
 import { HicetnuncContext } from '../../context/HicetnuncContext'
+import { Button, Primary } from '../../components/button'
 import { getWalletAllowList } from '../../constants'
 import { Friends } from '../friends'
-import { Button, Primary } from '../../components/button'
 import { Input } from '../../components/input'
 import { FeedItem } from '../../components/feed-item'
 import { getItem, setItem } from '../../utils/storage'
@@ -671,6 +671,58 @@ export async function fetchTag(tag, offset) {
   return result
 }
 
+
+async function fetchAddresses(creator_ids) {
+  const { errors, data } = await fetchGraphQL(`
+    query Objkts($creator_ids: [String!] = "") {
+      hic_et_nunc_token(where: {creator_id: {_in: $creator_ids}, supply : {_neq: "0"}}, order_by: {timestamp: desc}, limit : 21) {
+        artifact_uri
+        display_uri
+        creator_id
+        id
+        mime
+        royalties
+        thumbnail_uri
+        timestamp
+        title
+        description
+        token_signatures {
+          holder_id
+        }
+        supply
+        swaps(where: {contract_version: {_eq: "2"}})   {
+          is_valid
+          id
+          price
+          status
+          contract_version
+        }
+        token_holders(where: {quantity: {_gt: "0"}}) {
+          holder_id
+          quantity
+        }
+        creator {
+          is_split
+          address
+          name
+          metadata_file
+          shares {
+            shareholder {
+              holder_type
+              holder_id
+            }
+          }
+        }
+      }
+    }
+`, "Objkts", { "creator_ids": creator_ids });
+  if (errors) {
+    console.log(errors)
+  }
+  return data.hic_et_nunc_token
+}
+
+
 async function fetchGraphQL(operationsDoc, operationName, variables) {
   const result = await fetch(
     process.env.REACT_APP_GRAPHQL_API,
@@ -779,6 +831,7 @@ export class Search extends Component {
       // { id: 10, value: 'ATH' },
       { id: 11, value: '○ hDAO' },
       { id: 12, value: 'Miami' },
+      { id: 1, value: <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 16 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641l2.5-8.5z"></path></svg>},
       
    
       
@@ -995,7 +1048,17 @@ export class Search extends Component {
       res = res.filter(e => !arr.includes(e.creator_id))
       // this.setState({ feed: _.uniqBy([...this.state.feed, ...(res)], 'creator_id') })
       this.setState({ feed: [...this.state.feed, ...(res)] })
-      
+    }
+
+    if (e.type === 'svg') {
+      try{
+        const result = await axios.get(`https://api.tzkt.io/v1/bigmaps/464343/keys/`)
+        let creator_ids = result.data.map((d) => {return d.key})
+        let objkts = await fetchAddresses(Array.from(creator_ids))
+        this.setState({ feed: ([...this.state.feed, ...(objkts)]) })
+      } catch (err) {
+        console.log(err)
+      }
     }
 
     // new listings
