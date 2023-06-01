@@ -831,7 +831,7 @@ export class Search extends Component {
       // { id: 10, value: 'ATH' },
       { id: 11, value: '○ hDAO' },
       { id: 12, value: 'Miami' },
-      { id: 1, value: <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 16 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641l2.5-8.5z"></path></svg>},
+      { id: 13, value: <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 16 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641l2.5-8.5z"></path></svg>},
       
    
       
@@ -879,9 +879,8 @@ export class Search extends Component {
 
   update = async (e, reset) => {
     let arr = await getRestrictedAddresses()
-
-    this.setState({ select: e })
-    setItem('mainfeed', e)
+    this.setState({ select: e.type === 'svg' ? 'svg' : e })
+    setItem('mainfeed', e.type === 'svg' ? 'svg' : e)
 
     if (reset) {
       this.state.flag=false
@@ -976,7 +975,6 @@ export class Search extends Component {
 
     if (e === 'random') {
       let res = await fetchRandomObjkts(this.state.lastId)
-      console.log(res)
       res = res.filter(e => !arr.includes(e.creator_id))
       this.setState({ feed: [...this.state.feed, ...(res)] })
     }
@@ -1050,7 +1048,7 @@ export class Search extends Component {
       this.setState({ feed: [...this.state.feed, ...(res)] })
     }
 
-    if (e.type === 'svg') {
+    if (this.state.select === 'svg') {
       try{
         const result = await axios.get(`https://api.tzkt.io/v1/bigmaps/464343/keys/`)
         let creator_ids = result.data.map((d) => {return d.key})
@@ -1121,7 +1119,9 @@ export class Search extends Component {
           // this.state.feed.length < 1  &&
           <div className='info'>
               {/* indexer down -&nbsp; */}
-              <Button to='/gaming'>play chess? </Button> 
+              <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 16 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641l2.5-8.5z"></path></svg>&nbsp;{`->`}&nbsp;
+              <Button to='/config'>register</Button>
+              {/* <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 16 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641l2.5-8.5z"></path></svg>  */}
             </div>
           }
         <Container>
@@ -1146,13 +1146,12 @@ export class Search extends Component {
                   </Button>
                 </div>
               </div>
-     
             {
               <div style={{ marginTop: '15px' }}>
                 {this.state.tags.map((e,i) => <div key={i} className='tag' href='#'
-                   style= {{boxShadow: e.value === this.state.select && 'var(--box-shadow)', 
+                   style= {{boxShadow: (e.value === this.state.select || (e.id === 13 && this.state.select ==='svg'))  && 'var(--box-shadow)', 
                     textDecoration: e.value === this.state.select && (this.state.neonstyle === false || this.state.neonstyle === null) ? 'underline' : ''}} onClick={() => {
-                  this.update(e.value, true)
+                  this.update(e.value ? e.value : 'svg', true)
                 }}>{e.value}</div>)}
               </div>
             }

@@ -265,13 +265,14 @@ export class Config extends Component {
           </div>
         </Container>
         <p>&nbsp;</p>
+        <p>&nbsp;</p>
         <Container>
           <Padding>
             <Input
               name="lightning"
               onChange={this.handleChange}
-              placeholder="lightning URL"
-              label="lightning URL"
+              placeholder="lightning (URL or Address)"
+              label="lightning (URL or Address)"
               value={this.state.lightning}
             />
 
