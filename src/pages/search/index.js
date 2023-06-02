@@ -864,7 +864,7 @@ export class Search extends Component {
     // tokens = tokens.map(e => e.token)
     // tokens = tokens.filter(e => !arr.includes(e.creator_id))
     // this.setState({ feed: _.uniqBy(_.uniqBy([...this.state.feed, ...tokens], 'id'), 'creator_id') })
-    this.update(getItem('mainfeed') ||  'new OBJKTs', true)
+    this.update(getItem('mainfeed') ||  'svg', true)
   }
 
   componentWillUnmount = () => {
