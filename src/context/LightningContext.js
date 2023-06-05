@@ -1,5 +1,6 @@
-import { createContext, useContext} from "react";
+import { useState, useEffect, createContext, useContext} from "react";
 import { HicetnuncContext } from './HicetnuncContext'
+import { fetchGraphQL, getNameForAddress } from '../data/hicdex'
 import { requestProvider } from "webln";
 import { bytes2Char } from "@taquito/utils";
 import { requestInvoice } from 'lnurl-pay'
@@ -29,14 +30,28 @@ export const useLightningContext = () => {
   };
   
 const LightningContextProvider = ({ children }) => {
-    const { acc, Tezos } = useContext(HicetnuncContext)
-    // useEffect(() => {
-    //   const loadLightning = async() => {
-    //       let lnUrlOrAddress =  await fetchLightning(acc.address);
-    //       setLightning(lnUrlOrAddress)
-    //     }
-    //   acc && loadLightning()
-    //  }, [acc])
+    const { acc } = useContext(HicetnuncContext)
+    const [sender, setSender] = useState(null)
+    
+    useEffect(() => {
+      //move to h=n context
+      const getAlias = async () => {
+          acc && fetchGraphQL(getNameForAddress, 'GetNameForAddress', {
+              address: acc.address,
+              }).then(({ data, errors }) => {
+              if (data) {
+                  const holder = data.hic_et_nunc_holder[0]?.name || acc.address
+                  setSender(holder)
+                  console.log(holder)
+              }
+              if (errors) {
+                  console.error(errors)
+              }
+              })
+          }
+      getAlias()
+      }, [acc])
+      
 
     const has_lightning = () => {
       if (typeof window.webln !== 'undefined') {
@@ -70,7 +85,7 @@ const LightningContextProvider = ({ children }) => {
           await requestInvoice({
               lnUrlOrAddress: lnUrlOrAddress,
               tokens: amount, // satoshis
-              comment: `Appreciation zap from ${acc?.address || 'anonymous'}`
+              comment: `appreciation zap from ${sender || 'anonymous'} on magicCity`
           }) 
           if (isMobile) {
            window.location = `lightning:${invoice}`

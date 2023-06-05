@@ -25,15 +25,14 @@ const MeshContextProvider = ({ children }) => {
     const [dimension, setDimension] = useState('hicetnunc')
     const [lobby, setLobby] = useState([])
     const [session, setSession] = useState([])
+    const [sessionTz, setSessionTz] = useState(null)
     const [online, setOnline] = useState([])
     const [calls, setCalls] = useState([])
     const [tabFocus, setTabFocus] = useState(true);
     const { acc } = useContext(HicetnuncContext)
     const peer = useRef(null);
-
     
     const onDimension = (id, _dimension) => {
-        console.log(dimension)
           setOnline(online => online.map(o=> o.id === id ?
           {...o, dimension: _dimension}
           : o))
@@ -55,19 +54,25 @@ const MeshContextProvider = ({ children }) => {
                 o.conn.on('data', async (data) => {
                     if (data.type === 'new') {setOnline(online => !online.find(o => o.id === data.id) 
                         ? [{
-                            alias:data.alias,
+                            alias: data.alias,
+                            address: data.address,
                             id: o.conn.peer,
                             dimension: data.dimension,
                             conn:o.conn},
                              ...online
                         ]
-                        : online)}
+                        : online)
+                    }
                     if (data.type === 'dimension') {setOnline(online => online.map(o=> o.id === data.id ? {...o, dimension: data.dimension} : o))} 
                     if (data.invite || data.message) {
                         data.dimension === 'lobby' && setLobby((messages) => [...messages, data])
                         const favicon = document.getElementById("favicon")
                         favicon.href = '/message.ico'
-                        }
+                    }
+                    if (data.session && data.alias === dimension) {
+                        setSession(data.session)
+                        setSessionTz(data.address)
+                    }
                 })
             })
 
@@ -75,16 +80,20 @@ const MeshContextProvider = ({ children }) => {
         peer.current.on("connection", (conn) => {
             conn.on('open', () => {
             console.log('connected with', conn.peer)
+            conn.metadata.alias === dimension && setSessionTz(conn.metadata.address)
             conn.send({
                 type: 'new',
                 alias: alias,
+                address: acc.address,
                 dimension: dimension,
                 id: peer.current.id,
                 lobby: lobby, 
-                session: alias === dimension ? session : '' })
+                session: (alias === dimension && conn.metadata.dimension === alias)
+                    ? session : null })
             !online.find(o => o.id === conn.peer)
                 && setOnline(online => [{
                     alias: conn.metadata.alias,
+                    address: conn.metadata.address,
                     id: conn.peer,
                     dimension: conn.metadata.dimension,
                     conn: conn}, ...online ])
@@ -93,7 +102,8 @@ const MeshContextProvider = ({ children }) => {
                 if (data.type === 'new') {
                     setOnline(online => !online.find(o => o.id === data.id)
                     ? [{
-                        alias:data.alias, 
+                        alias: data.alias, 
+                        address: data.address,
                         id: conn.peer, 
                         dimension: data.dimension, 
                         conn:conn},
@@ -103,14 +113,19 @@ const MeshContextProvider = ({ children }) => {
                     data.lobby && setLobby(data.lobby)
                     }
                 if (data.type === 'dimension') onDimension(data.id, data.dimension)
-                    if (alias === dimension && dimension === data.dimension && session.length > 0)
+                    if (alias === dimension && dimension === data.dimension && session.length >= 0)
                      conn.send({
-                         type: 'session',
+                        type: 'session',
                         alias: alias,
+                        address: acc.address,
                         id: peer.current.id,
                         dimension: dimension,
                         session: session})
-                if (data.session && data.dimension === dimension) setSession(data.session)
+
+                if (data.session && data.alias === dimension) {
+                    setSession(data.session)
+                    setSessionTz(data.address)
+                }
                 if (data.invite || data.message) {
                     data.dimension === 'lobby' && setLobby((messages) => [...messages, data])
                     const favicon = document.getElementById("favicon")
@@ -153,7 +168,16 @@ const MeshContextProvider = ({ children }) => {
 
     useEffect(() => {
         online.map(o => {
-            o.conn && o.conn.send({type: 'dimension', alias:alias, id: peer.current.id, dimension:dimension})
+            o.conn && o.conn.send({
+                type: 'dimension',
+                alias: alias,
+                address: acc.address,
+                dimension: dimension,
+                id: peer.current.id,
+                lobby: lobby,
+                session: (alias === dimension && o.conn.metadata.dimension === alias)
+                    ? session : null
+            })
         })
         setOnline(online => online.map(o=> (o.id === peer.current.id) ? {...o, dimension: dimension}
           : o
@@ -166,6 +190,7 @@ const MeshContextProvider = ({ children }) => {
            }
         if (dimension === 'hicetnunc' && peer.current) onIncoming()         
     }, [dimension])
+
 
     useEffect(() => {
         const onFocus = () => {
@@ -225,7 +250,7 @@ const MeshContextProvider = ({ children }) => {
             onIncoming()
             setTimeout(async () => {
                 let peers = await axios.get(process.env.REACT_APP_MESH_SIGNAL).then(res => res.data)
-                peers.map((p) => {
+                peers && peers.map((p) => {
                     setTimeout(() => {
                         var conn = peer.current.connect(p, {
                             metadata: { 'alias': alias, 'address': acc.address, 'dimension': dimension }
@@ -237,11 +262,18 @@ const MeshContextProvider = ({ children }) => {
                                 [{alias:data.alias, id: conn.peer, dimension: data.dimension, conn:conn}, ...online]
                                 : online)
                                 data.lobby && setLobby(data.lobby)
+                                data.session && setSessionTz(data.address)
                             } 
+
                             if (data.type === 'dimension') {setOnline(online => online.map(o=> o.id === data.id ?
                                 {...o, dimension: data.dimension}
                                 : o))} 
-                            if (data.session && data.dimension === dimension) setSession(data.session)
+
+                            if (data.session && data.alias === dimension) {
+                                setSession(data.session)
+                                setSessionTz(data.address)
+                            }
+
                             if (data.invite || data.message) {
                                 const favicon = document.getElementById("favicon")
                                 favicon.href = '/message.ico'
@@ -274,7 +306,7 @@ const MeshContextProvider = ({ children }) => {
         syncMesh()
     }, [alias,meshed]);
 
-    const wrapped = {...mesh, peer, alias, meshed, setMeshed, media, setMedia, dimension, setDimension, lobby, setLobby, session, setSession, online, setOnline, calls, setCalls, onIncoming, onClose, onStream, onDimension}
+    const wrapped = {...mesh, peer, alias, meshed, setMeshed, media, setMedia, dimension, setDimension, lobby, setLobby, session, setSession, sessionTz, setSessionTz, online, setOnline, calls, setCalls, onIncoming, onClose, onStream, onDimension}
 
     return (
       <MeshContext.Provider value={wrapped}>

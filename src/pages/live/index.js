@@ -12,6 +12,7 @@ import { Textarea } from '../../components/input'
 import { walletPreview } from '../../utils/string'
 import { Purchase } from '../../components/button'
 import { Link, useParams } from 'react-router-dom'
+import { LightningButton } from '../../components/button-lightning'
 import { Visualiser } from '../../components/media-types/audio/visualiser'
 import { getRestrictedAddresses, fetchCollection} from '../../components/objkt-select'
 import { PATH } from '../../constants'
@@ -116,7 +117,7 @@ export const Live = () => {
   const scrollTarget = useRef(null)
   const history = useHistory()
 
-  const {peer, alias, dimension, setDimension, media, setMedia, online, setOnline, meshed, setMeshed, lobby, setLobby, session, setSession, calls, setCalls, onClose, onStream, onDimension} =  useMeshContext()
+  const {peer, alias, dimension, setDimension, media, setMedia, online, setOnline, meshed, setMeshed, lobby, setLobby, session, setSession, sessionTz, setSessionTz, calls, setCalls, onClose, onStream, onDimension} =  useMeshContext()
 
   const onMedia = (id) => {
       const call = peer.current.call(id, media.find(m=> m.alias === alias).stream, {metadata: {alias:alias, dimension: dimension, invites:invitations, mediaType:screenStream ? 'screenstream' : 'audiostream'}})  
@@ -172,17 +173,20 @@ export const Live = () => {
         if ((audioStream || screenStream) && conn.metadata.dimension === dimension) {
           onMedia(conn.peer)
         }
+        conn.metadata.alias === dimension && setSessionTz(conn.metadata.address)
         console.log('connected with', conn.peer)
         conn.send({ type: 'new',
                     alias: alias,
+                    address: acc.address,
                     dimension: dimension,
                     id: peer.current.id,
                     lobby: lobby,
-                    session: alias === dimension
-                     ? session : '' })
+                    session: (alias === dimension && conn.metadata.dimension === alias)
+                      ? session : null })
         !online.find(o => o.id === conn.peer)
          && setOnline(online => [{
           alias: conn.metadata.alias,
+          address: conn.metadata.address,
           id: conn.peer,
           dimension: conn.metadata.dimension,
           conn: conn}, ...online ])
@@ -208,6 +212,7 @@ const onData = (conn) => {
     if (data.type === 'new') {
       setOnline(online => !online.find(o => o.id === data.id) ?
       [{alias:data.alias,
+        address: conn.metadata.address,
         id: conn.peer,
         dimension: data.dimension,
         conn:conn} , 
@@ -237,15 +242,19 @@ const onData = (conn) => {
           setCalls(calls => calls.filter(c => c.peer !== conn.peer))
         }
       } 
-      if (data.session && data.dimension === dimension) setSession(data.session)
     } 
-      if (data.type === 'session' && data.dimension === dimension) setSession(data.session)
+
+      if (data.session && data.alias === dimension) {
+        setSession(data.session)
+        setSessionTz(data.address)
+      }
       if (data.type === 'dimension') {
         onDimension(data.id, data.dimension)
         if (alias === dimension && dimension === data.dimension)
           conn.send({
               type: 'session',
               alias: alias,
+              address: acc.address,
               dimension: dimension,
               id: peer.current.id,
               session: session})
@@ -420,12 +429,14 @@ useEffect(() => {
     media?.forEach(m => m.stream.getTracks()[0].stop())
     setMedia([])
     setSession([])
+    setSessionTz(null)
   }
 }, [dimension])
 
 useEffect(() => {
   if (dimension !== 'lobby' && !online.find(o => (o.alias === dimension && o.dimension === dimension))) {
    setSession([])
+   setSessionTz(null)
   }
 }, [online])
 
@@ -443,7 +454,6 @@ useEffect(() => {
     scrollTarget.current.scrollIntoView(lobby?.length > length || session?.length > length ? true : false, {behavior: 'smooth'});
   }
 }, [lobby, session]);
-
 const sendMessage = async (message) => { 
   if (!message) return
   switch (true) {
@@ -494,7 +504,7 @@ const sendMessage = async (message) => {
         (dimension===alias || invitations.includes(alias)) && setAudioStream(!audioStream)
       break 
     case message.toUpperCase().includes('/INVITE'): 
-      (dimension===alias) && audioStream && onInvite()
+      (dimension===alias) && (audioStream || screenStream) && onInvite()
       break   
 
     case message.slice(0,6).toUpperCase() === '/trash'.toUpperCase()
@@ -620,10 +630,12 @@ return (
             )) 
           }
         </div>
+        
         <div className={styles.media}>
+        <div className={styles.icons}>
         {((dimension && dimension===alias) || invitations.includes(alias)) && 
-          <div className={styles.icons}>
-             {!audioStream && !isMobile && <Button onClick={() => setScreenStream(screenStream => !screenStream)}>
+          <div>
+             {!(media[0]?.type === 'audiostream') && !isMobile && <Button onClick={() => setScreenStream(screenStream => !screenStream)}>
              <span
                     className={styles.right}
                     data-position={'screen'}
@@ -634,7 +646,7 @@ return (
               }
               </span>
              </Button>} &nbsp;
-             {!screenStream && <Button onClick={() => setAudioStream(audioStream => !audioStream)}>
+             {!(media[0]?.type === 'screenstream') && <Button onClick={() => setAudioStream(audioStream => !audioStream)}>
              <span
                     className={styles.right}
                     data-position={'audio'}
@@ -644,9 +656,14 @@ return (
               :  <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M256 76c48.1 0 93.3 18.7 127.3 52.7S436 207.9 436 256s-18.7 93.3-52.7 127.3S304.1 436 256 436c-48.1 0-93.3-18.7-127.3-52.7S76 304.1 76 256s18.7-93.3 52.7-127.3S207.9 76 256 76m0-28C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z"></path><path d="M363.5 148.5C334.8 119.8 296.6 104 256 104c-40.6 0-78.8 15.8-107.5 44.5C119.8 177.2 104 215.4 104 256s15.8 78.8 44.5 107.5C177.2 392.2 215.4 408 256 408c40.6 0 78.8-15.8 107.5-44.5C392.2 334.8 408 296.6 408 256s-15.8-78.8-44.5-107.5z"></path></svg>
               }
               </span>
-             </Button>} 
+             </Button>}
           </div>}
-
+            {sessionTz && 
+              <div style={{marginLeft: '18px'}}> 
+                <LightningButton recepient={sessionTz} />
+              </div>
+            }
+          </div>
           {media[0]?.type === 'audiostream' && media?.map((m) => (<Audio key={m.stream.id} media={m} alias={alias}/>))}
           {/* {screenStream && <div style={{marginLeft: '5%', display: 'flex',  height: 'auto', width: 'auto', justifyContent: 'center'}}>
             <video autoPlay controls id='screenstream'/>

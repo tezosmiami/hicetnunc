@@ -7,7 +7,7 @@ import styles from './styles.module.scss'
 
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-export const LightningButton = ({ setTooltip, recepient, sender }) => {
+export const LightningButton = ({ setTooltip, recepient }) => {
     const [modal, setModal] = useState(false)
     const [amount, setAmount] = useState(21)
     const [lightning, setLightning] = useState(null)
@@ -19,6 +19,9 @@ export const LightningButton = ({ setTooltip, recepient, sender }) => {
             setLightning(await fetchLightning(recepient))
         }
         recepient && fetchRecepient()
+        return () => {
+            setLightning(null)
+        } 
     }, [recepient])
 
     const reset = () => {

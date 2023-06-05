@@ -857,7 +857,7 @@ export default class Display extends Component {
                     </div>  
                   )}
                   { 
-                  <LightningButton sender={this.context.acc?.address} recepient={this.state.wallet} />
+                  <LightningButton recepient={this.state.wallet} />
                   } 
                 </div>
               </div>
