@@ -1167,7 +1167,7 @@ export class Search extends Component {
             }
           </Padding>
         </Container>
-        {this.state.select === 'friends' ?
+        {this.context.acc && this.state.select === 'friends' ?
           <Friends feedstyle={this.state.feedstyle} wallet={this.context.acc.address} />
           :
         <Container xlarge>

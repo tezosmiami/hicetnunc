@@ -275,6 +275,7 @@ const MeshContextProvider = ({ children }) => {
                             }
 
                             if (data.invite || data.message) {
+                                data.dimension === 'lobby' && setLobby((messages) => [...messages, data])
                                 const favicon = document.getElementById("favicon")
                                 favicon.href = '/message.ico'
                                 }
