@@ -243,6 +243,7 @@ const MeshContextProvider = ({ children }) => {
                                 : o))} 
                             if (data.session && data.dimension === dimension) setSession(data.session)
                             if (data.invite || data.message) {
+                                data.dimension === 'lobby' && setLobby((messages) => [...messages, data])
                                 const favicon = document.getElementById("favicon")
                                 favicon.href = '/message.ico'
                                 }
