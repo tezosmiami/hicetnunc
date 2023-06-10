@@ -1,3 +1,19 @@
+.nostr {
+    button {
+        margin-right: 12px; 
+        margin-bottom: 6px;
+    }
+}
+.warning {
+    margin-left: 21px;
+    background-color: var(--background-color);
+    border: none;
+}
+.warning:hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
 // .box {
 //   border-style: solid;
 //   border-color: var(--shadow-color);

@@ -8,15 +8,17 @@ import { Input, Textarea } from '../../components/input'
 import { Button, Curate, Primary, Purchase } from '../../components/button'
 import { Upload } from '../../components/upload'
 import { Identicon } from '../../components/identicons'
-// import { SigningType } from '@airgap/beacon-sdk'
-import { char2Bytes } from '@taquito/utils'
-import styles from './styles.module.scss'
 import { fetchLightning  } from '../../context/LightningContext'
+import {nip19, generatePrivateKey, getPublicKey} from 'nostr-tools'
+import { getItem, setItem, removeItem } from '../../utils/storage'
 import { utils } from 'lnurl-pay/'
 import { Buffer } from 'buffer'
-import  { create } from 'ipfs-http-client'
-import * as ls from 'local-storage'
+import { create } from 'ipfs-http-client'
+import { char2Bytes } from '@taquito/utils'
+import styles from './styles.module.scss'
 import axios from 'axios'
+
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
 const auth =
     'Basic ' + Buffer.from(import.meta.env.VITE_INFURA_ID + ':' + import.meta.env.VITE_INFURA_KEY).toString('base64');
@@ -52,7 +54,6 @@ async function fetchTz(addr) {
     console.error(errors)
   }
   const result = data.hic_et_nunc_holder
-  // console.log({ result })
   return result
 }
 
@@ -82,9 +83,10 @@ export class Config extends Component {
     subjktUri: '', // uploads image
     cid: undefined,
     selectedFile: undefined,
-    lightning: '',
-    npub: '',
-    nsec: '',
+    lightning: null,
+    npub: null,
+    nsec: null,
+    nostrSync: false,
     toogled: false
     
   }
@@ -98,9 +100,7 @@ export class Config extends Component {
     this.setState({ address })
     if (address) {
       let res = await fetchTz(address)
-
       this.context.subjktInfo = res[0]
-      //console.log(this.context.subjktInfo)
 
       if (this.context.subjktInfo) {
         let cid = await axios.get('https://ipfs.io/ipfs/' + (this.context.subjktInfo.metadata_file).split('//')[1]).then(res => res.data)
@@ -112,15 +112,23 @@ export class Config extends Component {
         if (this.context.subjktInfo.name) this.setState({ subjkt: this.context.subjktInfo.name })
       }
     } 
+    let nostr = getItem('nostr')?.keys
+    if (nostr) {
+      let npub = nostr?.pub
+      let nsec = nostr?.priv
+      npub && this.setState({ npub: nip19.npubEncode(npub) })
+      nsec && this.setState({ nsec: nip19.nsecEncode(nsec)})
+      npub && !nsec && this.setState({ nostrSync: true })
+    }
     this.setState({ lightning: await fetchLightning(address)})
   }
 
   handleChange = (e) => {
     if (e.target.name == 'subjkt' && !e.target.checkValidity()) {
-      console.log(e.target.pattern)
+      // console.log(e.target.pattern)
       e.target.value = e.target.value.replace(/[^a-z0-9-._]/g, "")
     }
-    console.log('set', e.target.name, 'to', e.target.value)
+    // console.log('set', e.target.name, 'to', e.target.value)
     this.setState({ [e.target.name]: e.target.value })
   }
 
@@ -130,9 +138,7 @@ export class Config extends Component {
 
     if (this.state.selectedFile) {
       const [file] = this.state.selectedFile
-
       const buffer = Buffer.from(await file.arrayBuffer())
-      console.log(buffer)
       this.setState({ identicon: 'ipfs://' + (await ipfs.add(buffer)).path })
     }
 
@@ -167,7 +173,7 @@ export class Config extends Component {
 
   hDAO_config = () => {
     // convert float to 10^6
-    ls.set('hDAO_config', this.state.vote)
+    setItem('hDAO_config', this.state.vote)
   }
 
   lightning_config = async() => {
@@ -204,8 +210,60 @@ export class Config extends Component {
        
   */
 
+  checkNostr = () => {
+    try {
+      let nsec = nip19.decode(this.state.nsec)  
+      if (nsec.type === 'nsec') return true
+    } catch (e) { return false }
+    }
+
+  setNostr = () => {
+        let priv = nip19.decode(this.state.nsec).data
+        let pub = getPublicKey(priv)
+        let npub = nip19.npubEncode(pub)
+        setItem(`nostr`,{...{keys:{ pub: pub,
+          priv: priv}}})
+        this.setState({ npub: npub })
+    }    
+
+  syncNostr = async () => {
+    if (!this.state.nostrSync) {
+      let nip07 = 'nostr' in window
+      if (nip07) {
+        const pub = await window.nostr.getPublicKey()
+          window.open('https://getalby.com')
+        if (pub) {
+          setItem(`nostr`, {...{key: { pub: pub }}})
+          this.setState({ npub: nip19.npubEncode(pub), nostrSync: true })
+        }   
+      } else window.open('https://getalby.com')
+    } else {
+        removeItem('nostr')
+        this.setState({ npub: null, nostrSync: false })
+      }
+  }
+  genNostr = () => {
+    let sk = generatePrivateKey() 
+    let pk = getPublicKey(sk)
+    setItem(`nostr`,{...{keys:{ pub:pk, priv:sk }}})
+    this.setState({ npub: nip19.npubEncode(pk), nsec: nip19.nsecEncode(sk) })
+  }
+
+  rmNostr = () => {
+    this.setState({ npub: null, nsec: null, warning: false })
+    removeItem(`nostr`)
+  }
+
+  // warnNostr = () => {
+  //   this.setState({ warning: true })
+  // }
+  // nostrSubmit = async (e) => {
+  //   e.preventDefault()
+  //   let action = e.nativeEvent.submitter.name
+  //   this[`${action}Nostr`]()
+  // }
+
   sign = () => {
-    //console.log(this.context.addr)
     this.context.signStr({
       /*       payload : "05" + char2Bytes(this.state.str) */
       payload: this.state.str
@@ -250,11 +308,11 @@ export class Config extends Component {
           <div style={{ display: 'inline' }}>
             <p style={{paddingTop : '7.5px' }}>
               <span>
-                link your Twitter, Discord, GitHub, and website with </span>
+                link Twitter, Discord, GitHub, and website with </span>
               <span>
                 <a href="https://tzprofiles.com" target="_blank" rel="noopener noreferrer">
                   <Button>
-                  <span style={{ color: 'var(--text-color)', fontWeight: 'bold' }}> Tezos Profiles</span>
+                    <span style={{ color: 'var(--text-color)', fontWeight: 'bold' }}> Tezos Profiles</span>
                   </Button>
                 </a>
               </span>
@@ -274,9 +332,61 @@ export class Config extends Component {
             <Button onClick={this.lightning_config}>
               <Purchase>Save <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 16 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641l2.5-8.5z"></path></svg></Purchase>
             </Button>
-            <p style={{ marginTop : '7.5px' }}>link your Lightning (URL or Address) to activate zaps</p>
+            <p style={{ marginTop : '7.5px' }}>link Lightning (URL or Address) to activate zaps</p>
           </Padding>
         </Container>   
+        <p>&nbsp;</p>
+        <Container>
+          <Padding>
+          {/* <form onSubmit={this.nostrSubmit}> */}
+            {this.state.npub && <Input
+              name="npub"
+              onChange={this.handleChange}
+              placeholder="nostr pub"
+              label="Nostr Public Key"
+              value={this.state.npub}
+            />}
+            {!this.state.nostrSync &&
+              <Input
+                name="nsec"
+                type="password"
+                onChange={this.handleChange}
+                placeholder="Nostr Secret"
+                label="Nostr Secret"
+                value={this.state.nsec}
+              />}
+              <div className={styles.nostr}>
+                {!this.state.npub && this.checkNostr()
+                    && <Button onClick={()=> this.setNostr()} >
+                  <Purchase name='save'>Save Nostr</Purchase>
+                </Button>}
+                {!this.state.nsec && !isMobile &&  <Button onClick={() => this.syncNostr()} >
+                  <Purchase>{!this.state.npub ? 'Sync Nostr (desktop)' : 'Unsync Nostr (desktop)'}</Purchase>
+                </Button>}
+                {!this.state.nsec && !this.state.nostrSync && <Button onClick={() => this.genNostr()}>
+                    <Purchase>Generate Nostr Keys</Purchase>
+                  </Button>}
+                {this.state.nsec && this.state.npub && <Button onClick={() => this.setState({ warning: true })}>
+                  <Purchase>Remove Nostr Keys </Purchase>
+                </Button>}
+                {this.state.warning && 
+                    <>
+                      <span>backup Nostr secret key! </span>
+                      <div>
+                        <span>remove keys from site?</span>
+                        <button className={styles.warning} onClick={() => this.rmNostr()}>
+                          yes
+                        </button>
+                        <button className={styles.warning} onClick={() => this.setState({ warning: false })}>
+                          cancel
+                        </button>
+                      </div>
+                     </>}
+              {/* </form> */}
+            </div>
+            <p style={{ marginTop : '7.5px' }}>link Nostr keys for extra features</p>
+          </Padding>
+        </Container> 
         <Container>
           <Padding>
             <div onClick={this.toggle}>
