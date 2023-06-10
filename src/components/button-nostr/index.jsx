@@ -1,16 +1,17 @@
 import { Button, Primary } from '../button'
 import { useNostrContext } from '../../context/NostrContext'
+import { useHistory } from "react-router-dom";
 import styles from './styles.module.scss'
 
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
 export const NostrButton = () => {
     const nostr = useNostrContext()
-    console.log(nostr)
+    const history = useHistory();
     return (
         <>
             <div className={styles.nostr}>
-                <Button onClick={()=> nostr.nostrKeys
+                <Button onClick={()=> nostr.nostrKeys || nostr.nip07
                     ? nostr.onPost() : !isMobile
                     ? window.open('https://getAlby.com') : ''}>
                     <Primary>

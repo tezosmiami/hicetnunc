@@ -22,7 +22,7 @@ const relayUrls = [
   
 
 const NostrContextProvider = ({ children }) => {
-    const [keys, setKeys] = useState({})
+    const [keys, setKeys] = useState(null)
     const [nostrSync, setNostrSync] = useState(false)
     const [nostrKeys, setNostrKeys] = useState(false)
     const { publish } = useNostr();
@@ -40,25 +40,38 @@ const NostrContextProvider = ({ children }) => {
     const onPost = async () => {    
         console.log('magicCity')
         let message= 'hicetnunc'
+        let pub
+        if (!keys && nip07) {
+            try{
+                pub = await window.nostr.getPublicKey()
+                if (pub) {
+                    setItem('nostr', {keys: {pub: pub}})
+                    setItem('nostrSync', true)
+                    setKeys({pub: pub})
+                    setNostrSync(true)
+                } 
+            } catch (e) { return }
+        }
+
         const event = {
         content: message,
         kind: 1,
         tags: [],
         created_at: dateToUnix(),
-        pubkey: keys.pub,
+        pubkey: pub ? pub : keys.pub,
         };
-    
+
         event.id = getEventHash(event);
-        event.sig = !nostrSync ? getSignature(event, keys.priv)
+        event.sig = (!pub && !nostrSync) ? getSignature(event, keys.priv) 
             : await window.nostr.signEvent(event)  
         publish(event);
     }
 
-    const wrapped = {nostrKeys, nostrSync, onPost}
+    const wrapped = {nostrKeys, nostrSync, nip07, onPost}
 
     return (
         <NostrContext.Provider value={wrapped}>
-            <NostrProvider relayUrls={relayUrls} debug={true}>
+            <NostrProvider relayUrls={nostrKeys ? relayUrls : []} debug={true}>
                {children}
             </NostrProvider>   
         </NostrContext.Provider> 

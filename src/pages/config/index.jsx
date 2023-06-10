@@ -231,14 +231,15 @@ export class Config extends Component {
       let nip07 = 'nostr' in window
       if (nip07) {
         const pub = await window.nostr.getPublicKey()
-          window.open('https://getalby.com')
         if (pub) {
-          setItem(`nostr`, {...{key: { pub: pub }}})
+          setItem(`nostr`, {...{keys: { pub: pub }}})
+          setItem(`nostrSync`, true)
           this.setState({ npub: nip19.npubEncode(pub), nostrSync: true })
         }   
       } else window.open('https://getalby.com')
     } else {
         removeItem('nostr')
+        setItem('nostrSync', false)
         this.setState({ npub: null, nostrSync: false })
       }
   }
