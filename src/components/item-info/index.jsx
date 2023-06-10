@@ -11,6 +11,7 @@ import { CollabIssuerInfo } from '../collab/show/CollabIssuerInfo'
 import { CollaboratorType } from '../collab/constants'
 import classNames from 'classnames'
 import { LightningButton } from '../button-lightning'
+import { NostrButton } from '../button-nostr'
 import _ from 'lodash';
 
 export const ItemInfo = ({
@@ -218,15 +219,22 @@ export const ItemInfo = ({
                   </span>
                 </Primary>
               </Button>&nbsp;
-                <span
+              <span
                       className={styles.top}
-                      data-position={tooltip ? 'top' : ''}
-                      data-tooltip={tooltip ? 'zap' : null}
+                      data-position={'top'}
+                      data-tooltip={'nostrify'}
                     >
-                    <LightningButton setTooltip={setTooltip} recepient={creator.address} />
-                </span>
-              </div>
-          </div>   
+                    <NostrButton />
+              </span>&nbsp;
+              <span
+                    className={styles.top}
+                    data-position={tooltip ? 'top' : ''}
+                    data-tooltip={tooltip ? 'zap' : null}
+                  >
+                  <LightningButton setTooltip={setTooltip} recepient={creator.address} />
+              </span>
+            </div>
+        </div>   
       </>
     )
   } else {
