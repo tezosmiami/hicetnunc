@@ -44,7 +44,7 @@ export default defineConfig({
       ViteEjsPlugin(),
     ],
     define: {
-      global: 'globalThis',
+      global: 'global',
     },
     server: {
       host: true,
@@ -55,9 +55,7 @@ export default defineConfig({
       rollupOptions: {
         plugins: [rollupNodePolyFill()],
         output: {
-          // manualChunks: processChunks,
           manualChunks: {
-            three: ['three'],
             contracts: [
               '@taquito/beacon-wallet',
               '@taquito/michelson-encoder',
