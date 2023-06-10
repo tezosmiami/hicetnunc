@@ -24,7 +24,7 @@ export const useLightningContext = () => {
     
     if (!lightning) {
       throw new Error(
-        `!mesh`
+        `!lightning`
       );
     }
     return lightning;

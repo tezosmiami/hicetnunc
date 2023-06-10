@@ -10,23 +10,36 @@ const relayUrls = [
     "wss://relay.magiccity.live"
   ];
 
-
+  export const useNostrContext = () => {
+    const nostr = useContext(NostrContext);
+    if (!nostr) {
+      throw new Error(
+        `!mesh`
+      );
+    }
+    return nostr;
+  };
+  
 
 const NostrContextProvider = ({ children }) => {
     const [keys, setKeys] = useState({})
-    const [nostrSync, setNostrSync] = useState(null) 
+    const [nostrSync, setNostrSync] = useState(false)
+    const [nostrKeys, setNostrKeys] = useState(false)
     const { publish } = useNostr();
     const nip07 = 'nostr' in window
 
     useEffect(() => {
-        setNostrSync(getItem('nostSync'))
-        setKeys(getItem(nostr)?.keys)
+        setNostrSync(getItem('nostrSync'))
+        const keys = getItem('nostr')?.keys
+        if (keys) {
+            setKeys(keys)
+            setNostrKeys(true)
+        }
     }, [])
-    
-    const onPost = async () => {
-        
-        message= 'hicetnunc' 
 
+    const onPost = async () => {    
+        console.log('magicCity')
+        let message= 'hicetnunc'
         const event = {
         content: message,
         kind: 1,
@@ -36,11 +49,13 @@ const NostrContextProvider = ({ children }) => {
         };
     
         event.id = getEventHash(event);
-        event.sig = GetSignature(event, key.priv);    
+        event.sig = !nostrSync ? getSignature(event, keys.priv)
+            : await window.nostr.signEvent(event)  
         publish(event);
     }
 
-    const wrapped = {}
+    const wrapped = {nostrKeys, nostrSync, onPost}
+
     return (
         <NostrContext.Provider value={wrapped}>
             <NostrProvider relayUrls={relayUrls} debug={true}>
