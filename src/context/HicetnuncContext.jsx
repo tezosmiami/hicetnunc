@@ -16,7 +16,7 @@ import { setItem } from '../utils/storage'
 // import { UnitValue } from '@taquito/michelson-encoder'
 // import { contentType } from 'mime-types';
 import { BURN_ADDRESS } from '../constants'
-import { NetworkType } from '@airgap/beacon-sdk'
+// import { NetworkType } from '@airgap/beacon-sdk'
 import * as ls from "local-storage";
 import axios from 'axios'
 // const eztz = require('eztz-lib')
@@ -360,7 +360,7 @@ class HicetnuncContextProviderClass extends Component {
         this.state.client
           .requestPermissions({
             network: {
-              type: NetworkType.MAINNET,
+              type: 'mainnet',
               rpcUrl: 'https://mainnet.smartpy.io',
             },
           })

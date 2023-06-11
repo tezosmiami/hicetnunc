@@ -1,11 +1,10 @@
 import { defineConfig } from 'vite'
 import eslintPlugin from 'vite-plugin-eslint'
-import { ViteEjsPlugin } from 'vite-plugin-ejs'
 import react from '@vitejs/plugin-react'
 import viteTsconfigPaths from 'vite-tsconfig-paths'
 import svgrPlugin from 'vite-plugin-svgr'
 import { splitVendorChunkPlugin } from 'vite'
-// import { copySync } from 'fs-extra'
+
 import rollupNodePolyFill from 'rollup-plugin-polyfill-node'
 import filterReplace from 'vite-plugin-filter-replace'
 
@@ -41,11 +40,11 @@ export default defineConfig({
       splitVendorChunkPlugin(),
       viteTsconfigPaths(),
       svgrPlugin(),
-      ViteEjsPlugin(),
+      // ViteEjsPlugin(),
     ],
-    define: {
-      global: 'global',
-    },
+    // define: {
+    //   global: 'global',
+    // },
     server: {
       host: true,
       port: 3000,
