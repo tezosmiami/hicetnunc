@@ -3,6 +3,7 @@ import eslintPlugin from 'vite-plugin-eslint'
 import { ViteEjsPlugin } from 'vite-plugin-ejs'
 import react from '@vitejs/plugin-react'
 import viteTsconfigPaths from 'vite-tsconfig-paths'
+import mdPlugin from 'vite-plugin-markdown'
 import svgrPlugin from 'vite-plugin-svgr'
 import { splitVendorChunkPlugin } from 'vite'
 // import { copySync } from 'fs-extra'
@@ -10,6 +11,9 @@ import rollupNodePolyFill from 'rollup-plugin-polyfill-node'
 import filterReplace from 'vite-plugin-filter-replace'
 
 export default defineConfig({
+    clearScreen: false,
+    appType: 'mpa',
+
     plugins: [
       filterReplace(
         [
@@ -41,11 +45,12 @@ export default defineConfig({
       splitVendorChunkPlugin(),
       viteTsconfigPaths(),
       svgrPlugin(),
+      mdPlugin({ mode: 'react' }),
       ViteEjsPlugin(),
     ],
-    define: {
-      global: 'global',
-    },
+    // define: {
+    //   global: 'globalThis',
+    // },
     server: {
       host: true,
       port: 3000,
@@ -81,7 +86,7 @@ export default defineConfig({
         transformMixedEsModules: true,
       },
       esbuildOptions: {
-        inject: ['./src/node_polyfill.js'],
+        inject: [],
       },
     },
     resolve: {
@@ -90,9 +95,6 @@ export default defineConfig({
         stream: 'vite-compatible-readable-stream',
         path: require.resolve('path-browserify'),
         util: 'rollup-plugin-node-polyfills/polyfills/util',
-        buffer: 'rollup-plugin-node-polyfills/polyfills/buffer-es6',
-        process: 'rollup-plugin-node-polyfills/polyfills/process-es6'
-        
       },
     },
   }) 

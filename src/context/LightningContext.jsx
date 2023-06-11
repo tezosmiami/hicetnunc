@@ -3,12 +3,35 @@ import { HicetnuncContext } from './HicetnuncContext'
 import { fetchGraphQL, getNameForAddress } from '../data/hicdex'
 import { requestProvider } from "webln";
 import { bytes2Char } from "@taquito/utils";
+// import { bech32 } from 'bech32'
 import { requestInvoice } from 'lnurl-pay'
+// import { LightningAddress } from "alby-tools"
+import { walletPreview } from '../utils/string'
 import axios from 'axios'
 
 const LightningContext = createContext();
 
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+// const lnAddress_REGEX =  /^((?:[^<>()\[\]\\.,;:\s@"]+(?:\.[^<>()\[\]\\.,;:\s@"]+)*)|(?:".+"))@((?:\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(?:(?:[a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+// const lnUrl_REGEX =   /^(?:http.*[&?]lightning=|lightning:)?(lnurl[0-9]{1,}[02-9ac-hj-np-z]+)/
+
+// export const isLightning = (lnUrlorAddress)  => {
+//   if (lnUrl_REGEX.test(lnUrlorAddress.toLowerCase()) || lnAddress_REGEX.test(lnUrlorAddress)) {
+//     return true
+//   }  else return false
+// }
+
+// export const lnUrlToAddress = (str) => {
+//   try {
+//     const decoded = bech32.decode(str, 18000);
+//     const split = Buffer.from(bech32.fromWords(decoded.words)).toString().split('/')
+//     return `${split[5]}@${split[2]}`
+//   } catch (e) {
+//     console.error(e);
+//     return '';
+//   }
+// }
 
 export const fetchLightning = async(address) => { 
   try{
@@ -41,7 +64,8 @@ const LightningContextProvider = ({ children }) => {
               address: acc.address,
               }).then(({ data, errors }) => {
               if (data) {
-                  const holder = data.hic_et_nunc_holder[0]?.name || acc.address
+                  const holder = data.hic_et_nunc_holder[0]?.name 
+                  || walletPreview(acc.address)
                   setSender(holder)
               }
               if (errors) {
@@ -85,8 +109,17 @@ const LightningContextProvider = ({ children }) => {
           await requestInvoice({
               lnUrlOrAddress: lnUrlOrAddress,
               tokens: amount, // satoshis
-              comment: `appreciation zap from ${sender || 'anonymous'} on magicCity`
+              comment: `magicCity zap from ${sender || 'unknown'}`
           }) 
+          // { * alby-tools * }
+          // let address
+          // if (lnUrl_REGEX.test(lnUrlOrAddress)) { 
+          //   let address = lnUrlToAddress(lnUrlOrAddress)
+          // }
+          // const ln = new LightningAddress(address || lnUrlOrAddress)
+          // await ln.fetch()
+          // const { paymentRequest: invoice } = await ln.requestInvoice({ satoshi: amount })
+          // const invoice = request.paymentRequest
           if (isMobile) {
            window.location = `lightning:${invoice}`
             // let  clickedAt = new Date();
