@@ -18,7 +18,24 @@ const NostrContext = createContext();
     }
     return nostr;
   };
-  
+
+//   const nostrUrl = async (file) => {
+//     console.log('here')
+//     const formData = new FormData();
+//     formData.append('fileToUpload', file);
+//     try { 
+//         const response = await fetch('https://nostr.build/api/upload/iris.php', {
+//         method: 'POST',
+//         body: formData,
+//       })
+//         const url = await response.json();
+//           console.log( url);
+//      } catch (e) { 
+//         console.log(e)
+//         return null
+//         };
+//     }
+
 
 const NostrContextProvider = ({ children }) => {
     const [keys, setKeys] = useState(null)
@@ -36,10 +53,17 @@ const NostrContextProvider = ({ children }) => {
         }
     }, [])
 
-    const onPost = async () => {    
+    const objktPost = async ({ objkt }) => {    
         console.log('magicCity')
-        
-        let message= 'hicetnunc'
+        const { id, creator, title, description, artifact_uri } = objkt
+        const message = 'https://nostr.build/i/1a8540071abd4614733e30b25de8a9ae8cf9a0832108a1cc0fecc646c78c8dc0.jpg'
+    //     const response = await fetch('https://ipfs.io/ipfs/' + artifact_uri.split('//')[1])
+    //     const data = await response.blob()
+    //     console.log('d',data)
+    //    console.log(data?.type.split('/')[1])
+    //     let file = new File([data], `.${data.type.split('/')[1]}`)
+    //     const post = await nostrUrl(file)
+    //     console.log(post)
         let pub
         if (!keys && nip07) {
             try{
@@ -60,13 +84,13 @@ const NostrContextProvider = ({ children }) => {
             created_at: dateToUnix(),
             pubkey: pub ? pub : keys.pub,
         };
-        event.id = getEventHash(event);
+        event.id = getEventHash(event)
         event.sig = (!pub && !nostrSync) ? getSignature(event, keys.priv) 
             : await window.nostr.signEvent(event)
         publish(event)
     }
 
-    const wrapped = {nostrKeys, nostrSync, nip07, onPost}
+    const wrapped = {nostrKeys, nostrSync, nip07, objktPost}
 
     return (
         <NostrContext.Provider value={wrapped}>

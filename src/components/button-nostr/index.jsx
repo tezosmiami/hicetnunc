@@ -5,14 +5,15 @@ import styles from './styles.module.scss'
 
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-export const NostrButton = () => {
+export const NostrButton = (objkt) => {
     const nostr = useNostrContext()
     const history = useHistory();
+
     return (
         <>
             <div className={styles.nostr}>
                 <Button onClick={()=> nostr.nostrKeys || nostr.nip07
-                    ? nostr.onPost() : !isMobile
+                    ? nostr.objktPost(objkt) : !isMobile
                     ? window.open('https://getAlby.com') : ''}>
                     <Primary>
                     <svg stroke="currentColor" fill="currentColor" strokeWidth="0" height="1.0em" width="1.0em" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 875 875">

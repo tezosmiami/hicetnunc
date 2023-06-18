@@ -13,7 +13,8 @@ import { getItem } from "./utils/storage"
 import { NostrProvider } from "nostr-react"
 
 const relayUrls = [
-  "wss://relay.magiccity.live",
+  'wss://relay.magiccity.live',
+  'wss://nos.lol'
 ];
 
 const App = () => {

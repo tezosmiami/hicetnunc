@@ -16,9 +16,12 @@ import _ from 'lodash';
 
 export const ItemInfo = ({
   id,
+  title,
   swaps,
   creator,
-  token,
+  mimeType,
+  description,
+  artifact_uri,
   is_signed,
   token_signatures,
   feed,
@@ -219,13 +222,13 @@ export const ItemInfo = ({
                   </span>
                 </Primary>
               </Button>&nbsp;
-              <span
+              {/* <span
                       className={styles.top}
                       data-position={'top'}
                       data-tooltip={'nostrify'}
                     >
-                    <NostrButton />
-              </span>&nbsp;
+                    <NostrButton objkt={ {id, title, creator, description, artifact_uri, mimeType } } />
+              </span>&nbsp; */}
               <span
                     className={styles.top}
                     data-position={tooltip ? 'top' : ''}
