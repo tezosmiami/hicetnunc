@@ -42,6 +42,7 @@ export const fetchLightning = async(address) => {
   }
 } 
 
+
 export const useLightningContext = () => {
     const lightning = useContext(LightningContext);
     
@@ -56,18 +57,27 @@ export const useLightningContext = () => {
 const LightningContextProvider = ({ children }) => {
     const { acc } = useContext(HicetnuncContext)
     const [sender, setSender] = useState(null)
-    
+    const [subjktLightning, setSubjktLightning] = useState(null)
+    const [subjktNostr, setSubjktNostr] = useState(null)
+
     useEffect(() => {
       //move to h=n context
       const getAlias = async () => {
           acc && fetchGraphQL(getNameForAddress, 'GetNameForAddress', {
               address: acc.address,
-              }).then(({ data, errors }) => {
+              }).then(async ({ data, errors }) => {
               if (data) {
                   const holder = data.hic_et_nunc_holder[0]?.name 
                   || walletPreview(acc.address)
                   setSender(holder)
-              }
+                  const metadata = data.hic_et_nunc_holder[0]?.metadata_file 
+                  if (metadata) {
+                    let cid = await axios.get('https://ipfs.io/ipfs/' 
+                    + metadata.split('//')[1]).then(res => res.data)
+                    if (cid.lightning) setSubjktLightning(cid.lightning)
+                    if (cid.nostr) setSubjktNostr(cid.nostr)
+                  }
+                } 
               if (errors) {
                   console.error(errors)
               }
@@ -137,7 +147,7 @@ const LightningContextProvider = ({ children }) => {
         }
     }
     
-    const wrapped = {has_lightning, fetchLightning, sync_lightning, zap_lightning}
+    const wrapped = {has_lightning, fetchLightning, sync_lightning, zap_lightning, subjktLightning}
 
     return (
       <LightningContext.Provider value={wrapped}>

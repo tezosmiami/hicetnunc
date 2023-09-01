@@ -169,6 +169,7 @@ hic_et_nunc_splitcontract(where: {_or: [{administrator: {_eq: $address}}, {share
 export const getNameForAddress = `query GetNameForAddress($address: String!) {
 hic_et_nunc_holder(where: {address: {_eq: $address}}) {
   name
+  metadata_file
 }
 }`
 

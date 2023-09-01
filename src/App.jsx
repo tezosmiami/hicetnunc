@@ -10,12 +10,12 @@ import { Loading as Preloading } from './components/loading'
 import { FeedbackComponent } from './components/feedback'
 import { routes } from './routes'
 import { getItem } from "./utils/storage"
-import { NostrProvider } from "nostr-react"
+// import { NostrProvider } from "nostr-react"
 
-const relayUrls = [
-  'wss://relay.magiccity.live',
-  'wss://nos.lol'
-];
+// const relayUrls = [
+//   'wss://relay.magiccity.live',
+//   'wss://nos.lol'
+// ];
 
 const App = () => {
   const [loading, setLoading] = useState(true)
@@ -35,7 +35,7 @@ const App = () => {
     <HicetnuncContextProvider>
       <MeshContextProvider>
         <LightningContextProvider>
-          <NostrProvider relayUrls={getItem('nostr') || 'nostr' in window ? relayUrls : []} debug={true}>
+          {/* <NostrProvider relayUrls={getItem('nostr') || 'nostr' in window ? relayUrls : []} debug={true}> */}
             <NostrContextProvider>
               <Header />
               <FeedbackComponent />
@@ -45,7 +45,7 @@ const App = () => {
                 ))}
               </Switch>
             </NostrContextProvider>
-          </NostrProvider>
+          {/* </NostrProvider> */}
         </LightningContextProvider>        
       </MeshContextProvider> 
     </HicetnuncContextProvider>

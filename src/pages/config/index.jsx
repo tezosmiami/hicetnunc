@@ -87,8 +87,7 @@ export class Config extends Component {
     npub: null,
     nsec: null,
     nostrSync: false,
-    toogled: false
-    
+    toogled: false,
   }
  
   componentDidMount = async() => {
@@ -109,6 +108,8 @@ export class Config extends Component {
 
         if (cid.description) this.setState({ description: cid.description })
         if (cid.identicon) this.setState({ identicon: cid.identicon })
+        if (cid.lightning) this.setState({ lightning: cid.lightning })
+        if (cid.nostr) this.setState({ nostr: cid.npub })
         if (this.context.subjktInfo.name) this.setState({ subjkt: this.context.subjktInfo.name })
       }
     } 
@@ -145,7 +146,7 @@ export class Config extends Component {
     this.context.registry(
       this.state.subjkt,
       await ipfs.add(
-        Buffer.from(JSON.stringify({ description: this.state.description, identicon: this.state.identicon }))
+        Buffer.from(JSON.stringify({ description: this.state.description, identicon: this.state.identicon, lightning: this.state.lightning, nostr: this.state.npub }))
       )
     )
   }
@@ -302,25 +303,8 @@ export class Config extends Component {
               label="Description"
               value={this.state.description}
             />
-            <Button onClick={this.subjkt_config}>
-              <Purchase>Save Profile</Purchase>
-            </Button>
           </Padding>
-          <div style={{ display: 'inline' }}>
-            <p style={{paddingTop : '7.5px' }}>
-              <span>
-                link Twitter, Discord, GitHub, and website with </span>
-              <span>
-                <a href="https://tzprofiles.com" target="_blank" rel="noopener noreferrer">
-                  <Button>
-                    <span style={{ color: 'var(--text-color)', fontWeight: 'bold' }}> Tezos Profiles</span>
-                  </Button>
-                </a>
-              </span>
-            </p>
-          </div>
         </Container>
-        <p>&nbsp;</p>
         <Container>
           <Padding>
             <Input
@@ -330,10 +314,10 @@ export class Config extends Component {
               label="Lightning (URL or Address)"
               value={this.state.lightning}
             />
-            <Button onClick={this.lightning_config}>
+            {/* <Button onClick={this.lightning_config}>
               <Purchase>Save <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 16 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641l2.5-8.5z"></path></svg></Purchase>
-            </Button>
-            <p style={{ marginTop : '7.5px' }}>link Lightning (URL or Address) to activate zaps</p>
+            </Button> */}
+            {/* <p style={{ marginTop : '7.5px' }}>link Lightning (URL or Address) to activate zaps</p> */}
           </Padding>
         </Container>   
         <p>&nbsp;</p>
@@ -385,9 +369,34 @@ export class Config extends Component {
                      </>}
               {/* </form> */}
             </div>
-            <p style={{ marginTop : '7.5px' }}>link Nostr keys for extra features</p>
+            {/* <p style={{ marginTop : '7.5px' }}>link Nostr keys for extra features</p> */}
           </Padding>
         </Container> 
+        <Container>
+          <Padding>
+            <Button onClick={this.subjkt_config}>
+                <Purchase>Save Profile</Purchase>
+              </Button>
+            <div style={{ display: 'inline' }}>
+              {/* <p style={{paddingTop : '7.5px' }}>
+                <span>
+                link lightning and nostr to receive zaps and direct messages
+                </span>
+              </p> */}
+              <p style={{paddingTop : '7.5px' }}>
+                <span>
+                  link Twitter, Discord, GitHub, and website with </span>
+                <span>
+                  <a href="https://tzprofiles.com" target="_blank" rel="noopener noreferrer">
+                    <Button>
+                      <span style={{ color: 'var(--text-color)', fontWeight: 'bold' }}> Tezos Profiles</span>
+                    </Button>
+                  </a>
+                </span>
+              </p>
+            </div>
+          </Padding>
+        </Container>
         <Container>
           <Padding>
             <div onClick={this.toggle}>

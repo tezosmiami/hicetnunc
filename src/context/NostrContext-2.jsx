@@ -1,24 +1,19 @@
 import { useEffect, useState, createContext, useContext } from "react"
 import { getEventHash, getSignature, nip04, nip19 } from "nostr-tools"
 import { getItem, setItem } from "../utils/storage"
-// import { useNostr, dateToUnix, useNostrEvents } from "nostr-react"
-import { useSubscribe, usePublish } from 'nostr-hooks';
+import { useNostr, dateToUnix, useNostrEvents } from "nostr-react"
 
 const NostrContext = createContext();
 
-const relays = [
-    'wss://relay.magiccity.live',
-    'wss://relay.damus.io',
-    'wss://nos.lol',
-    'wss://relay.snort.social'
-  ];
-
+// const relayUrls = [
+//     "wss://relay.magiccity.live",
+//   ];
 
   export const useNostrContext = () => {
     const nostr = useContext(NostrContext);
     if (!nostr) {
       throw new Error(
-        `!nostr`
+        `!mesh`
       );
     }
     return nostr;
@@ -43,21 +38,20 @@ const relays = [
 
 
 const NostrContextProvider = ({ children }) => {
-    // const [keys, setKeys] = useState(null)
+    const [keys, setKeys] = useState(null)
     const [nostrSync, setNostrSync] = useState(false)
     const [nostrKeys, setNostrKeys] = useState(false)
     const nip07 = 'nostr' in window
-    // const { publish } = useNostr()
-    const publish = usePublish(relays)
-    const { pub, priv }= getItem('nostr') ? getItem('nostr')?.keys : {priv:'',pub:''}
+    const { publish } = useNostr()
 
     useEffect(() => {
         setNostrSync(getItem('nostrSync'))
-        const keys = getItem('nostr')?.keys || null
+        const keys = getItem('nostr')?.keys
         if (keys) {
+            setKeys(keys)
             setNostrKeys(true)
         }
-    }, [pub])
+    }, [])
     
     const sendMessage = async (message, receiver) => {
         let pub
@@ -86,7 +80,7 @@ const NostrContextProvider = ({ children }) => {
         event.id = getEventHash(event)
         event.sig = (!pub && !nostrSync) ? getSignature(event, keys.priv) 
             : await window.nostr.signEvent(event)
-        await publish(event)
+        publish(event)
     }
 
     const objktPost = async ({ objkt }) => {    
@@ -128,36 +122,75 @@ const NostrContextProvider = ({ children }) => {
 
     // let test = getItem('nostr').keys.pub
     // let test1 = nip19.decode('npub190rqwj0nud4uhvmaeg7cgn0gypu0s09j87vqjluhfhju0req2khsskh9w7').data
-    const { events: received } = useSubscribe({
-        relays: relays,
-        filters: [{
+    
+    const { events: received } = useNostrEvents({
+        filter: {
             // since: dateToUnix(now.current),
-            // since: 0,
+            since: 0,
             kinds: [4],
-            "#p": [pub],
-        }],
+            "#p": [keys?.pub],
+        },
     })
 
-    const { events: sent } = useSubscribe({
-        relays: relays,
-        filters: [{
+    const { events: sent } = useNostrEvents({
+        filter: {
             // since: dateToUnix(now.current),
-            // since: 0,
+            since: 0,
             kinds: [4],
             authors: [       
-                pub
+                keys?.pub
                 ],
-        }],
+        },
     })
 
+// console.log(window.nostr.nip04)
+//     const delay = async(event, senderDecode) => {
+//         // if (window.nostr.nip04) {
+//         //     setTimeout(() => {
+//         //         delay(event,senderDecode) 
+//         //     }, 100)
+//         // } else {
+//             return await window.nostr.nip04.decrypt(senderDecode, event.content)
+//         // }
+//       }
+    const decryptMessage = async (event) => {
+        let senderDecode = event.pubkey === keys.pub 
+        ? event.tags[0][1] : event.pubkey
+        if (keys.priv) {
+            return await nip04.decrypt(priv, senderDecode, event.content)
+        } else {
+        return await n.nip04.decrypt(senderDecode, event.content)
+        }
+    }
 
-console.log('sent',sent)
-console.log(received)
-    const wrapped = {nostrKeys, nostrSync, nip07, sent, received, objktPost, sendMessage}
+    useEffect(() => {
+        const decodeSent = async () =>{ 
+            const event = sent[sent.length-1]
+            if (event) {
+                event.decoded = await decryptMessage(event)
+                sent[sent.length-1] = event
+            }
+        }
+        decodeSent()
+    }, [sent])
+
+    // useEffect(() => {
+    //     const decodeReceived = async () =>{ 
+    //         const event = received[received.length-1]
+    //         if (event) {
+    //             event.decoded = await decryptMessage(event)
+    //             received[received.length-1] = event
+    //             active = false
+    //         }
+    //     }
+    //     decodeReceived()
+    // }, [received])
+
+    const wrapped = {nostrKeys, nostrSync, nip07, keys, sent, received, objktPost, sendMessage}
 
     return (
         <NostrContext.Provider value={wrapped}>
-            {/* <NostrProvider relays={nostrKeys ? relays : []} debug={true}> */}
+            {/* <NostrProvider relayUrls={nostrKeys ? relayUrls : []} debug={true}> */}
                {children}
             {/* </NostrProvider>    */}
         </NostrContext.Provider> 

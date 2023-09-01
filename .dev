@@ -1,7 +1,0 @@
-VITE_IPFS_KEY=''
-
-VITE_BLOCKLIST_OBJKT='https://raw.githubusercontent.com/hicetnunc2000/hicetnunc/main/filters/o.json'
-VITE_BLOCKLIST_WALLET='https://raw.githubusercontent.com/hicetnunc2000/hicetnunc/main/filters/w.json'
-VITE_BLOCKLIST_BAN='https://raw.githubusercontent.com/hicetnunc2000/hicetnunc/main/filters/b.json'
-
-VITE_GRAPHQL_API='https://hdapi.teztools.io/v1/graphql'

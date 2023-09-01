@@ -300,7 +300,8 @@ export default class Display extends Component {
     collectionType: 'notForSale',
     showUnverifiedCollabObjkts: false,
     hdao: 0,
-    lightning:'',
+    lightning: '',
+    nostr: '',
     claim: []
   }
 
@@ -340,6 +341,8 @@ export default class Display extends Component {
           let meta = await axios.get('https://dweb.link/ipfs/' + res[0].metadata_file.split('//')[1]).then(res => res.data)
           if (meta.description) this.setState({ description: meta.description })
           if (meta.identicon) this.setState({ identicon: meta.identicon })
+          if (meta.lightning) this.setState({ lightning: meta.lightning })
+          if (meta.nostr) this.setState({ nostr: meta.nostr })
           if (res[0]) this.setState({ subjkt: res[0].name })
           if (res[0]) this.setState({ hdao: Math.floor(res[0].hdao_balance / 1000000) })
         }
@@ -350,7 +353,7 @@ export default class Display extends Component {
     } else {
       let res = await fetchSubjkts(decodeURI(window.location.pathname.split('/')[1]))
       // console.log(decodeURI(window.location.pathname.split('/')[1]))
-      //console.log(res)
+      console.log(res)
       if (res[0]?.metadata_file) {
       let meta = await axios.get('https://dweb.link/ipfs/' + res[0].metadata_file.split('//')[1]).then(res => res.data)
         //console.log(meta)
@@ -864,6 +867,14 @@ export default class Display extends Component {
                   )}
                   { 
                   <LightningButton recepient={this.state.wallet} />
+                  } 
+                   {
+                   <div>
+                    &nbsp;&nbsp;
+                    <Button href={`http://${this.state.dns}`}>
+                      <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M22 7.535v9.465a3 3 0 0 1 -2.824 2.995l-.176 .005h-14a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-9.465l9.445 6.297l.116 .066a1 1 0 0 0 .878 0l.116 -.066l9.445 -6.297z" strokeWidth="0" fill="currentColor"></path><path d="M19 4c1.08 0 2.027 .57 2.555 1.427l-9.555 6.37l-9.555 -6.37a2.999 2.999 0 0 1 2.354 -1.42l.201 -.007h14z" strokeWidth="0" fill="currentColor"></path></svg>
+                    </Button>
+                    </div>
                   } 
                 </div>
               </div>

@@ -11,12 +11,12 @@ export const LightningButton = ({ setTooltip, recepient }) => {
     const [modal, setModal] = useState(false)
     const [amount, setAmount] = useState(21)
     const [lightning, setLightning] = useState(null)
-    const { fetchLightning, has_lightning, zap_lightning } = useLightningContext()
+    const { fetchLightning, has_lightning, zap_lightning, subjktLightning } = useLightningContext()
     
     useEffect(() => {
         const fetchRecepient = async() =>{
             getItem('defaultsats') ? setAmount(getItem('defaultsats')) : setItem('defaultsats', 21)
-            setLightning(await fetchLightning(recepient))
+            setLightning(subjktLightning || await fetchLightning(recepient))
         }
         recepient && fetchRecepient()
         return () => {

@@ -203,6 +203,15 @@ export const Header = () => {
                         <Primary>galleries</Primary>
                       </Button>
                     </li>
+                    {context.acc?.address ?
+                      <li>
+                        <Button onClick={() => handleRoute('/messages')}>
+                          <Primary>messages</Primary>
+                        </Button>
+                      </li>
+                      :
+                      null
+                    }
                     {/* <li>
                       <Button onClick={() => handleRoute('/sync', 'friends')}>
                         <Primary>gaming</Primary>

@@ -5,6 +5,7 @@ import Display from './pages/display'
 import { Latest, Hdao, Random, Featured } from './pages/feeds'
 import { Mint } from './pages/mint'
 import { Live } from './pages/live'
+import { Messages } from './pages/messages'
 import { ObjktDisplay } from './pages/objkt-display'
 import { Collaborate, CollabDisplay } from './pages/collaborate'
 import { Galleries } from './pages/galleries'
@@ -101,6 +102,11 @@ export const routes = [
     exact: false,
     path: '/lobby',
     component: Live,
+  },
+  {
+    exact: false,
+    path: '/messages',
+    component: Messages,
   },
   {
     exact: false,
