@@ -239,6 +239,7 @@ export class Config extends Component {
         let npub = nip19.npubEncode(pub)
         setItem(`nostr`,{...{keys:{ pub: pub, priv: priv}}})
         this.setState({ npub: npub })
+        window.dispatchEvent(new Event('storage'));
         
     }    
 

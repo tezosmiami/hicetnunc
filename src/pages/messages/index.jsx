@@ -72,7 +72,6 @@ export const Messages = () => {
         }
     !loading && nostrAcc && decodeMsgs()
     }, [loading, nostrAcc, counter])
-    console.log(loading, counter, quantity)
 
     if(!nostrAcc) return(
         <div style={{width: '95%', top: '108px', position: 'relative', zIndex: '111', overflowY: 'visible'}}>
