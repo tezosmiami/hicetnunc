@@ -7,8 +7,10 @@ import {
 } from '@taquito/beacon-wallet'
 import { TezosToolkit, OpKind, MichelCodecPacker } from '@taquito/taquito'
 import { MichelsonMap } from '@taquito/taquito'
+import { bytes2Char, char2Bytes, verifySignature } from '@taquito/utils'
 import { packData } from '../components/collab/functions'
 import { setItem } from '../utils/storage'
+import { RpcClient } from '@taquito/rpc';
 // import { Parser, Expr } from "@taquito/michel-codec";
 // import { Schema } from "@taquito/michelson-encoder";
 // import { KeyStoreUtils } from 'conseiljs-softsigner'
@@ -17,8 +19,9 @@ import { setItem } from '../utils/storage'
 // import { contentType } from 'mime-types';
 import { BURN_ADDRESS } from '../constants'
 // import { NetworkType } from '@airgap/beacon-sdk'
-import * as ls from "local-storage";
+import * as ls from "local-storage"
 import axios from 'axios'
+
 // const eztz = require('eztz-lib')
 
 export const HicetnuncContext = createContext()
@@ -37,7 +40,9 @@ const createProxySchema = `
 // const Tezos = new TezosToolkit('https://mainnet.smartpy.io')
 //const Tezos = new TezosToolkit('eu01-node.teztools.net-lb')
 const Tezos = new TezosToolkit('https://mainnet.api.tez.ie')
-const Packer = new MichelCodecPacker();
+const rpcClient = new RpcClient('https://mainnet.api.tez.ie');
+const Packer = new MichelCodecPacker()
+Tezos.setPackerProvider(Packer)
 //const Tezos = new TezosToolkit('https://api.tez.ie/rpc/mainnet')
 // storage fee adjustment
 
@@ -75,7 +80,9 @@ const wallet = new PatchedBeaconWallet({
 }) */
 
 const wallet = new BeaconWallet({
-  name: window.location.href.includes('.miami') ? 'hicetnunc.miami' : 'hicetnunc.live',
+  name: window.location.href.includes('.miami') ? 'hicetnunc.miami'
+     : window.location.href.includes('hicetnunc.live') 
+     ? 'hicetnunc.live' : 'magicCity.live',
   preferredNetwork: 'mainnet',
 })
 
@@ -120,8 +127,8 @@ class HicetnuncContextProviderClass extends Component {
       lastId: undefined,
       setId: (id) => this.setState({ lastId: id }),
 
-      subjktInfo: {},
-      setSubjktInfo: (subjkt) => this.setState({ subjktInfo: subjkt }),
+      subjktInfo: null,
+      setSubjktInfo: (subjkt) => this.setState({ subjktInfo: {name: subjkt} }),
 
       // hdao marketplace
 
@@ -644,7 +651,45 @@ class HicetnuncContextProviderClass extends Component {
           .catch((e) => e)
       },
 
+      formatMsg: (message) => {
+          const formatted = [
+          'Tezos Signed Message:',
+          message,
+        ].join(' ');
+        const bytes = char2Bytes(formatted);
+        const bytesLength = (bytes.length / 2).toString(16);
+        const padding = `00000000${bytesLength}`;
+        const paddedLength = padding.slice(padding.length - 8);
+        const payloadBytes = '05' + '01' + paddedLength + bytes;
+        return payloadBytes
+      },
+
+      signMsg: async (message) => {
+        const payloadBytes = this.state.formatMsg(message)
+        const payload = {
+          signingType: 'micheline',
+          payload: payloadBytes,
+          sourceAddress: this.state.acc.address,
+        };
+
+        const signedPayload = await wallet.client.requestSignPayload(payload);
+        const { signature } = signedPayload;
+        return signature
+      },
+
+      verify:  async (pk, message, signed) => {
+        const payloadBytes = this.state.formatMsg(message)
+        const pkh =  await rpcClient.getManagerKey(pk)?.then(publicKey=> publicKey)
+        const verified = verifySignature(
+            payloadBytes,
+            pkh,
+            signed
+        )
+        return verified
+      },
+
       signStr: async (payload) => {
+
         const signedPayload = await wallet.client.requestSignPayload(payload)
         // console.log(signedPayload, payload)
         const signature = signedPayload
@@ -666,30 +711,39 @@ class HicetnuncContextProviderClass extends Component {
       },
 
       registry: async (alias, metadata) => {
-        // console.log(metadata)
         const subjktAddressOrProxy = this.state.proxyAddress || this.state.subjkt
-
         return await Tezos.wallet.at(subjktAddressOrProxy).then((c) =>
-          c.methods
-            .registry(
-              ('ipfs://' + metadata.path)
-                .split('')
-                .reduce(
-                  (hex, c) =>
-                    (hex += c.charCodeAt(0).toString(16).padStart(2, '0')),
-                  ''
-                ),
-              alias
-                .split('')
-                .reduce(
-                  (hex, c) =>
-                    (hex += c.charCodeAt(0).toString(16).padStart(2, '0')),
-                  ''
-                )
-            )
-            .send({ amount: 0 })
+        c.methods
+          .registry(
+            ('ipfs://' + metadata.path)
+              .split('')
+              .reduce(
+                (hex, c) =>
+                  (hex += c.charCodeAt(0).toString(16).padStart(2, '0')),
+                ''
+              ),
+            alias
+              .split('')
+              .reduce(
+                (hex, c) =>
+                  (hex += c.charCodeAt(0).toString(16).padStart(2, '0')),
+                ''
+              )
+          )
+          .send({ amount: 0 })
         )
       },
+      
+      getSubjkt: async (address) => {
+        const subjktAddressOrProxy = this.state.proxyAddress || this.state.subjkt
+        return await Tezos.contract.at(subjktAddressOrProxy).then((c) =>
+          c.storage().then(async (s) => {
+            const res = await  s['registries'].get(address)
+            return res
+            })
+        )},
+      
+      
 
       hDAO_update_operators: async (address) => {
         return await Tezos.wallet.at(this.state.hDAO).then((c) =>
@@ -723,13 +777,18 @@ class HicetnuncContextProviderClass extends Component {
       updateMessage: (message) => this.setState({ message: message }),
 
       setAccount: async () => {
-        this.setState({
-          acc:
-            Tezos !== undefined
-              ? await wallet.client.getActiveAccount()
-              : undefined,
-          address: await wallet.client.getActiveAccount(),
-        })
+        const address = (await wallet.client.getActiveAccount())?.address
+        if (address){
+          const name = bytes2Char(await this.state.getSubjkt(address))
+          this.setState({
+            acc:
+              Tezos !== undefined
+                ? await wallet.client.getActiveAccount()
+                : undefined,
+            address: await wallet.client.getActiveAccount(),
+            subjktInfo: {...this.subjktInfo, name }
+          })
+        }
       },
 
       syncTaquito: async () => {
@@ -747,16 +806,16 @@ class HicetnuncContextProviderClass extends Component {
           console.log('permissions')
           await wallet.requestPermissions({ network })
         }
-
+        const address = await wallet.getPKH()
+        console.log(address)
         this.setState({
           Tezos: Tezos,
-          address: await wallet.getPKH(),
-          acc: await wallet.client.getActiveAccount(),
+          address,
+          acc: activeAccount,
           collapsed: true,
           wallet,
         })
-        this.state.setAuth(await wallet.getPKH())
-        // console.log(this.state)
+        this.state.setAuth(address)
       },
 
       disconnect: async () => {
@@ -996,6 +1055,7 @@ class HicetnuncContextProviderClass extends Component {
             })
           })
       },
+
       register_lightning: async(lnUrlOrAddress) => {
         console.log(`Registering lnUrlOrAddress...`)
         Tezos.wallet

@@ -15,6 +15,7 @@ import { ResponsiveMasonry } from '../../components/responsive-masonry'
 import { Link } from 'react-router-dom'
 import { CollabsTab } from '../../components/collab/show/CollabsTab'
 import { LightningButton } from '../../components/button-lightning'
+import { MessageButton } from '../../components/button-message'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import styles from './styles.module.scss'
 import axios from 'axios'
@@ -338,7 +339,7 @@ export default class Display extends Component {
       let res = await fetchTz(wallet)
       try {
         if (res[0]) {
-          let meta = await axios.get('https://dweb.link/ipfs/' + res[0].metadata_file.split('//')[1]).then(res => res.data)
+          let meta = await axios.get('https://ipfs.io/ipfs/' + res[0].metadata_file.split('//')[1]).then(res => res.data)
           if (meta.description) this.setState({ description: meta.description })
           if (meta.identicon) this.setState({ identicon: meta.identicon })
           if (meta.lightning) this.setState({ lightning: meta.lightning })
@@ -353,9 +354,9 @@ export default class Display extends Component {
     } else {
       let res = await fetchSubjkts(decodeURI(window.location.pathname.split('/')[1]))
       // console.log(decodeURI(window.location.pathname.split('/')[1]))
-      console.log(res)
+      // console.log(res)
       if (res[0]?.metadata_file) {
-      let meta = await axios.get('https://dweb.link/ipfs/' + res[0].metadata_file.split('//')[1]).then(res => res.data)
+      let meta = await axios.get('https://ipfs.io/ipfs/' + res[0].metadata_file.split('//')[1]).then(res => res.data)
         //console.log(meta)
         if (meta.description) this.setState({ description: meta.description })
         if (meta.identicon) this.setState({ identicon: meta.identicon })
@@ -865,17 +866,11 @@ export default class Display extends Component {
                       </Button>&nbsp;
                     </div>  
                   )}
-                  { 
+                  
                   <LightningButton recepient={this.state.wallet} />
-                  } 
-                   {
-                   <div>
-                    &nbsp;&nbsp;
-                    <Button href={`http://${this.state.dns}`}>
-                      <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M22 7.535v9.465a3 3 0 0 1 -2.824 2.995l-.176 .005h-14a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-9.465l9.445 6.297l.116 .066a1 1 0 0 0 .878 0l.116 -.066l9.445 -6.297z" strokeWidth="0" fill="currentColor"></path><path d="M19 4c1.08 0 2.027 .57 2.555 1.427l-9.555 6.37l-9.555 -6.37a2.999 2.999 0 0 1 2.354 -1.42l.201 -.007h14z" strokeWidth="0" fill="currentColor"></path></svg>
-                    </Button>
-                    </div>
-                  } 
+                  <div style={{marginLeft: '21px'}}>   
+                    <MessageButton tezos={this.state.wallet} subjkt={this.state?.subjkt}/>
+                  </div>       
                 </div>
               </div>
             </div>
@@ -908,7 +903,7 @@ export default class Display extends Component {
                         this.sortByPrice();
                       }}>
                       <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="22" height="22" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M8 16H4l6 6V2H8zm6-11v17h2V8h4l-6-6z" fill="var(--text-color)"/></svg>
-                    </Button>}
+                    </Button>}&nbsp;&nbsp;
                     <Button
                       onClick={() => {
                         this.sortById();

@@ -4,11 +4,12 @@
 @import '../../styles/variables.scss';
 
 .message {
-  width:96;
+  width: 92vw;
   margin-left: 18px;
   padding-top: 21px;
   padding-bottom: 21px;
   border-bottom: 1px solid var(--text-color);
+  // display: table;
 }
 
 .footer {

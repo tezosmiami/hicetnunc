@@ -17,7 +17,7 @@ export const ObjktPost = (item) => {
     useEffect(() => {
       const getMetadataFile = async () => {
         if (objkt.creator.metadata_file) {
-          let meta = await axios.get('https://dweb.link/ipfs/' + objkt.creator.metadata_file.split('//')[1]).then(res => res.data)
+          let meta = await axios.get('https://ipfs.io/ipfs/' + objkt.creator.metadata_file.split('//')[1]).then(res => res.data)
           setLogo(meta.identicon) 
         }
       }

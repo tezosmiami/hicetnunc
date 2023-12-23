@@ -6,13 +6,13 @@ import styles from './styles.module.scss'
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
 export const NostrButton = (objkt) => {
-    const nostr = useNostrContext()
+    const { nostrAcc } = useNostrContext()
     const history = useHistory();
 
     return (
         <>
             <div className={styles.nostr}>
-                <Button onClick={()=> nostr.nostrKeys || nostr.nip07
+                <Button onClick={()=> nostrAcc
                     ? nostr.objktPost(objkt) : !isMobile
                     ? window.open('https://getAlby.com') : ''}>
                     <Primary>

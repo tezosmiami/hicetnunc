@@ -34,6 +34,7 @@ const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 // }
 
 export const fetchLightning = async(address) => { 
+  
   try{
     const result = await axios.get(`https://api.tzkt.io/v1/bigmaps/464343/keys/${address}`)
     return bytes2Char(result.data.value)

@@ -9,6 +9,7 @@ import { Button, Curate, Primary, Purchase } from '../../components/button'
 import { Upload } from '../../components/upload'
 import { Identicon } from '../../components/identicons'
 import { fetchLightning } from '../../context/LightningContext'
+import { NostrLink } from '../../components/nostr-link'
 import {nip19, generatePrivateKey, getPublicKey} from 'nostr-tools'
 import { getItem, setItem, removeItem } from '../../utils/storage'
 import { utils } from 'lnurl-pay/'
@@ -89,31 +90,28 @@ export class Config extends Component {
     nostrSync: false,
     toogled: false,
   }
- 
+ // on load
   componentDidMount = async() => {
-    await this.context.syncTaquito()
+    // await this.context.syncTaquito()
     const { acc, proxyAddress } = this.context
-
     // Maybe use proxy address here
     const address = proxyAddress || acc?.address
     this.setState({ address })
     if (address) {
       let res = await fetchTz(address)
       this.context.subjktInfo = res[0]
-
       if (this.context.subjktInfo) {
         let cid = await axios.get('https://ipfs.io/ipfs/' + (this.context.subjktInfo.metadata_file).split('//')[1]).then(res => res.data)
-
         this.context.subjktInfo.gravatar = cid
-
         if (cid.description) this.setState({ description: cid.description })
         if (cid.identicon) this.setState({ identicon: cid.identicon })
         if (cid.lightning) this.setState({ lightning: cid.lightning })
-        if (cid.nostr) this.setState({ nostr: cid.npub })
+        if (cid.nostr) this.setState({ nostr: cid.nostr })
         if (this.context.subjktInfo.name) this.setState({ subjkt: this.context.subjktInfo.name })
       }
     } 
     let nostr = getItem('nostr')?.keys
+    //revisit
     if (nostr) {
       let npub = nostr?.pub
       let nsec = nostr?.priv
@@ -121,8 +119,16 @@ export class Config extends Component {
       nsec && this.setState({ nsec: nip19.nsecEncode(nsec)})
       npub && !nsec && this.setState({ nostrSync: true })
     }
+
+    //revist
     this.setState({ lightning: await fetchLightning(address)})
   }
+
+  componentDidUpdate =async (prevState)=>{
+      if (this.state?.address !== this.context.acc?.address) {
+        this.componentDidMount()
+      }
+   }
 
   handleChange = (e) => {
     if (e.target.name == 'subjkt' && !e.target.checkValidity()) {
@@ -136,7 +142,7 @@ export class Config extends Component {
   // config subjkt
 
   subjkt_config = async () => {
-
+    if (this.state.nsec) { this.setNostr() }
     if (this.state.selectedFile) {
       const [file] = this.state.selectedFile
       const buffer = Buffer.from(await file.arrayBuffer())
@@ -146,7 +152,11 @@ export class Config extends Component {
     this.context.registry(
       this.state.subjkt,
       await ipfs.add(
-        Buffer.from(JSON.stringify({ description: this.state.description, identicon: this.state.identicon, lightning: this.state.lightning, nostr: this.state.npub }))
+        Buffer.from(JSON.stringify({
+           description: this.state.description,
+          identicon: this.state.identicon, 
+          lightning: this.state.lightning, 
+          nostr: this.state.npub }, null, 2))
       )
     )
   }
@@ -213,18 +223,23 @@ export class Config extends Component {
 
   checkNostr = () => {
     try {
-      let nsec = nip19.decode(this.state.nsec)  
-      if (nsec.type === 'nsec') return true
+      //check for hex
+
+      let pk = this.state.nsec.startsWith('nsec') ? nip19.decode(this.state.nsec)
+        : nip19.decode(nip19.nsecEncode(this.state.nsec))
+      if (pk.type === 'nsec') return true
     } catch (e) { return false }
     }
 
   setNostr = () => {
-        let priv = nip19.decode(this.state.nsec).data
+        let priv = this.state.nsec.startsWith('nsec') ? nip19.decode(this.state.nsec)?.data
+        : this.state.nsec
+        
         let pub = getPublicKey(priv)
         let npub = nip19.npubEncode(pub)
-        setItem(`nostr`,{...{keys:{ pub: pub,
-          priv: priv}}})
+        setItem(`nostr`,{...{keys:{ pub: pub, priv: priv}}})
         this.setState({ npub: npub })
+        
     }    
 
   syncNostr = async () => {
@@ -236,25 +251,30 @@ export class Config extends Component {
           setItem(`nostr`, {...{keys: { pub: pub }}})
           setItem(`nostrSync`, true)
           this.setState({ npub: nip19.npubEncode(pub), nostrSync: true })
+          window.dispatchEvent(new Event('storage'));
         }   
       } else window.open('https://getalby.com')
     } else {
         removeItem('nostr')
         setItem('nostrSync', false)
         this.setState({ npub: null, nostrSync: false })
+        window.dispatchEvent(new Event('storage'));
       }
   }
   genNostr = () => {
     let sk = generatePrivateKey() 
     let pk = getPublicKey(sk)
-    setItem(`nostr`,{...{keys:{ pub:pk, priv:sk }}})
+    setItem(`nostr`, {...{keys: { pub:pk, priv:sk }}})
     this.setState({ npub: nip19.npubEncode(pk), nsec: nip19.nsecEncode(sk) })
+    window.dispatchEvent(new Event('storage'));
   }
 
   rmNostr = () => {
-    this.setState({ npub: null, nsec: null, warning: false })
     removeItem(`nostr`)
+    this.setState({ npub: null, nsec: null, warning: false, clipboard: false })
+    window.dispatchEvent(new Event('storage'));
   }
+
 
   // warnNostr = () => {
   //   this.setState({ warning: true })
@@ -265,36 +285,39 @@ export class Config extends Component {
   //   this[`${action}Nostr`]()
   // }
 
-  sign = () => {
-    this.context.signStr({
-      /*       payload : "05" + char2Bytes(this.state.str) */
-      payload: this.state.str
-        .split('')
-        .reduce(
-          (hex, c) => (hex += c.charCodeAt(0).toString(16).padStart(2, '0')),
-          ''
-        ),
-      /*         sourceAddress: this.context.addr,
-       */
-    })
-  }
+  // sign = () => {
+  //   this.context.signStr({
+  //     /*       payload : "05" + char2Bytes(this.state.str) */
+  //     payload: this.state.str
+  //       .split('')
+  //       .reduce(
+  //         (hex, c) => (hex += c.charCodeAt(0).toString(16).padStart(2, '0')),
+  //         ''
+  //       ),
+  //     /*         sourceAddress: this.context.addr,
+  //      */
+  //   })
+  // }
  
   render() {
-    return (
-      <Page>
+// sync unsync
+// pattern
+   return (
+      this.context.acc && <Page>
         <Container>
           <Identicon address={this.state.address} logo={this.state.identicon} />
           <div style={{ height: '20px' }}></div>
           <input type="file" onChange={this.onFileChange} />
           <div style={{ height: '20px' }}></div>
           <Padding>
+            <br/>
             <Input
               name="subjkt"
               onChange={this.handleChange}
               placeholder="Alias"
               label="Alias"
               value={this.context.subjktInfo ? this.context.subjktInfo.name : undefined}
-              pattern="^[a-z0-9-._]*$"
+              pattern="^[a-z0-9\-._]*$"
             />
             <Input
               name="description"
@@ -304,23 +327,12 @@ export class Config extends Component {
               value={this.state.description}
             />
           </Padding>
+          <Button onClick={this.subjkt_config}>
+                <Purchase>Save Profile</Purchase>
+          </Button>
         </Container>
-        <Container>
-          <Padding>
-            <Input
-              name="lightning"
-              onChange={this.handleChange}
-              placeholder="Lightning (URL or Address)"
-              label="Lightning (URL or Address)"
-              value={this.state.lightning}
-            />
-            {/* <Button onClick={this.lightning_config}>
-              <Purchase>Save <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 16 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641l2.5-8.5z"></path></svg></Purchase>
-            </Button> */}
-            {/* <p style={{ marginTop : '7.5px' }}>link Lightning (URL or Address) to activate zaps</p> */}
-          </Padding>
-        </Container>   
-        <p>&nbsp;</p>
+        <br/>
+        {/* <p>&nbsp;</p> */}
         <Container>
           <Padding>
           {/* <form onSubmit={this.nostrSubmit}> */}
@@ -341,9 +353,9 @@ export class Config extends Component {
                 value={this.state.nsec}
               />}
               <div className={styles.nostr}>
-                {!this.state.npub && this.checkNostr()
+                {(!this.state.npub && this.checkNostr())
                     && <Button onClick={()=> this.setNostr()} >
-                  <Purchase name='save'>Save Nostr</Purchase>
+                  <Purchase name='save'>Set Nostr</Purchase>
                 </Button>}
                 {!this.state.nsec && !isMobile &&  <Button onClick={() => this.syncNostr()} >
                   <Purchase>{!this.state.npub ? 'Sync Nostr (desktop)' : 'Unsync Nostr (desktop)'}</Purchase>
@@ -354,15 +366,21 @@ export class Config extends Component {
                 {this.state.nsec && this.state.npub && <Button onClick={() => this.setState({ warning: true })}>
                   <Purchase>Remove Nostr Keys </Purchase>
                 </Button>}
+                {this.state.npub && this.state.address && <NostrLink pubkey={nip19.decode(this.state.npub).data}/>}
                 {this.state.warning && 
                     <>
-                      <span>backup Nostr secret key! </span>
+                      <button onClick={() =>  {navigator.clipboard.writeText(this.state.nsec)
+                      nsec17eyn278zfp0fytptvudrgyj9dwanquse38wmfkq44mn3g6rnydss4g7q3w
+                        this.setState({ warning: true, clipboard: true })}}>
+                        backup Nostr secret key! 
+                      </button>
+                      <span>{this.state.clipboard && 'copied to  clipboard!'}</span>
                       <div>
                         <span>remove keys from site?</span>
                         <button className={styles.warning} onClick={() => this.rmNostr()}>
                           yes
                         </button>
-                        <button className={styles.warning} onClick={() => this.setState({ warning: false })}>
+                        <button className={styles.warning} onClick={() => this.setState({ warning: false, clipboard: false })}>
                           cancel
                         </button>
                       </div>
@@ -372,18 +390,32 @@ export class Config extends Component {
             {/* <p style={{ marginTop : '7.5px' }}>link Nostr keys for extra features</p> */}
           </Padding>
         </Container> 
+        <br/>
         <Container>
           <Padding>
-            <Button onClick={this.subjkt_config}>
-                <Purchase>Save Profile</Purchase>
-              </Button>
+            <Input
+              name="lightning"
+              onChange={this.handleChange}
+              placeholder="Lightning (URL or Address)"
+              label="Lightning (URL or Address)"
+              value={this.state.lightning}
+            />
+            <Button onClick={this.lightning_config}>
+              <Purchase>Register <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 16 16" height=".88em" width=".88em" xmlns="http://www.w3.org/2000/svg"><path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641l2.5-8.5z"></path></svg></Purchase>
+            </Button>
+            {/* <p style={{ marginTop : '7.5px' }}>link Lightning to activate zaps</p> */}
+          </Padding>
+        </Container>   
+        <Container>
+          <Padding>
             <div style={{ display: 'inline' }}>
               {/* <p style={{paddingTop : '7.5px' }}>
                 <span>
                 link lightning and nostr to receive zaps and direct messages
                 </span>
               </p> */}
-              <p style={{paddingTop : '7.5px' }}>
+           
+              <p>
                 <span>
                   link Twitter, Discord, GitHub, and website with </span>
                 <span>
@@ -427,7 +459,6 @@ export class Config extends Component {
             :
             undefined
         }
-
 
         {/*         <Container>
           <Padding>

@@ -110,6 +110,11 @@ export const routes = [
   },
   {
     exact: false,
+    path: '/:id/messages',
+    component: Messages,
+  },
+  {
+    exact: false,
     path: '/collaborate/:action?',
     component: Collaborate,
   },

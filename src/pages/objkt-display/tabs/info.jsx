@@ -8,7 +8,7 @@ export const Info = (token_info) => {
   //console.log(token_info)
   // cloudflare isn't useful in this case. they don't allow video streaming...
   // const CLOUDFLARE = 'https://cloudflare-ipfs.com/ipfs/'
-  const IPFS = 'https://dweb.link/ipfs/'
+  const IPFS = 'https://ipfs.io/ipfs/'
   const tag = {
     "&:hover": {
       textDecoration : "underline"

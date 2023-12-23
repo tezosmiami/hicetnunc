@@ -1,42 +1,21 @@
 import React, { useContext, useEffect, useState, useRef } from 'react'
-import { Button, Primary } from '../../components/button'
-import { walletPreview } from '../../utils/string'
+import { Button, Purchase, Primary } from '../../components/button'
+import { useHistory, Link } from "react-router-dom"
 import { Textarea } from '../../components/input'
-// import { useNostrEvents, dateToUnix } from "nostr-react"
-import { nip19, nip04 } from "nostr-tools"
 import { useNostrContext } from '../../context/NostrContext'
-import { NostrDecrypt } from '../../components/nostr-decrypt'
-import { getItem } from '../../utils/storage'
+import { Loading } from '../../components/loading'
 import styles from './styles.module.scss'
-import PQueue from 'p-queue';
-
-class PromiseQueue {
-    queue = Promise.resolve(true)
-  
-    add(operation) {
-      return new Promise((resolve, reject) => {
-        this.queue = this.queue
-          .then(operation)
-          .then(resolve)
-          .catch(reject)
-      })
-    }
-  }
 
 export const Messages = () => {
-    const [message, setMessage] = useState([])
-    // const [active, setActive] = useState(false)
-    const [decrypted, setDecrypted] = useState([])
-    const {sent, received, sendMessage} = useNostrContext()
-    // const now = useRef(new Date()); 
-    const { pub, priv }= getItem('nostr') ? getItem('nostr')?.keys : {priv:'',pub:''}
-    // const pub = getItem('nostr')?.keys.pub
+    const [message, setMessage] = useState(null)
+    const [thread, setThread] = useState(window.location.pathname.split('/')[2])
+    const { nostrAcc, messages, loading, counter, quantity, sendMessage, decryptMsg, setMessages  } = useNostrContext()
+    const history = useHistory();
     const scrollTarget = useRef(null)
-    const queueRef = useRef(new PromiseQueue());
 
     const onSubmit = e => {
         e.preventDefault()
-        sendMessage(message, 'npub190rqwj0nud4uhvmaeg7cgn0gypu0s09j87vqjluhfhju0req2khsskh9w7')
+        sendMessage(thread, message)
         setMessage('')
         e.target.reset()
     }
@@ -45,126 +24,148 @@ export const Messages = () => {
         if (e.key === 'Enter' && !e.shiftKey) {
           e.preventDefault()
           try {
-          sendMessage(e.target.value, 'npub190rqwj0nud4uhvmaeg7cgn0gypu0s09j87vqjluhfhju0req2khsskh9w7')
+          sendMessage(thread, e.target.value)
           setMessage('')
           e.target.value=''
           }catch (e) { console.log(e) }
         }
       }
 
-    const groupBy = (arr) => {
-        return arr.reduce((acc, cur) => {
-            let property = cur.pubkey === pub ? 'tags' : 'pubkey'
-            acc[property === 'tags' ? cur[property][0][1] : cur[property]] = [...acc[property === 'tags' ? cur[property][0][1] : cur[property]] || [], cur];
-            return acc;
-        }, {});
-    }
-      
-    const decryptMessage = async (event) => {
-        let senderDecode = event.pubkey === pub 
-        ? event.tags[0][1] : event.pubkey
-        if (priv) {
-            return await nip04.decrypt(priv, senderDecode, event.content)
-        } else {
-        //   let decoded = await window.nostr.nip04.decrypt(senderDecode, event.content)
-        let decoded
-            try{
-                decoded = await queueRef.current.add(async () => { 
-                    return await window.nostr.nip04.decrypt(senderDecode, event.content)})
-            } catch (e) {console.log(e)}
-
-        // await queue.add(async() => await window.nostr.nip04.decrypt(senderDecode, event.content))
-
-          return decoded
-        }
-    }
-
     useEffect(() => {
         if (scrollTarget.current) {
           scrollTarget.current.scrollIntoView(false, {behavior: 'smooth'});
         }
-      }, [sent, received]);
+      }, [messages]);
 
-    useEffect(() => {
-        const decodeSent = async () =>{ 
-            const event = sent[sent.length-1]
-            if (event) {
-                // event.decoded = await decryptMessage(event)
-                event.decoded = await decryptMessage(event)
-                // event.decoded = await queue.add(decoded)
-                sent[sent.length-1] = event
-                setDecrypted((d) => [...d, event])
-            }
+      useEffect(() => {
+        const decryptMsgs = async() => {
+
+            const v = messages.get(thread)
+            const msgs = v?.messages.sort((a, b) => a.when - b.when).map(async (m) => {
+                if (!m.decoded) {
+                    const decoded = await decryptMsg(m.what, thread)
+                    m.what = decoded
+                    m.decoded = true
+                }
+            return m
+         })
+            msgs && Promise.all(msgs).then(r => setMessages(m => new Map(m.set(thread, {...v, messages: r}))))
         }
-        decodeSent()
-    }, [sent])
 
+        !loading && thread && nostrAcc && decryptMsgs()
+      }, [thread, nostrAcc, loading, counter])
+      
     useEffect(() => {
-        const decodeReceived = async () =>{ 
-            const event = received[received.length-1]
-            if (event) {
-                console.log('de1', event)
-                event.decoded = await decryptMessage(event)
-                console.log(event.decoded)
-                received[received.length-1] = event
-                setDecrypted((d) => [...d, event])
-                // active = false
-            }
+        const decodeMsgs = async () =>{
+        Array.from(messages, async ([k, v ]) => {
+                const msgs =  v.messages.sort((a, b) => a.when - b.when)
+                if (!msgs[msgs.length-1].decoded) {
+                    const decoded = await  decryptMsg(msgs[msgs.length-1].what, k)
+                    msgs[msgs.length-1].what = decoded
+                    msgs[msgs.length-1].decoded = true
+                }
+                setMessages(m => new Map(
+                    [...m.set(k, {...v, messages: msgs})]
+                    .sort((a, b) => b[1].messages[b[1].messages.length-1].when - a[1].messages[a[1].messages.length-1].when)))
+                    return msgs 
+            })
         }
-        decodeReceived()
-    }, [received])
+    !loading && nostrAcc && decodeMsgs()
+    }, [loading, nostrAcc, counter])
+    console.log(loading, counter, quantity)
 
-    
-    const messages = [...sent, ...received].reverse()
-    console.log(messages)
-    // console.log(messages)
-    // console.log(Object.entries(groupBy(messages)))
-    // console.log('sent', sent)
-    // console.log('re',received)
-    // console.log(messages[0])
-console.log('de',decrypted)
-console.log('sent', sent)
-console.log(Object.entries(groupBy(messages)))
-return (
-    <>
-    <div style={{top: '81px', position: 'relative', zIndex: '111', overflowY: 'visible'}}>
-        <div style={{width: '98%'}}>
-        { Object.entries(groupBy(messages)).map((m,i) => 
-            // <NostrDecrypt key={i} m={m[1][0]} />)
-            <div  key={m[0]} className={styles.message}>{walletPreview(m[0])}: {m[1][m[1].length-1].decoded} </div>)
-            }
+    if(!nostrAcc) return(
+        <div style={{width: '95%', top: '108px', position: 'relative', zIndex: '111', overflowY: 'visible'}}>
+        <Link to='/config'>link Nostr for encrypted decentralized dms</Link> 
+    </div>)
+   //back browser?
+    else if( (loading || counter < quantity) && !thread) return(
+        <div style={{width: '95%', top: '108px', position: 'relative', zIndex: '111', overflowY: 'visible'}}>
+            <div style={{paddingBottom: '64px'}}>:waiting for messages. . .</div>
+            {/* <Loading/> */}
         </div>
-        {/* <div className={styles.footer}>
-            <form onSubmit={onSubmit}> 
-            <Textarea
-                type='text'
-                onChange={(e) => setMessage(e.target.value)}
-                autoFocus
-                placeholder='message'
-                onKeyPress={onKeyPress}
-                max={270}
-                label='message'
-                value={message}
-            />
-            <Button type='submit' fit>
-                <svg 
-                    width="55px"
-                    height="55px"
-                    viewBox="0 0 44 44"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    style={{
-                                boxShadow: 'none',
-                                fill: 'var(--text-color)',
-                                stroke: 'var(--background-color)',
-                                }}
-                    >
-                    <path d="M22 12L3 20l3.563-8L3 4l19 8zM6.5 12H22"  />
-                </svg>
-            </Button>
-            </form>
-        </div> */}
-    </div>
-    </>
-    )
-}    
+        )
+      
+    else return (
+        <>
+            <div style={{height: thread ? 'calc(100vh - 198px)' : '', top: '98px', position: 'relative', zIndex: '111', overflowY: 'scroll'}}>
+            <div style={{width: '98%'}}>
+            {thread ?
+                <div>
+                    <div style={{position: 'fixed', top: '72px', marginLeft: '18px', height: '100px'}}>
+                        <Button onClick={()=> {setThread(null); history.push('/messages')}}><Purchase>{`<-`}</Purchase></Button>
+                    </div>
+                    <table style={{ width: '92vw',marginLeft: '12px'}}>
+                        <tbody>
+                        {messages.get(thread)?.messages?.sort((a, b) => a.when - b.when).map((m,i) =>
+                                    <tr key={i}
+                                        ref={scrollTarget} 
+                                        className={styles.message}
+                                    >
+                                        <td style={{verticalAlign: 'top', paddingTop: '21px'}}>
+                                            {m.who}:&nbsp;
+                                            
+                                        </td>
+                                        <td style={{ textAlign: 'right', paddingTop: '21px', paddingBottom: '18px', wordBreak: 'break-word'}}>
+                                            {m.decoded && m.what}
+                                        </td>
+                                    </tr>
+                                )}     
+                        </tbody>
+                    </table>                   
+                </div>
+                :
+                <table style={{ width: '92vw',marginLeft: '12px'}}>
+                    <tbody>
+                    {messages && Array.from(messages, ([k, v ]) => 
+                        <tr
+                            key={k}
+                            onClick={() => {setThread(k);history.push(`/messages/${k}`) }}
+                            className={styles.message}
+                        >
+                            <td style={{verticalAlign: 'top', paddingTop: '21px'}}>
+                            {v.alias}:&nbsp;
+                            </td>
+                            <td style={{ textAlign: 'right', paddingTop: '21px', paddingBottom: '18px', wordBreak: 'break-word'}}>
+                            {v.messages[v.messages.length-1].decoded && v.messages[v.messages.length-1].what}
+                            </td>
+                        </tr>
+                        )}
+                    </tbody>
+                </table>
+                }
+            </div>
+            { thread && <div className={styles.footer}>
+                <form onSubmit={onSubmit}> 
+                <Textarea
+                    type='text'
+                    onChange={(e) => setMessage(e.target.value)}
+                    autoFocus
+                    placeholder='message'
+                    onKeyPress={onKeyPress}
+                    max={270}
+                    label='message'
+                    value={message}
+                />
+                <Button type='submit' fit>
+                    <svg 
+                        width="55px"
+                        height="55px"
+                        viewBox="0 0 44 44"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        style={{
+                                    boxShadow: 'none',
+                                    fill: 'var(--text-color)',
+                                    stroke: 'var(--background-color)',
+                                    }}
+                        >
+                        <path d="M22 12L3 20l3.563-8L3 4l19 8zM6.5 12H22"  />
+                    </svg>
+                </Button>
+                </form>
+            </div>}
+        </div>  
+        </>
+        )
+    }    

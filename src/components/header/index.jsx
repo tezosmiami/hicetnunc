@@ -25,6 +25,7 @@ const wallet = new BeaconWallet({
 export const Header = () => {
   const history = useHistory()
   const context = useContext(HicetnuncContext)
+  const { acc } = context
   const mesh = useMeshContext()
   // let root = document.documentElement
   // const color = root.style.getPropertyValue('--background-color')
@@ -45,7 +46,7 @@ export const Header = () => {
         '--box-shadow', 'none') 
       document.documentElement.style.setProperty('--drop-shadow', 'none')
     }
-  }, [])
+  }, [acc])
 
   // we assume user isn't connected
   let button = 'sync'
@@ -70,14 +71,14 @@ export const Header = () => {
   }
 
 
-  const handleSyncUnsync = () => {
+  const handleSyncUnsync = async() => {
     if (context.acc?.address && !context.collapsed) {
       // disconnect wallet
       context.disconnect()
       mesh.meshed && handleMeshUnmesh()
     } else {
       // connect wallet
-      context.syncTaquito()
+      await context.syncTaquito()
     }
   }
   const handleMeshUnmesh = () => {
