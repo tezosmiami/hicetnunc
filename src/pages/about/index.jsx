@@ -54,11 +54,11 @@ export class About extends Component {
           </Padding>
         </Container>
 
-         <Container>
+         {/* <Container>
           <Padding>
             <p>{this.language.about.paragraphs[4]}</p>
           </Padding>
-        </Container>
+        </Container> */}
 
         <Container>
           <Padding>

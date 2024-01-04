@@ -1,44 +1,9 @@
-# hicetnunc UI
+# hic et nunc - magic city UI
 
-hicetnunc UI is intended to experiment with different smart contracts designs.
+The present decentralized application allows its participants to manage decentralized digital assets - serving as a public smart contract infrastructure on Tezos Blockchain.
 
-github deploy: https://main.d3cm9lcfrb8gaf.amplifyapp.com
+IPFS OBJKTs can be minted and traded by permissionless means - such experiment was designed intending to imagine alternative crypto economies.
 
-```
-node v12.18.3
-npm 6.14.6
-```
+This magicCity version - live since the day after first shutdown of hicetnunc.xyz - is a forked continuation of the original experiment here now also envisioned as a decentralized communications system.
 
-commands
-
-```
-npm i
-npm start
-```
-
-docker
-
-```
-docker image build -t hicetnunc:1.0 .
-docker run -it -p 3000:3000 hicetnunc:1.0
----remove
-docker container rm --force hicetnunc
-```
-
-.env
-
-```
-VITE_FEED='http://0.0.0.0:3001/feed'
-VITE_TZ='http://0.0.0.0:3001/tz'
-VITE_OBJKT='http://0.0.0.0:3001/objkt'
-```
-
-in the present version you must have ungrund running accessing hicetnunc's module https://github.com/hicetnunc2000/hicetnunc-api
-
-check the issues for contributing
-
-`MIT license`
-
-# Contributing
-
-Please read our CONTRIBUTING.md
+Currently, a peer to peer mesh network and Nostr protocol offer direct connection and interaction between active participants.
