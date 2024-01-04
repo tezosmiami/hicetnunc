@@ -19,7 +19,7 @@ import _ from 'lodash'
 async function fetchFeed(lastId, offset) {
   const { errors, data } = await fetchGraphQL(`
 query LatestFeed {
-  hic_et_nunc_token(order_by: {id: desc}, limit: 21,  offset: ${offset}, where: {id: {_lt: ${lastId}}, supply: {_neq: "0"}, artifact_uri: {_neq: ""}}) {
+  token(order_by: {id: desc}, limit: 21,  offset: ${offset}, where: {id: {_lt: ${lastId}}, supply: {_neq: "0"}, artifact_uri: {_neq: ""}}) {
     artifact_uri
     display_uri
     creator_id
@@ -51,7 +51,7 @@ query LatestFeed {
       name
       metadata_file
       shares {
-        shareholder {
+        sharesholder {
           holder_type
           holder_id
         }
@@ -62,13 +62,13 @@ query LatestFeed {
   if (errors) {
     console.error(errors);
   }
-  const result = data.hic_et_nunc_token
+  const result = data.token
   return result
 }
 
 // const query_creations = `
 // query creatorGallery($address: String!) {
-//   hic_et_nunc_token(where: {creator: {address: {_eq: $address}}, supply: {_gt: 0}}, order_by: {id: desc}, limit : 21, offset : $offset ) {
+//   token(where: {creator: {address: {_eq: $address}}, supply: {_gt: 0}}, order_by: {id: desc}, limit : 21, offset : $offset ) {
 //     id
 //     artifact_uri
 //     display_uri
@@ -89,7 +89,7 @@ query LatestFeed {
 
 // const query_tag = `
 // query ObjktsByTag {
-//   hic_et_nunc_token(where: {supply : {_neq: "0"}, token_tags: {tag: {tag: {_eq: $tag}}}, id: {_lt: $lastId}}, limit : 21, order_by: {id: desc}) {
+//   token(where: {supply : {_neq: "0"}, token_tags: {tag: {tag: {_eq: $tag}}}, id: {_lt: $lastId}}, limit : 21, order_by: {id: desc}) {
 //     id
 //     artifact_uri
 //     display_uri
@@ -109,7 +109,7 @@ query LatestFeed {
 // async function fetchID(id) {
 //   const { errors, data } = await fetchGraphQL(`
 //   query objktId {
-//     hic_et_nunc_token(where : { id : { _eq : $id }}) {
+//     token(where : { id : { _eq : $id }}) {
 //       id
 //       artifact_uri
 //       display_uri
@@ -125,7 +125,7 @@ query LatestFeed {
 //   })
 
 //   try {
-//     return data.hic_et_nunc_token
+//     return data.token
 //   } catch (e) {
 //     return undefined
 //   }
@@ -134,7 +134,7 @@ query LatestFeed {
 async function fetchObjkts(ids) {
   const { errors, data } = await fetchGraphQL(`
     query Objkts($ids: [bigint!] = "") {
-      hic_et_nunc_token(where: {id: {_in: $ids}, supply : {_neq: "0"}}) {
+      token(where: {id: {_in: $ids}, supply : {_neq: "0"}}) {
         artifact_uri
         display_uri
         creator_id
@@ -166,7 +166,7 @@ async function fetchObjkts(ids) {
           name
           metadata_file
           shares {
-            shareholder {
+            sharesholder {
               holder_type
               holder_id
             }
@@ -184,14 +184,14 @@ async function fetchObjkts(ids) {
 async function getLastId() {
   const { errors, data } = await fetchGraphQL(`
     query LastId {
-      hic_et_nunc_token(limit: 1, order_by: {id: desc}) {
+      token(limit: 1, order_by: {id: desc}) {
         id
       }
     }`, "LastId");
     if (errors) {
       console.log(errors)
     }
-  return data.hic_et_nunc_token[0].id
+  return data.token[0].id
 }
 
 function rnd(min, max) {
@@ -201,7 +201,7 @@ function rnd(min, max) {
 async function fetchGLB(offset) {
   const { errors, data } = await fetchGraphQL(`
   query GLBObjkts {
-    hic_et_nunc_token(where : { mime : {_in : ["model/gltf-binary"] }, supply : {_neq: "0"}}, limit : 21, offset : ${offset}, order_by: {id: desc}) {
+    token(where : { mime : {_in : ["model/gltf-binary"] }, supply : {_neq: "0"}}, limit : 21, offset : ${offset}, order_by: {id: desc}) {
       id
       artifact_uri
       display_uri
@@ -219,7 +219,7 @@ async function fetchGLB(offset) {
     console.log(errors)
   }
   try {
-    return data.hic_et_nunc_token
+    return data.token
   } catch (e) {
     return undefined
   }
@@ -228,7 +228,7 @@ async function fetchGLB(offset) {
 async function fetchInteractive(offset) {
   const { errors, data } = await fetchGraphQL(`
     query InteractiveObjkts {
-      hic_et_nunc_token(where: { mime: {_in : [ "application/x-directory", "image/svg+xml" ]}, supply : {_neq: "0"}}, limit : 30, offset : ${offset}, order_by: {id: desc}) {
+      token(where: { mime: {_in : [ "application/x-directory", "image/svg+xml" ]}, supply : {_neq: "0"}}, limit : 30, offset : ${offset}, order_by: {id: desc}) {
         id
         artifact_uri
         display_uri
@@ -245,7 +245,7 @@ async function fetchInteractive(offset) {
     console.log(errors)
   }
   try {
-    return data.hic_et_nunc_token
+    return data.token
   } catch (e) {
     return undefined
   }
@@ -254,7 +254,7 @@ async function fetchInteractive(offset) {
 async function fetchGifs(offset) {
   const { errors, data } = await fetchGraphQL(`
     query Gifs ($offset: Int = 0) {
-      hic_et_nunc_token(where: { mime: {_in : [ "image/gif" ]}, supply : { _neq: "0"}}, order_by: {id: desc}, limit: 21, offset: ${offset}) {
+      token(where: { mime: {_in : [ "image/gif" ]}, supply : { _neq: "0"}}, order_by: {id: desc}, limit: 21, offset: ${offset}) {
         id
         artifact_uri
         display_uri
@@ -271,7 +271,7 @@ async function fetchGifs(offset) {
     console.log(errors)
   }
   try {
-    return data.hic_et_nunc_token
+    return data.token
   } catch (e) {
     return undefined
   }
@@ -280,7 +280,7 @@ async function fetchGifs(offset) {
 async function fetchMusic(offset) {
   const { errors, data } = await fetchGraphQL(`
   query AudioObjkts {
-    hic_et_nunc_token(where: {mime: {_in: ["audio/ogg", "audio/wav", "audio/mpeg"]}, supply : {_neq: "0"}}, limit : 21, offset : ${offset}, order_by: {id: desc}) {
+    token(where: {mime: {_in: ["audio/ogg", "audio/wav", "audio/mpeg"]}, supply : {_neq: "0"}}, limit : 21, offset : ${offset}, order_by: {id: desc}) {
       artifact_uri
       display_uri
       creator_id
@@ -312,7 +312,7 @@ async function fetchMusic(offset) {
         name
         metadata_file
         shares {
-          shareholder {
+          sharesholder {
             holder_type
             holder_id
           }
@@ -326,7 +326,7 @@ async function fetchMusic(offset) {
     console.log(errors)
   }
   try {
-    return data.hic_et_nunc_token
+    return data.token
   } catch (e) {
     return undefined
   }
@@ -335,7 +335,7 @@ async function fetchMusic(offset) {
 // async function fetchTitle(title, offset) {
 //   const { errors, data } = await fetchGraphQL(`
 //   query queryTitles {
-//     hic_et_nunc_token(where: {title: {_like: "%${title}%"}}) {
+//     token(where: {title: {_like: "%${title}%"}}) {
 //       id
 //       artifact_uri
 //       display_uri
@@ -349,7 +349,7 @@ async function fetchMusic(offset) {
 //   `, 'queryTitles', {})
 
 //   try {
-//     return data.hic_et_nunc_token
+//     return data.token
 //   } catch (e) {
 //     return undefined
 //   }
@@ -358,7 +358,7 @@ async function fetchMusic(offset) {
 // async function fetchCreations(addr, offset) {
 //   const { errors, data } = await fetchGraphQL(`
 // query creatorGallery {
-//   hic_et_nunc_token(where: {creator: {address: {_eq: ${addr}}}, supply: {_gt: 0}}, order_by: {id: desc}, limit : 21, offset : ${offset} ) {
+//   token(where: {creator: {address: {_eq: ${addr}}}, supply: {_gt: 0}}, order_by: {id: desc}, limit : 21, offset : ${offset} ) {
 //     id
 //     artifact_uri
 //     display_uri
@@ -382,14 +382,14 @@ async function fetchMusic(offset) {
 //   if (errors) {
 //     console.error(errors)
 //   }
-//   const result = data.hic_et_nunc_token
+//   const result = data.token
 //   return result
 // }
 
 // async function fetchDescription(description, offset) {
 //   const { errors, data } = await fetchGraphQL(`
 //   query queryDescriptions {
-//     hic_et_nunc_token(where: {description: {_like: "%${description}%"}}) {
+//     token(where: {description: {_like: "%${description}%"}}) {
 //       id
 //       artifact_uri
 //       display_uri
@@ -403,7 +403,7 @@ async function fetchMusic(offset) {
 //   `, 'queryDescriptions', {})
 
 //   try {
-//     return data.hic_et_nunc_token
+//     return data.token
 //   } catch (e) {
 //     return undefined
 //   }
@@ -416,13 +416,13 @@ async function fetchRandomObjkts(lastId) {
     uniqueIds.add(rnd(firstId, lastId))
   }
   let objkts = await fetchObjkts(Array.from(uniqueIds));
-  return objkts.hic_et_nunc_token
+  return objkts.token
 }
 
 async function fetchSwaps(offset) {
   const { errors, data } = await fetchGraphQL(`
   query querySwaps {
-    hic_et_nunc_swap(where: {contract_version: {_eq: "2"}, token: {supply: {_neq: "0"}}}, order_by: {id: desc}, limit: 21,  offset : ${offset}) {
+    swap(where: {contract_version: {_eq: "2"}, token: {supply: {_neq: "0"}}}, order_by: {id: desc}, limit: 21,  offset : ${offset}) {
       id
       royalties
       creator_id
@@ -457,7 +457,7 @@ async function fetchSwaps(offset) {
           name
           metadata_file
           shares {
-            shareholder {
+            sharesholder {
               holder_type
               holder_id
             }
@@ -471,7 +471,7 @@ async function fetchSwaps(offset) {
     console.log(errors)
   }
   try {
-    return data.hic_et_nunc_swap
+    return data.swap
   } catch (e) {
     return undefined
   }
@@ -479,7 +479,7 @@ async function fetchSwaps(offset) {
 
 async function fetchDay(day, offset) {
   const { errors, data } = await fetchGraphQL(`query dayTrades {
-    hic_et_nunc_trade(where: {timestamp: {_gte: "${day}"}}, order_by: {swap: {price: desc}}, limit : 21, offset : ${offset}) {
+    trade(where: {timestamp: {_gte: "${day}"}}, order_by: {swap: {price: desc}}, limit : 21, offset : ${offset}) {
       timestamp
       swap {
         price
@@ -515,7 +515,7 @@ async function fetchDay(day, offset) {
           name
           metadata_file
           shares {
-            shareholder {
+            sharesholder {
               holder_type
             }
           }
@@ -532,7 +532,7 @@ async function fetchDay(day, offset) {
   let result = []
 
   try {
-    result = data.hic_et_nunc_trade
+    result = data.trade
   } catch (e) { }
 
   return result
@@ -542,7 +542,7 @@ async function fetchDay(day, offset) {
 async function fetchSales(offset) {
   const { errors, data } = await fetchGraphQL(`
   query sales {
-    hic_et_nunc_trade(order_by: {timestamp: desc}, limit : 21, offset : ${offset}, where: {swap: {price: {_gte: "500000"}}}) {
+    trade(order_by: {timestamp: desc}, limit : 21, offset : ${offset}, where: {swap: {price: {_gte: "500000"}}}) {
       timestamp
       token {
         artifact_uri
@@ -570,7 +570,7 @@ async function fetchSales(offset) {
           address
           metadata_file
           shares {
-            shareholder {
+            sharesholder {
               holder_type
               holder_id
             }
@@ -587,7 +587,7 @@ async function fetchSales(offset) {
   }
   let result = []
   try {
-    result = data.hic_et_nunc_trade
+    result = data.trade
   } catch (e) { }
 
   return result
@@ -597,7 +597,7 @@ async function fetchSales(offset) {
 async function fetchSubjkts(subjkt) {
   const { errors, data } = await fetchGraphQL(`
   query subjktsQuery {
-    hic_et_nunc_holder(where: {name: {_ilike: "%${subjkt}%"}}, order_by: {hdao_balance: desc}) {
+    holder(where: {name: {_ilike: "%${subjkt}%"}}, order_by: {hdao_balance: desc}) {
       address
       name
       hdao_balance
@@ -612,7 +612,7 @@ async function fetchSubjkts(subjkt) {
   let result = []
 
   try {
-    result = data.hic_et_nunc_holder
+    result = data.holder
   } catch (e) { }
 
   return result
@@ -621,7 +621,7 @@ async function fetchSubjkts(subjkt) {
 export async function fetchTag(tag, offset) {
   const { errors, data } = await fetchGraphQL(
     `query ObjktsByTag {
-  hic_et_nunc_token(where: {supply: {_neq: "0"}, token_tags: {tag: {tag: {_in: ${tag}}}}}, offset: ${offset}, limit: 21, order_by: {id: desc}) {
+  token(where: {supply: {_neq: "0"}, token_tags: {tag: {tag: {_in: ${tag}}}}}, offset: ${offset}, limit: 21, order_by: {id: desc}) {
     artifact_uri
     display_uri
     creator_id
@@ -653,7 +653,7 @@ export async function fetchTag(tag, offset) {
       name
       metadata_file
       shares {
-        shareholder {
+        sharesholder {
           holder_type
           holder_id
         }
@@ -665,7 +665,7 @@ export async function fetchTag(tag, offset) {
   if (errors) {
     console.error(errors);
   }
-  const result = data?.hic_et_nunc_token
+  const result = data?.token
   return result
 }
 
@@ -673,7 +673,7 @@ export async function fetchTag(tag, offset) {
 async function fetchAddresses(creator_ids) {
   const { errors, data } = await fetchGraphQL(`
     query Objkts($creator_ids: [String!] = "") {
-      hic_et_nunc_token(where: {creator_id: {_in: $creator_ids}, supply : {_neq: "0"}}, order_by: {timestamp: desc}, limit : 21) {
+      token(where: {creator_id: {_in: $creator_ids}, supply : {_neq: "0"}}, order_by: {timestamp: desc}, limit : 21) {
         artifact_uri
         display_uri
         creator_id
@@ -705,7 +705,7 @@ async function fetchAddresses(creator_ids) {
           name
           metadata_file
           shares {
-            shareholder {
+            sharesholder {
               holder_type
               holder_id
             }
@@ -717,7 +717,7 @@ async function fetchAddresses(creator_ids) {
   if (errors) {
     console.log(errors)
   }
-  return data.hic_et_nunc_token
+  return data.token
 }
 
 
@@ -737,7 +737,7 @@ async function fetchGraphQL(operationsDoc, operationName, variables) {
 }
 
 const query_hdao = `query hDAOFeed($offset: Int = 0) {
-  hic_et_nunc_token(order_by: {hdao_balance: desc}, limit: 21, where: {supply: {_neq: "0"}, hdao_balance: {_gt: 100}}, offset: $offset) {
+  token(order_by: {hdao_balance: desc}, limit: 21, where: {supply: {_neq: "0"}, hdao_balance: {_gt: 100}}, offset: $offset) {
     artifact_uri
     display_uri
     creator_id
@@ -769,7 +769,7 @@ const query_hdao = `query hDAOFeed($offset: Int = 0) {
       name
       metadata_file
       shares {
-        shareholder {
+        sharesholder {
           holder_type
           holder_id
         }
@@ -784,7 +784,7 @@ async function fetchHdao(offset) {
   if (errors) {
     console.error(errors);
   }
-  const result = data.hic_et_nunc_token
+  const result = data.token
   return result
 };
 

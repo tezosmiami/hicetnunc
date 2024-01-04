@@ -68,12 +68,12 @@ const LightningContextProvider = ({ children }) => {
               address: acc.address,
               }).then(async ({ data, errors }) => {
               if (data) {
-                  const holder = data.hic_et_nunc_holder[0]?.name 
+                  const holder = data.holder[0]?.name 
                   || walletPreview(acc.address)
                   setSender(holder)
-                  const metadata = data.hic_et_nunc_holder[0]?.metadata_file 
+                  const metadata = data.holder[0]?.metadata_file 
                   if (metadata) {
-                    let cid = await axios.get('https://ipfs.io/ipfs/' 
+                    let cid = await axios.get('https://dweb.link/ipfs/' 
                     + metadata.split('//')[1]).then(res => res.data)
                     if (cid.lightning) setSubjktLightning(cid.lightning)
                     if (cid.nostr) setSubjktNostr(cid.nostr)

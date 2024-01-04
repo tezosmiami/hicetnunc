@@ -105,11 +105,11 @@ export const ItemInfo = ({
     const isCollab = creator.is_split
     const verifiedSymbol = isCollab && is_signed ? '✓ ' : '⚠️'
     const verifiedStatus = isCollab && is_signed ? 'VERIFIED' : 'UNVERIFIED'
-    const isCoreParticipant = isCollab ? creator.shares[0].shareholder.find(h => h.holder_id === acc?.address) : false
+    const isCoreParticipant = isCollab ? creator.shares[0].sharesholder.find(h => h.holder_id === acc?.address) : false
 
     // Show the signing UI if required
     const userHasSigned = token_signatures.find(sig => sig.holder_id === acc?.address)
-    const coreParticipants = isCollab ? creator.shares[0].shareholder.filter(h => h.holder_type === CollaboratorType.CORE_PARTICIPANT) : null
+    const coreParticipants = isCollab ? creator.shares[0].sharesholder.filter(h => h.holder_type === CollaboratorType.CORE_PARTICIPANT) : null
 
     const signStatusStyles = classNames(
       collabStyles.flexBetween,

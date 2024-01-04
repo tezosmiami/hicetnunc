@@ -54,8 +54,8 @@ export const CollabDisplay = () => {
             [key]: value,
         }).then(({ data, errors }) => {
             if (data) {
-                setCreations(data.hic_et_nunc_token)
-                setContractInfo(data.hic_et_nunc_splitcontract[0])
+                setCreations(data.token)
+                setContractInfo(data.splitcontract[0])
             }
 
             setLoading(false)
@@ -109,11 +109,11 @@ export const CollabDisplay = () => {
     const descriptionClass = classNames(collabStyles.pt1, collabStyles.muted)
 
     // Core participants
-    const coreParticipants = contractInfo?.shareholder
+    const coreParticipants = contractInfo?.sharesholder
         .filter(({ holder_type }) => holder_type === CollaboratorType.CORE_PARTICIPANT);
 
     // Beneficiaries
-    const beneficiaries = contractInfo?.shareholder
+    const beneficiaries = contractInfo?.sharesholder
         .filter(({ holder_type }) => holder_type === CollaboratorType.BENEFICIARY);
 
 

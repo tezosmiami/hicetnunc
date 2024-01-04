@@ -34,7 +34,7 @@ const getRestrictedAddresses = async () =>
 
 const query_collection = `
 query collectorGallery($address: String!, $offset: Int!) {
-  hic_et_nunc_token_holder(where: {holder_id: {_eq: $address}, token: {creator: {address: {_neq: $address}}}, quantity: {_gt: "0"}}, order_by: {token_id: desc}, offset: $offset) {
+  token_holder(where: {holder_id: {_eq: $address}, token: {creator: {address: {_neq: $address}}}, quantity: {_gt: "0"}}, order_by: {token_id: desc}, offset: $offset) {
     token {
       id
       artifact_uri
@@ -80,14 +80,14 @@ async function fetchCollection(addr, offset = 0) {
   if (errors) {
     console.error(errors)
   }
-  const result = data.hic_et_nunc_token_holder
+  const result = data.token_holder
   // console.log('collection result' + { result })
   return result
 }
 
 const query_creations = `
 query creatorGallery($address: String!) {
-  hic_et_nunc_token(where: {creator: {address: {_eq: $address}}, supply: {_gt: 0}}, order_by: {id: desc}) {
+  token(where: {creator: {address: {_eq: $address}}, supply: {_gt: 0}}, order_by: {id: desc}) {
     id
     artifact_uri
     display_uri
@@ -112,7 +112,7 @@ query creatorGallery($address: String!) {
 
 const query_subjkts = `
 query subjktsQuery($subjkt: String!) {
-  hic_et_nunc_holder(where: { name: {_eq: $subjkt}}) {
+  holder(where: { name: {_eq: $subjkt}}) {
     address
     name
     hdao_balance
@@ -124,7 +124,7 @@ query subjktsQuery($subjkt: String!) {
 
 const query_tz = `
 query addressQuery($address: String!) {
-  hic_et_nunc_holder(where: { address: {_eq: $address}}) {
+  holder(where: { address: {_eq: $address}}) {
     address
     name
     hdao_balance
@@ -136,7 +136,7 @@ query addressQuery($address: String!) {
 
 const query_v1_swaps = `
 query querySwaps($address: String!) {
-  hic_et_nunc_swap(where: {contract_version: {_eq: "1"}, creator_id: {_eq: $address}, status: {_eq: "0"}}) {
+  swap(where: {contract_version: {_eq: "1"}, creator_id: {_eq: $address}, status: {_eq: "0"}}) {
     token {
       id
       title
@@ -160,7 +160,7 @@ query querySwaps($address: String!) {
 
 const query_v2_swaps = `
 query querySwaps($address: String!) {
-  hic_et_nunc_swap(where: {token: {creator: {address: {_neq: $address}}}, creator_id: {_eq: $address}, status: {_eq: "0"}, contract_version: {_eq: "2"}}, distinct_on: token_id) {
+  swap(where: {token: {creator: {address: {_neq: $address}}}, creator_id: {_eq: $address}, status: {_eq: "0"}, contract_version: {_eq: "2"}}, distinct_on: token_id) {
     creator_id
     token {
       id
@@ -195,7 +195,7 @@ async function fetchV1Swaps(address) {
     return
   }
 
-  const result = data.hic_et_nunc_swap
+  const result = data.swap
   // console.log('swapresultv1 ' + JSON.stringify(result))
   return result
 }
@@ -208,7 +208,7 @@ async function fetchV2Swaps(address) {
   if (errors) {
     console.error(errors)
   }
-  const result = data.hic_et_nunc_swap
+  const result = data.swap
   // console.log('swapresultv2 ' + JSON.stringify(result))
 
   return result
@@ -222,7 +222,7 @@ async function fetchSubjkts(subjkt) {
   if (errors) {
     console.error(errors)
   }
-  const result = data.hic_et_nunc_holder
+  const result = data.holder
   /* console.log({ result }) */
   return result
 }
@@ -236,7 +236,7 @@ async function fetchCreations(addr) {
   if (errors) {
     console.error(errors)
   }
-  const result = data.hic_et_nunc_token
+  const result = data.token
   /* console.log({ result }) */
   return result
 }
@@ -248,7 +248,7 @@ async function fetchTz(addr) {
   if (errors) {
     console.error(errors)
   }
-  const result = data?.hic_et_nunc_holder
+  const result = data?.holder
   // console.log({ result })
   return result
 }
@@ -256,7 +256,7 @@ async function fetchTz(addr) {
 async function fetchBalance(addr) {
   const { errors, data } = await fetchGraphQL(`
   query hdaobalances {
-    hic_et_nunc_token(where: {creator_id: {_eq: "${addr}"}, supply: {_gt: 0}, hdao_balance : {_gt: 0}}) {
+    token(where: {creator_id: {_eq: "${addr}"}, supply: {_gt: 0}, hdao_balance : {_gt: 0}}) {
       id
       hdao_balance
     }
@@ -265,7 +265,7 @@ async function fetchBalance(addr) {
   if (errors) {
     console.log(errors)
   }
-  const result = data.hic_et_nunc_token
+  const result = data.token
   return result
 }
 
@@ -339,7 +339,7 @@ export default class Display extends Component {
       let res = await fetchTz(wallet)
       try {
         if (res[0]) {
-          let meta = await axios.get('https://ipfs.io/ipfs/' + res[0].metadata_file.split('//')[1]).then(res => res.data)
+          let meta = await axios.get('https://dweb.link/ipfs/' + res[0].metadata_file.split('//')[1]).then(res => res.data)
           if (meta.description) this.setState({ description: meta.description })
           if (meta.identicon) this.setState({ identicon: meta.identicon })
           if (meta.lightning) this.setState({ lightning: meta.lightning })
@@ -356,7 +356,7 @@ export default class Display extends Component {
       // console.log(decodeURI(window.location.pathname.split('/')[1]))
       // console.log(res)
       if (res[0]?.metadata_file) {
-      let meta = await axios.get('https://ipfs.io/ipfs/' + res[0].metadata_file.split('//')[1]).then(res => res.data)
+      let meta = await axios.get('https://dweb.link/ipfs/' + res[0].metadata_file.split('//')[1]).then(res => res.data)
         //console.log(meta)
         if (meta.description) this.setState({ description: meta.description })
         if (meta.identicon) this.setState({ identicon: meta.identicon })

@@ -27,7 +27,7 @@ const TABS = [
 
 const query_objkt = `
 query objkt($id: bigint!) {
-  hic_et_nunc_token_by_pk(id: $id) {
+  token_by_pk(id: $id) {
 id
 mime
 timestamp
@@ -42,7 +42,7 @@ creator {
   is_split
   shares {
     administrator
-    shareholder {
+    sharesholder {
       holder_type
       holder_id
       holder {
@@ -116,7 +116,7 @@ async function fetchObjkt(id) {
 
 
 
-  const result = data.hic_et_nunc_token_by_pk
+  const result = data.token_by_pk
   //console.log(result)
   return result
 

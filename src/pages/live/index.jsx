@@ -32,7 +32,7 @@ const pattern = new RegExp('^(https?://)?'+ // protocol
 
 const query_objkt = `
   query objkt($id: bigint!) {
-    hic_et_nunc_token_by_pk(id: $id) {
+    token_by_pk(id: $id) {
       id
       mime
       display_uri
@@ -101,7 +101,7 @@ async function fetchObjkt(id) {
   if (errors) {
     console.error(errors)
   }
-  const result = data.hic_et_nunc_token_by_pk
+  const result = data.token_by_pk
   return result
 }
 

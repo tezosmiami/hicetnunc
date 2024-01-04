@@ -17,12 +17,12 @@ const queryTransfers = `
 `
 const querySubjkt = `
 query subjkt($from_address: [String!], $to_address: [String!]) {
-  from: hic_et_nunc_holder(where: {address: {_in: $from_address}}) {
+  from: holder(where: {address: {_in: $from_address}}) {
     name
     address
   }
 
-  to: hic_et_nunc_holder(where: {address: {_in: $to_address}}) {
+  to: holder(where: {address: {_in: $to_address}}) {
     name
     address
   }

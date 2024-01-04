@@ -52,7 +52,7 @@ export const CollabContractsOverview = ({ showAdminOnly = false }) => {
             setLoadingCollabs(false)
 
             if (data) {
-                const allCollabs = data.hic_et_nunc_splitcontract || []
+                const allCollabs = data.splitcontract || []
                 const adminCollabs = allCollabs.filter(c => c.administrator === acc.address)
                 const participantCollabs = allCollabs.filter(c => c.administrator !== acc.address)
 

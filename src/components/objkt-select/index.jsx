@@ -26,7 +26,7 @@ export const getRestrictedAddresses = async () =>
 
 export const query_collection = `
 query collectorGallery($address: String!, $offset: Int!) {
-  hic_et_nunc_token_holder(where: {holder_id: {_eq: $address}, token: {creator: {address: {_neq: $address}}}, quantity: {_gt: "0"}}, order_by: {token_id: desc}, offset : $offset) {
+  token_holder(where: {holder_id: {_eq: $address}, token: {creator: {address: {_neq: $address}}}, quantity: {_gt: "0"}}, order_by: {token_id: desc}, offset : $offset) {
     token {
       id
       artifact_uri
@@ -67,13 +67,13 @@ export async function fetchCollection(addr, offset = 0) {
   if (errors) {
     console.error(errors)
   }
-  const result = data.hic_et_nunc_token_holder
+  const result = data.token_holder
   return result
 }
 
 const query_creations = `
 query creatorGallery($address: String!) {
-  hic_et_nunc_token(where: {creator: {address: {_eq: $address}}, supply: {_gt: 0}}, order_by: {id: desc}) {
+  token(where: {creator: {address: {_eq: $address}}, supply: {_gt: 0}}, order_by: {id: desc}) {
     id
     artifact_uri
     display_uri
@@ -92,7 +92,7 @@ query creatorGallery($address: String!) {
 
 const query_v2_swaps = `
 query querySwaps($address: String!) {
-  hic_et_nunc_swap(where: {token: {creator: {address: {_neq: $address}}}, creator_id: {_eq: $address}, status: {_eq: "0"}, contract_version: {_eq: "2"}}, distinct_on: token_id) {
+  swap(where: {token: {creator: {address: {_neq: $address}}}, creator_id: {_eq: $address}, status: {_eq: "0"}, contract_version: {_eq: "2"}}, distinct_on: token_id) {
     creator_id
     token {
       id
@@ -117,7 +117,7 @@ async function fetchV2Swaps(address) {
   if (errors) {
     console.error(errors)
   }
-  const result = data.hic_et_nunc_swap
+  const result = data.swap
   return result
 }
 
@@ -131,7 +131,7 @@ async function fetchCreations(addr) {
   if (errors) {
     console.error(errors)
   }
-  const result = data.hic_et_nunc_token
+  const result = data.token
   return result
 }
 

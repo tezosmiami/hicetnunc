@@ -155,7 +155,7 @@ const MeshContextProvider = ({ children }) => {
             address: acc.address,
             }).then(({ data, errors }) => {
             if (data) {
-                const holder = data.hic_et_nunc_holder[0]?.name || acc.address
+                const holder = data.holder[0]?.name || acc.address
                 setAlias(holder)
             }
             if (errors) {

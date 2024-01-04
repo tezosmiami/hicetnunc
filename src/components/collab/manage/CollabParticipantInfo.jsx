@@ -11,16 +11,16 @@ import { Link } from 'react-router-dom'
 export const CollabParticipantInfo = ({ collabData, expanded = false }) => {
 
     const { proxyAddress, setProxyAddress, acc } = useContext(HicetnuncContext)
-    const { administrator, contract, shareholder } = collabData
+    const { administrator, contract, sharesholder } = collabData
 
     const isAdmin = acc?.address === administrator;
 
     // Core participants
-    const coreParticipants = shareholder
+    const coreParticipants = sharesholder
         .filter(({ holder_type }) => holder_type === CollaboratorType.CORE_PARTICIPANT);
 
     // beneficiaries
-    const beneficiaries = shareholder
+    const beneficiaries = sharesholder
         .filter(({ holder_type }) => holder_type === CollaboratorType.BENEFACTOR);
 
     // Combine various styles

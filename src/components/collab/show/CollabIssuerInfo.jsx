@@ -10,7 +10,7 @@ export const CollabIssuerInfo = ({ creator }) => {
     const { name, address } = creator
     const [showCollabSummary, setShowCollabSummary] = useState(false)
 
-    const coreParticipants = creator.shares[0].shareholder.filter(h => h.holder_type === CollaboratorType.CORE_PARTICIPANT)
+    const coreParticipants = creator.shares[0].sharesholder.filter(h => h.holder_type === CollaboratorType.CORE_PARTICIPANT)
     const path = name ? `/collab/${name}` : `${PATH.COLLAB}/${address}`
 
     return (

@@ -28,7 +28,7 @@ async function fetchGraphQL(operationsDoc, operationName, variables) {
 
 async function fetchTag(tag, offset) {
   const { errors, data } = await fetchGraphQL(`query ObjktsByTag($tag: String = "3d", $lastId: bigint = 99999999) {
-    hic_et_nunc_token(where: {token_tags: {tag: {tag: {_eq: ${tag}}}}, id: {_lt: $lastId}, supply: {_gt: "0"}}, order_by: {id: desc}, limit : 35, offset : ${offset}) {
+    token(where: {token_tags: {tag: {tag: {_eq: ${tag}}}}, id: {_lt: $lastId}, supply: {_gt: "0"}}, order_by: {id: desc}, limit : 35, offset : ${offset}) {
       id
       artifact_uri
       display_uri
@@ -47,7 +47,7 @@ async function fetchTag(tag, offset) {
     console.error(errors)
   }
   try {
-    return data.hic_et_nunc_token
+    return data.token
   } catch (e) {
     return undefined
   }

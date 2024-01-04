@@ -66,7 +66,7 @@ export function userHasSignedObjkt({ objktId, address, creator }) {
     return false
   }
 
-  const signedObjktsForAddress = creator.shares[0].shareholder
+  const signedObjktsForAddress = creator.shares[0].sharesholder
     .filter(
       ({ holder_type, holder_id }) =>
         holder_type === 'core_participant' && holder_id === address

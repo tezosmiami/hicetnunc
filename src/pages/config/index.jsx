@@ -37,7 +37,7 @@ const ipfs = create({
 
 const query_tz = `
 query addressQuery($address: String!) {
-  hic_et_nunc_holder(where: { address: {_eq: $address}}) {
+  holder(where: { address: {_eq: $address}}) {
     address
     name
     hdao_balance
@@ -54,7 +54,7 @@ async function fetchTz(addr) {
   if (errors) {
     console.error(errors)
   }
-  const result = data.hic_et_nunc_holder
+  const result = data.holder
   return result
 }
 
@@ -101,7 +101,7 @@ export class Config extends Component {
       let res = await fetchTz(address)
       this.context.subjktInfo = res[0]
       if (this.context.subjktInfo) {
-        let cid = await axios.get('https://ipfs.io/ipfs/' + (this.context.subjktInfo.metadata_file).split('//')[1]).then(res => res.data)
+        let cid = await axios.get('https://dweb.link/ipfs/' + (this.context.subjktInfo.metadata_file).split('//')[1]).then(res => res.data)
         this.context.subjktInfo.gravatar = cid
         if (cid.description) this.setState({ description: cid.description })
         if (cid.identicon) this.setState({ identicon: cid.identicon })
