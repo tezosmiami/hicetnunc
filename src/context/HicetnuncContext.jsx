@@ -779,7 +779,8 @@ class HicetnuncContextProviderClass extends Component {
       setAccount: async () => {
         const address = (await wallet.client.getActiveAccount())?.address
         if (address){
-          const name = bytes2Char(await this.state.getSubjkt(address))
+          const res = await this.state.getSubjkt(address)
+          const name = res ? bytes2Char(res) : null
           this.setState({
             acc:
               Tezos !== undefined
