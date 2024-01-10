@@ -88,7 +88,7 @@ export const Mint = () => {
       if (data) {
         // const sharesholderInfo = data.sharesholder.map(s => s.split_contract);
         // setCollabs(sharesholderInfo || [])
-        const managedCollabs = data.splitcontract
+        const managedCollabs = data.split_contract
         setCollabs(managedCollabs || [])
       }
       if (errors) {
@@ -140,7 +140,7 @@ export const Mint = () => {
     } else {
       await setAccount()
       console.log(file.mimeType)
-      console.log(ALLOWED_MIMETYPES)
+      // console.log(ALLOWED_MIMETYPES)
       // check mime type
       if (ALLOWED_MIMETYPES.indexOf(file.mimeType) === -1) {
         // alert(

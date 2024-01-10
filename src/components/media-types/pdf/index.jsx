@@ -42,7 +42,7 @@ export const PdfComponent = ({
         onLoadSuccess={onDocumentLoadSuccess}
         onItemClick={onItemClick}
       >
-        <Page pageNumber={pageNumber} />
+        <Page pageNumber={pageNumber} renderTextLayer={false} />
         {onDetailView && (
           <div className={styles.pdfNav}>
             <Button disabled={pageNumber <= 1} onClick={previousPage}>

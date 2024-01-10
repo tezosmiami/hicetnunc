@@ -6,7 +6,7 @@ export const getUserMetaQuery = `query UserMeta($address: String = "") {
 }`
 
 export const getAvailableCollabAddresses = `query GetCollabContracts($address: String!) {
-splitcontract(where: {administrator: {_eq: $address}}) {
+split_contract(where: {administrator: {_eq: $address}}) {
   contract {
     address
     shares {
@@ -39,7 +39,7 @@ token(where: {creator: {is_split: {_eq: true}, address: {_eq: $address}}, supply
   }
 }
 
-splitcontract(where: {contract_id: {_eq: $address}}) {
+split_contract(where: {contract_id: {_eq: $address}}) {
   administrator
   sharesholder {
     holder {
@@ -74,7 +74,7 @@ export const getCollabCreationsBySubjkt = `query GetCollabCreations($subjkt: Str
     }
   }
   
-  splitcontract(where: {contract: {name: {_eq: $subjkt}}}) {
+  split_contract(where: {contract: {name: {_eq: $subjkt}}}) {
     administrator
     sharesholder {
       holder {
@@ -127,7 +127,7 @@ sharesholder(where: {holder_id: {_eq: $address}, holder_type: {_eq: "core_partic
 }`
 
 export const getManagedCollabs = `query GetManagedCollabs($address: String!) {
-splitcontract(where: {administrator: {_eq: $address}}) {
+split_contract(where: {administrator: {_eq: $address}}) {
   id
   contract {
     address
@@ -147,7 +147,7 @@ splitcontract(where: {administrator: {_eq: $address}}) {
 }`
 
 export const getCollabsForAddress = `query GetCollabs($address: String!) {
-splitcontract(where: {_or: [{administrator: {_eq: $address}}, {sharesholder: {holder_id: {_eq: $address}}}]}) {
+split_contract(where: {_or: [{administrator: {_eq: $address}}, {sharesholder: {holder_id: {_eq: $address}}}]}) {
   id
   contract {
     address
