@@ -40,13 +40,13 @@ export const ObjktPost = (item) => {
             <Identicon address={objkt.creator.address} logo={logo} feed={true}/><br/>
           </Button>
         <div className={
-          objkt.mime === 'application/x-directory' ? 'objktview ':
+          objkt.mime === 'application/x-directory' ? 'objktview':
             [(
               objkt.mime === 'video/mp4' ||
                 objkt.mime === 'video/ogv' ||
                 objkt.mime === 'video/quicktime' ||
                 objkt.mime === 'video/webm' ||
-                objkt.mime === 'application/pdf' ? 'no-fullscreen' : 'objktview ' + styles.objktview
+                objkt.mime === 'application/pdf' ? 'no-fullscreen objktview' : 'objktview ' + styles.objktview
             )]
         }>
           <Button to={`${PATH.OBJKT}/${objkt.id}`}>
