@@ -96,7 +96,7 @@ export const Mint = () => {
     }
     })
 
-    updateName()
+    acc && updateName()
   }, [acc])
 
   useEffect(() => {
@@ -111,7 +111,7 @@ export const Mint = () => {
       address: currentAddress,
     }).then(({ data, errors }) => {
       if (data) {
-        console.log(data)
+        // console.log(data)
         const holder = data.holder[0]
         setMintName(holder?.name || currentAddress)
       }

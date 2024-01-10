@@ -40,7 +40,7 @@ export const ObjktPost = (item) => {
             <Identicon address={objkt.creator.address} logo={logo} feed={true}/><br/>
           </Button>
         <div className={
-          objkt.mime === 'application/x-directory' || objkt.mime === 'image/svg+xml' ? 'objktview-zipembed objktview ' + styles.objktview :
+          objkt.mime === 'application/x-directory' ? 'objktview ':
             [(
               objkt.mime === 'video/mp4' ||
                 objkt.mime === 'video/ogv' ||
