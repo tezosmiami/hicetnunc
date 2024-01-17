@@ -99,7 +99,7 @@ const colors = {
   'black' : '#000000'
   }     
 
-const keys = Object.keys(colors)
+// const keys = Object.keys(colors)
 const color = 'black'
 // const color = keys[Math.floor(Math.random() * keys.length)]
 
@@ -267,7 +267,7 @@ class HicetnuncContextProviderClass extends Component {
           '--next-color',
           theme === 'blue' ? colors.green :
           theme === 'green' ? colors.orange :
-          theme === 'orange' ? colors. charcol :
+          theme === 'orange' ? colors.charcol :
           theme === 'charcol' ? colors.black :
           theme === 'black' ? colors.white :
           theme === 'pink' ? colors.blue :
@@ -279,7 +279,7 @@ class HicetnuncContextProviderClass extends Component {
           '--text-color',
             theme === 'black' ? colors.green :
             theme === 'blue' ? colors.white  : 
-            theme === 'charcol' ? colors.pink  : 
+            theme === 'charcol' ? colors.white  : 
             '#000000'
              ),
           

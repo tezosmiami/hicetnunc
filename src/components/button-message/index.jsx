@@ -18,8 +18,11 @@ export const MessageButton = ({tezos, subjkt}) => {
                     kinds: [30078],
                     // authors: [pub],
                     tags: [['d', 'magicCity']],
-                })
+                },
+                undefined,  
+                {relays: [{ url: 'wss://relay.magiccity.live'}], ndk })
 
+            // console.log(Array.from(e).filter(e=> e.tags.length === 3).sort((a,b) => b.created_at - a.created_at))
             e = Array.from(e).sort((a,b) => b.created_at - a.created_at).find(e => e.tags.find(t => t.some(f => f === tezos)))
 
             if (e) {

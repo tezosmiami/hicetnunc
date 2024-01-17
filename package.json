@@ -4,8 +4,8 @@
   "private": true,
   "dependencies": {
     "@babel/core": "^7.21.4",
-    "@nostr-dev-kit/ndk": "^2.3.0",
-    "@nostr-dev-kit/ndk-cache-dexie": "^2.2.1",
+    "@nostr-dev-kit/ndk": "^2.3.3",
+    "@nostr-dev-kit/ndk-cache-dexie": "^2.2.4",
     "@taquito/beacon-wallet": "^16.1.2",
     "@taquito/michelson-encoder": "^16.0.1",
     "@taquito/taquito": "^16.1.2",

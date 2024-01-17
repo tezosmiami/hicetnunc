@@ -1,17 +1,17 @@
-import { useEffect, useState, createContext, useContext, useRef } from "react"
+import { useEffect, useState, createContext, useContext } from "react"
 import NDK, { NDKPrivateKeySigner, NDKNip07Signer, NDKEvent } from "@nostr-dev-kit/ndk"
 import NDKCacheAdapterDexie from "@nostr-dev-kit/ndk-cache-dexie"
 import { HicetnuncContext } from './HicetnuncContext'
-import { getItem, setItem } from "../utils/storage"
+import { getItem } from "../utils/storage"
 import { walletPreview } from '../utils/string'  
 import _ from 'lodash'
 
 const NostrContext = createContext();
 
 const relays = [
+    'wss://relay.magiccity.live',
     'wss://relay.damus.io',
     'wss://nos.lol',
-    'wss://relay.magiccity.live',
     'wss://relay.snort.social'
   ];
 
@@ -59,13 +59,13 @@ const NostrContextProvider = ({ children }) => {
         const init = async() => {
             setLoading(true)
                 setNostrKeys(true)
-                   const keys = getItem('nostr')?.keys || null
+                const keys = getItem('nostr')?.keys || null
                 const signer =  keys.priv ? new NDKPrivateKeySigner(keys.priv) : new NDKNip07Signer()
                 setNdk(new NDK({
                     explicitRelayUrls: relays,
                     cacheAdapter: new NDKCacheAdapterDexie({ dbName: 'nostr' }),
                     signer: signer,
-                    autoConnectUserRelays: false
+                    // autoConnectUserRelays: false
                 }))
         }
         setNostrSync(getItem('nostrSync'))
@@ -125,14 +125,15 @@ const NostrContextProvider = ({ children }) => {
     const getProfile = async (pubkey, alias) => {
         if (pubkey === pub && nostrAcc?.alias) return !alias ? nostrAcc : nostrAcc.alias
         let who = await ndk.getUser({hexpubkey: pubkey})
-
        
         const nip78s =  await ndk.fetchEvents(
             {
                 kinds: [30078],
                 authors: [pubkey],
                 tags: [["d", "magicCity.live"]],
-            })
+            },
+            undefined,
+            {relays: [{ url: 'wss://relay.magiccity.live'}], ndk })
             await who.fetchProfile()
         const e = Array.from(nip78s).sort((a,b) => b.created_at - a.created_at).find(e => e.tags.find(t => t.some(f => f === acc.address)))
 
