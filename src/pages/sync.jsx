@@ -24,16 +24,16 @@ export default class Sync extends Component {
       await this.context.setAccount()
     }
   }
-
+// here sync issues
   render() {
-    return this.context.acc !== null ? (
-      <Redirect to={`/${this.props.location.state}/${this.context.getProxy() || this.context.acc.address}`} />
+    return this.context.acc ? (
+      <Redirect to={`/tz/${this.context.acc.address}`} />
     ) : (
       <Page title="">
         <Container>
           <Padding>
             <p>requesting permissions</p>
-            <Button to="/sync">
+            <Button onClick={this.componentDidMount}>
               <Primary>try again?</Primary>
             </Button>
             <LoadingContainer />

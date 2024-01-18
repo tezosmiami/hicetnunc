@@ -98,7 +98,7 @@ const NostrContextProvider = ({ children }) => {
             profile.alias = subjktInfo.name || acc.address
             setNostrAcc(profile)
         }   
-        !nostrAcc && ndk  && acc  && finish()
+        !nostrAcc && ndk  && acc && finish()
         nostrAcc && getEvents() && subEvents()
     }, [ndk,acc, nostrAcc])
 
@@ -135,7 +135,7 @@ const NostrContextProvider = ({ children }) => {
             undefined,
             {relays: [{ url: 'wss://relay.magiccity.live'}], ndk })
             await who.fetchProfile()
-        const e = Array.from(nip78s).sort((a,b) => b.created_at - a.created_at).find(e => e.tags.find(t => t.some(f => f === acc.address)))
+        const e = Array.from(nip78s).sort((a,b) => b.created_at - a.created_at).find(e => e.tags.find(t => t.some(f => f === acc?.address)))
 
         if (e) {
             const signed = e.content

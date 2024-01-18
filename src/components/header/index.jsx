@@ -186,7 +186,7 @@ export const Header = () => {
                     </li> */}
                     <li>
                       <Button onClick={() => handleRoute('/sync', 'tz')}>
-                        <Primary>manage assets</Primary>
+                        <Primary>curate assets</Primary>
                       </Button>
                     </li>
                     {context.acc?.address ?
@@ -199,11 +199,11 @@ export const Header = () => {
                       null
                     }
                    
-                    <li>
+                    {/* <li>
                       <Button onClick={() => handleRoute('/galleries')}>
                         <Primary>galleries</Primary>
                       </Button>
-                    </li>
+                    </li> */}
                     {context.acc?.address ?
                       <li>
                         <Button onClick={() => handleRoute('/messages')}>
@@ -234,11 +234,11 @@ export const Header = () => {
                       </Button>
                     </li>
 
-                    <li>
+                    {/* <li>
                       <Button onClick={() => handleRoute('/faq')}>
                         <Primary>faq</Primary>
                       </Button>
-                    </li>
+                    </li> */}
                   </ul>
                
                 </nav>

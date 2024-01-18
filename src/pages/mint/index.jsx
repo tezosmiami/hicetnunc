@@ -290,7 +290,7 @@ export const Mint = () => {
   }
 
   const handlePreview = async () => {
-    if (!await isDoubleMint()) {
+    if (!acc || !await isDoubleMint()) {
       setStep(1)
     }
   }
