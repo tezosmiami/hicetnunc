@@ -19,7 +19,7 @@ import _ from 'lodash'
 async function fetchFeed(lastId, offset) {
   const { errors, data } = await fetchGraphQL(`
 query LatestFeed {
-  token(order_by: {id: desc}, limit: 21,  offset: ${offset}, where: {id: {_lt: ${lastId}}, supply: {_neq: "0"}, artifact_uri: {_neq: ""}}) {
+  token(order_by: {id: desc}, limit: 21,  offset: ${offset}, where: {id: {_lte: ${lastId}}, supply: {_neq: "0"}, artifact_uri: {_neq: ""}}) {
     artifact_uri
     display_uri
     creator_id
@@ -89,7 +89,7 @@ query LatestFeed {
 
 // const query_tag = `
 // query ObjktsByTag {
-//   token(where: {supply : {_neq: "0"}, token_tags: {tag: {tag: {_eq: $tag}}}, id: {_lt: $lastId}}, limit : 21, order_by: {id: desc}) {
+//   token(where: {supply : {_neq: "0"}, token_tags: {tag: {tag: {_eq: $tag}}}, id: {_lte: $lastId}}, limit : 21, order_by: {id: desc}) {
 //     id
 //     artifact_uri
 //     display_uri
