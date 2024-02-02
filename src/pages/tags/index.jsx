@@ -75,14 +75,17 @@ export const Tags = () => {
     setCount(count + 15)
   }
 
-  useEffect(async () => {
-    let arr = await fetchTag(id, offset)
-    let res = await getRestrictedAddresses()
-    setRestricted(res)
-    console.log(arr)
-    setFeed(arr.filter(e => !res.includes(e.creator_id)))
+  useEffect(() => {
+    const getTag = async () => {
+      let arr = await fetchTag(id, offset)
+      let res = await getRestrictedAddresses()
+      setRestricted(res)
+      // console.log(arr)
+      setFeed(arr.filter(e => !res.includes(e.creator_id)))
+    }
+    getTag()
   }, [])
-console.log(feed)
+// console.log(feed)
   return (
     <Page title={`Tag ${id}`}>
       <div className="tag-view">
