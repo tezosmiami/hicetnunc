@@ -1045,7 +1045,7 @@ export class Search extends Component {
       this.setState({ feed: [...this.state.feed, ...(res)] })
     }
 
-    if (this.state.select === 'svg') {
+    if (this.state.select.type === 'svg') {
       try{
         const result = await axios.get(`https://api.tzkt.io/v1/bigmaps/464343/keys/`)
         let creator_ids = result.data.map((d) => {return d.key})
@@ -1150,7 +1150,7 @@ export class Search extends Component {
             {
               <div style={{ marginTop: '15px' }}>
                 {this.state.tags.map((e,i) => <div key={i} className='tag' href='#'
-                   style= {{boxShadow: (e.value === this.state.select || (e.id === 13 && this.state.select ==='svg'))  && 'var(--box-shadow)', 
+                   style= {{boxShadow: (e.value === this.state.select || (e.id === 13 && this.state.select.type ==='svg'))  && 'var(--box-shadow)', 
                     textDecoration: e.value === this.state.select && (this.state.neonstyle === false || this.state.neonstyle === null) ? 'underline' : ''}} onClick={() => {
                   this.update(e.value ? e.value : 'svg', true)
                 }}>{e.value}</div>)}
