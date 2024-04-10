@@ -202,7 +202,6 @@ const NostrContextProvider = ({ children }) => {
       }
 
       const sendMessage = async(recepient, message) => {
-
         const who = ndk.getUser({hexpubkey: recepient})
         const encrypted = await ndk.signer.encrypt(who, message) 
         const event = new NDKEvent(ndk);
@@ -212,14 +211,26 @@ const NostrContextProvider = ({ children }) => {
          await ndk.publish(event)
       }
 
-       const sendEvent = async(kind, tags) => {
+       const sendEvent = async(kind, content, tags) => {
         const event = new NDKEvent(ndk);
         event.kind = kind;
-        event.tags = tags
-        ndk.publish(event)
+        event.content = content;
+        event.tags = tags;
+        const result = await ndk.publish(event)
+        return result
       }
 
-    const wrapped = {nostrAcc, ndk, pub, nostrKeys, nostrSync, messages, loading, counter, quantity, setPub, setMessages, decryptMsg, sendMessage, sendEvent }
+      const objktPost = async ({ objkt }) => {    
+        console.log('magicCity')
+        const { id, creator, title, description, artifact_uri } = objkt
+        const content = `${title}\n\n${description}\n\nmagicCity.live/objkt/${id}\n\n${artifact_uri.replace('ipfs://', 'https://ipfs.io/ipfs/')}`
+        const tags = [['s', 'magicCity, hicetnunc']]
+        const result = await sendEvent(1, content, tags)
+        return result
+    }
+
+
+    const wrapped = {nostrAcc, ndk, pub, nostrKeys, nostrSync, messages, objktPost, loading, counter, quantity, setPub, setMessages, decryptMsg, sendMessage, sendEvent }
   
     return (
         <NostrContext.Provider value={wrapped}>

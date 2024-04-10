@@ -8,7 +8,6 @@
 
 @media screen and (min-width: 801px) {
   .objkt-display video {
-    width: auto;
     height: 60vh;
   }
 }

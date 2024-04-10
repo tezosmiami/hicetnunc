@@ -222,20 +222,21 @@ export const ItemInfo = ({
                   </span>
                 </Primary>
               </Button>&nbsp;
-              {/* <span
-                      className={styles.top}
-                      data-position={'top'}
-                      data-tooltip={'nostrify'}
-                    >
-                    <NostrButton objkt={ {id, title, creator, description, artifact_uri, mimeType } } />
-              </span>&nbsp; */}
               <span
                     className={styles.top}
+                    styles={{margin: '12px'}}
                     data-position={tooltip ? 'top' : ''}
                     data-tooltip={tooltip ? 'zap' : null}
                   >
                   <LightningButton setTooltip={setTooltip} recepient={creator.address} />
               </span>
+              {creator.address === acc.address && <span
+                      className={styles.top}
+                      data-position={'top'}
+                      data-tooltip={'nostrify'}
+                    >
+                    <NostrButton objkt={{id, title, creator, description, artifact_uri, mimeType }} />
+              </span>}
             </div>
         </div>   
       </>
