@@ -230,7 +230,7 @@ export const ItemInfo = ({
                   >
                   <LightningButton setTooltip={setTooltip} recepient={creator.address} />
               </span>
-              {creator.address === acc.address && <span
+              {creator?.address === acc?.address && <span
                       className={styles.top}
                       data-position={'top'}
                       data-tooltip={'nostrify'}
