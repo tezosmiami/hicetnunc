@@ -224,7 +224,7 @@ const NostrContextProvider = ({ children }) => {
         console.log('magicCity')
         const { id, creator, title, description, artifact_uri } = objkt
         const content = `${title}\n\n${description}\n\nmagicCity.live/objkt/${id}\n\n${artifact_uri.replace('ipfs://', 'https://ipfs.io/ipfs/')}`
-        const tags = [['s', 'magicCity, hicetnunc']]
+        const tags = [['t', 'magicCity'], ['t', 'hicetnunc']]
         const result = await sendEvent(1, content, tags)
         return result
     }
