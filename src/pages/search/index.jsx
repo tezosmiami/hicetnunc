@@ -813,23 +813,25 @@ export class Search extends Component {
     lastId: undefined,
     tags: [
       { id: 0, value: 'new OBJKTs' },
-      { id: 1, value: 'recent sales'},
-      { id: 2, value: 'h=n swaps' },
-      { id: 3, value: 'friends' }, 
-      { id: 4, value: 'music' },
-      { id: 5, value: 'photography' }, 
-      { id: 6, value: 'random' },
+      { id: 1, value: 'h=n swaps' },
+      { id: 2, value: 'music' },
+      { id: 3, value: 'photography' },
+      { id: 4, value: 'random' },
+      { id: 5, value: 'recent sales'},
+      { id: 6, value: 'friends' }, 
       // { id: 7, value: '🗑️' },
       // { id: 7, value: 'gif' },
       // { id: 6, value: 'html/svg' }, // algorithimc?
       // { id: 4, value: 'glb' },
-      { id: 8, value: '1D' },
-      { id: 9, value: '1W' },
-      { id: 10, value: '1M' },
+      { id: 7, value: '1D' },
+      { id: 8, value: '1W' },
+      { id: 9, value: '1M' },
+      
       // { id: 10, value: 'ATH' },
-      { id: 11, value: '○ hDAO' },
-      { id: 12, value: 'Miami' },
-      { id: 13, value: <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 16 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641l2.5-8.5z"></path></svg>},
+      { id: 10, value: '○ hDAO' },
+      
+      { id: 11, value: 'Miami' },
+      { id: 12, value: <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 16 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641l2.5-8.5z"></path></svg>},
       
    
       
