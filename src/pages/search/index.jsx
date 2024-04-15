@@ -816,22 +816,23 @@ export class Search extends Component {
       { id: 1, value: 'h=n swaps' },
       { id: 2, value: 'music' },
       { id: 3, value: 'photography' },
-      { id: 4, value: 'random' },
-      { id: 5, value: 'recent sales'},
-      { id: 6, value: 'friends' }, 
+      { id: 4, value: 'ai' },
+      { id: 5, value: 'random' },
+      { id: 6, value: 'recent sales'},
+      { id: 7, value: 'friends' }, 
       // { id: 7, value: '🗑️' },
       // { id: 7, value: 'gif' },
       // { id: 6, value: 'html/svg' }, // algorithimc?
       // { id: 4, value: 'glb' },
-      { id: 7, value: '1D' },
-      { id: 8, value: '1W' },
-      { id: 9, value: '1M' },
+      { id: 8, value: '1D' },
+      { id: 9, value: '1W' },
+      { id: 10, value: '1M' },
       
       // { id: 10, value: 'ATH' },
-      { id: 10, value: '○ hDAO' },
+      { id: 11, value: '○ hDAO' },
       
-      { id: 11, value: 'Miami' },
-      { id: 12, value: <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 16 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641l2.5-8.5z"></path></svg>},
+      { id: 12, value: 'Miami' },
+      { id: 13, value: <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 16 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641l2.5-8.5z"></path></svg>},
       
    
       
@@ -1025,6 +1026,11 @@ export class Search extends Component {
     if (e === 'Miami') {
       let res = await fetchTag('miami', this.state.offset)
       res = res.filter(e => !arr.includes(e.creator_id))
+      this.setState({ feed: ([...this.state.feed, ...(res)]) })
+    }
+    
+    if (e === 'ai') {
+      let res = await fetchTag('ai', this.state.offset)
       res = res.filter(e => !arr.includes(e.creator_id))
       this.setState({ feed: ([...this.state.feed, ...(res)]) })
     }
