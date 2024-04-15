@@ -26,7 +26,7 @@
     "node-sass": "^6.0.1",
     "node-stdlib-browser": "^1.2.0",
     "nostr-tools": "^1.17.0",
-    "peerjs": "^1.4.7",
+    "peerjs": "^1.5.2",
     "react": "^18.2.0",
     "react-chessboard": "^2.1.2",
     "react-dom": "^18.2.0",

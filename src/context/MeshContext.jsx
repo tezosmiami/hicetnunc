@@ -218,7 +218,7 @@ const MeshContextProvider = ({ children }) => {
             !getItem('syncmesh') && setItem('syncmesh', true)
             peer.current = new Peer(
             {
-                host: 'hen-chat.herokuapp.com',
+                host: 'mesh.magicCity.live',
                 secure: true,
                 debug: 0,
                 path: "/hicetnunc",
