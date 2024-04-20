@@ -293,7 +293,7 @@ export const Identicon = ({ address = '', logo, feed }) => {
     return (
       <div className={styles.identicon} >
         <img
-          src={'https://dweb.link/ipfs/' + logo.split('//')[1]}
+          src={'https://ipfs.io/ipfs/' + logo.split('//')[1]}
           alt="identicon"
           style={{width: feed ? '69px' : '127.5px', height: feed ? '69px' : '127.5px'}}
         />

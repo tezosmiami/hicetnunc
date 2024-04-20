@@ -73,7 +73,7 @@ const LightningContextProvider = ({ children }) => {
                   setSender(holder)
                   const metadata = data.holder[0]?.metadata_file 
                   if (metadata) {
-                    let cid = await axios.get('https://dweb.link/ipfs/' 
+                    let cid = await axios.get('https://ipfs.io/ipfs/' 
                     + metadata.split('//')[1]).then(res => res.data)
                     if (cid.lightning) setSubjktLightning(cid.lightning)
                     if (cid.nostr) setSubjktNostr(cid.nostr)

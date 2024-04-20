@@ -168,14 +168,13 @@ export const HTMLComponent = (props) => {
   if (!displayView) {
     try {
     return (
-      <div>
+      <div style={{backgroundColor: context.theme === 'black' ? 'white' : ''}}>
         <iframe
           className={styles.html + ' zip-embed'}
           title="html-embed"
           src={`${artifactUri}/?creator=${_creator_}&viewer=${_viewer_}&objkt=${_objectId_}`}
           sandbox="allow-scripts allow-same-origin"
           allow="accelerometer; camera; gyroscope; microphone; xr-spatial-tracking;"
-
         />
       </div>
     )
@@ -185,14 +184,14 @@ export const HTMLComponent = (props) => {
   } else {
 
     return (
-      <div>
+      <div style={{backgroundColor: context.theme === 'black' ? 'white' : ''}}>
         <iframe
           className={styles.html}
           title="html-embed"
           src={`${artifactUri}/?creator=${_creator_}&viewer=${_viewer_}&objkt=${_objectId_}`}
           sandbox="allow-scripts allow-same-origin"
           allow="accelerometer; camera; gyroscope; microphone; xr-spatial-tracking;"
-        />
+       />
       </div>
     )
   }
