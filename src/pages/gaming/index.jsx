@@ -235,7 +235,7 @@ export const Gaming = () => {
                 <span>{pvp.vs.length === 36 ? walletPreview(pvp.vs) : pvp.vs}</span>
               </div>
             </div>}
-            {!loading && meshed && !pvp && <div className={styles.online}>
+            {!loading && acc && meshed && !pvp && <div className={styles.online}>
                 {[...new Map(online.filter((o) => o.dimension === 'chess').map((m) => [m.alias, m])).values()].map((o,i) => (
                   o.alias !== alias
                      ? <Button key ={i} onClick={() => invites.find(f => f.from?.alias === o.alias)
